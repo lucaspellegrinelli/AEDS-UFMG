@@ -10,15 +10,15 @@ long * encode_message(long *message_blocks, int block_count, long n, long e);
 long * decode_message(long *encoded_blocks, int block_count, long n, long d);
 
 long * break_message_into_blocks(char message[], int m_len, long n, int *block_count);
-char * build_message_from_blocks(long *decoded_blocks, int block_count, int n);
+char * build_message_from_blocks(long *decoded_blocks, int block_count, long n);
 char * generate_full_message_string(char message[], int m_len);
-char * recover_full_message_string(long *blocks, int block_len, int n);
+char * recover_full_message_string(long *blocks, int block_len, long n);
 
 char * encode_char(long n);
 long decode_char(char *c);
 
 long power_mod(long a, long b, long m);
-int mul_inv(int a, int b);
+long mul_inv(long a, long b);
 long greatest_common_divisor(long a, long b);
 
 int * string_to_int(char str[], int str_len);
@@ -28,8 +28,8 @@ char * concat_char(const char *s1, const char c);
 int main() {
   char message[] = "This is a test";
   int m_len = sizeof message - 1;
-  long p = 25073;
-  long q = 25087;
+  long p = 64453;
+  long q = 66877;
   long e = 1;
   long d;
   long n;
@@ -56,7 +56,7 @@ int main() {
   long *decoded_m = decode_message(encoded_m, block_count, n, d);
   char *retrieved_message = build_message_from_blocks(decoded_m, block_count, n);
 
-  printf("Message/Encoded/Decoded:\n");
+  printf("\nMessage/Encoded/Decoded:\n");
   for(int i = 0; i < block_count; i++){
     printf("%ld    %ld   %ld\n", message_blocks[i], encoded_m[i], decoded_m[i]);
   }
@@ -93,19 +93,19 @@ long * encode_message(long *message_blocks, int block_count, long n, long e){
 }
 
 long * decode_message(long *encoded_blocks, int block_count, long n, long d){
-  long *messageHex = malloc(block_count * sizeof(long));
+  long *message = malloc(block_count * sizeof(long));
   for(int i = 0; i < block_count; i++){
-    messageHex[i] = power_mod(encoded_blocks[i], d, n);
+    message[i] = power_mod(encoded_blocks[i], d, n);
   }
 
-  return messageHex;
+  return message;
 }
 
 long * break_message_into_blocks(char message[], int m_len, long n, int *block_count){
   char *full_encoded_message = generate_full_message_string(message, m_len);
 
   long *blocks = malloc(strlen(full_encoded_message) * sizeof(long));
-  char *current_word = malloc((log10(n) + 1) * sizeof(char));
+  char *current_word = malloc((log10(n) + 2) * sizeof(char));
 
   int row = 0;
   for(int i = 0; i < strlen(full_encoded_message); i++){
@@ -131,7 +131,7 @@ long * break_message_into_blocks(char message[], int m_len, long n, int *block_c
   return blocks;
 }
 
-char * build_message_from_blocks(long *decoded_blocks, int block_count, int n){
+char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
   char *message = malloc(sizeof(char) * block_count * (log(n) + 1));
   char *full_decoded_message = recover_full_message_string(decoded_blocks, block_count, n);
 
@@ -167,12 +167,12 @@ char * generate_full_message_string(char message[], int m_len){
   return full_encoded_message;
 }
 
-char * recover_full_message_string(long *blocks, int block_len, int n){
+char * recover_full_message_string(long *blocks, int block_len, long n){
   char *full_decoded_message = malloc((log10(n) + 1) * block_len * sizeof(char));
 
   int index = 0;
   for(int i = 0; i < block_len; i++){
-    char *block = encode_char(blocks[i]);
+    char *block =  encode_char(blocks[i]);
 
     for(int j = 0; j < strlen(block); j++)
       full_decoded_message[index++] = block[j];
@@ -182,24 +182,26 @@ char * recover_full_message_string(long *blocks, int block_len, int n){
 }
 
 char * encode_char(long n){
-  long n_log = log10(n) + 2;
-  char *number_array = malloc(n_log * sizeof(char));
-  snprintf(number_array, n_log, "%ld", n);
+  int n_log = log10(n) + 2;
+  char *number_array = (char *)malloc(n_log * sizeof(char));
+  sprintf(number_array, "%lu", n);
   return number_array;
 }
 
 long decode_char(char *c){
-  return atoi(c);
+  return atoll(c);
 }
 
 long power_mod(long a, long b, long m){
+  printf("Operation: %lu^%lu mod %lu\n", a, b, m);
   long p_mod[(int)(log(b) / log(2))];
   p_mod[0] = a;
+
   for(int i = 1; i < log(b) / log(2); i++){
     p_mod[i] = fmodl(powl(p_mod[i - 1], 2), m);
   }
 
-  long result = 1;
+  unsigned long long result = 1;
   while(b >= 1){
     result = fmodl(result * p_mod[(int)(log(b) / log(2))], m);
     b -= powl(2, (int)(log(b) / log(2)));
@@ -208,9 +210,9 @@ long power_mod(long a, long b, long m){
   return result;
 }
 
-int mul_inv(int a, int b){
-	int b0 = b, t, q;
-	int x0 = 0, x1 = 1;
+long mul_inv(long a, long b){
+	long b0 = b, t, q;
+	long x0 = 0, x1 = 1;
 	if (b == 1) return 1;
 	while (a > 1) {
 		q = a / b;
