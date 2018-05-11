@@ -26,10 +26,12 @@ char * concat_char(const char *s1, const char c);
 /* FINAL PROTÓTIPOS */
 
 int main() {
-  char message[] = "This is a test";
+  char message[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   int m_len = sizeof message - 1;
-  long p = 64453;
-  long q = 66877;
+
+  /* (p * q) < sqrt(MAX_LONG_VALUE) */
+  long p = 55057;
+  long q = 55147;
   long e = 1;
   long d;
   long n;
