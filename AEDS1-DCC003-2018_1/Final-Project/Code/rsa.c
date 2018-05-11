@@ -193,11 +193,10 @@ long decode_char(char *c){
 }
 
 long power_mod(long a, long b, long m){
-  printf("Operation: %lu^%lu mod %lu\n", a, b, m);
-  long p_mod[(int)(log(b) / log(2))];
+  long p_mod[(int)(log(b) / log(2)) + 1];
   p_mod[0] = a;
 
-  for(int i = 1; i < log(b) / log(2); i++){
+  for(int i = 1; i < log(b) / log(2) + 1; i++){
     p_mod[i] = fmodl(powl(p_mod[i - 1], 2), m);
   }
 
