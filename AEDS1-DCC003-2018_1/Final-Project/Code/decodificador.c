@@ -36,8 +36,6 @@ long * read_variables_from_file(char *file_path){
   int variable_index = 0;
 
   FILE *file = fopen(file_path, "r");
-  char content[MAX_PRIVATE_TXT_SIZE];
-  int content_index = 0;
 
   if (file == NULL){
       printf("Could not open file %s", file_path);
