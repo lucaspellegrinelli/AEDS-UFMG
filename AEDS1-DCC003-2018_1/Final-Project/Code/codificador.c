@@ -11,7 +11,6 @@ int main(int argc, char* argv[]) {
   char *message = argv[1];
   int m_len = strlen(message);
 
-  /* (p * q) < sqrt(MAX_LONG_VALUE) */
   long p = atol(argv[2]);
   long q = atol(argv[3]);
   long e = 1;
