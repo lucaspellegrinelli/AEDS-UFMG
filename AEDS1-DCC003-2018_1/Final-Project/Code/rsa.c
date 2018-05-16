@@ -3,73 +3,7 @@
 #include <math.h>
 #include <string.h>
 
-/* PROTÓTIPOS */
-void choose_variables(long p, long q, long *n, long *d, long *e);
-
-long * encode_message(long *message_blocks, int block_count, long n, long e);
-long * decode_message(long *encoded_blocks, int block_count, long n, long d);
-
-long * break_message_into_blocks(char message[], int m_len, long n, int *block_count);
-char * build_message_from_blocks(long *decoded_blocks, int block_count, long n);
-char * generate_full_message_string(char message[], int m_len);
-char * recover_full_message_string(long *blocks, int block_len, long n);
-
-char * encode_char(long n);
-long decode_char(char *c);
-
-long power_mod(long a, long b, long m);
-long mul_inv(long a, long b);
-long greatest_common_divisor(long a, long b);
-
-int * string_to_int(char str[], int str_len);
-char * concat_char(const char *s1, const char c);
-/* FINAL PROTÓTIPOS */
-
-int main() {
-  char message[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  int m_len = sizeof message - 1;
-
-  /* (p * q) < sqrt(MAX_LONG_VALUE) */
-  long p = 55057;
-  long q = 55147;
-  long e = 1;
-  long d;
-  long n;
-
-  choose_variables(p, q, &n, &d, &e);
-  printf("Variables:\n");
-  printf("p = %ld\n", p);
-  printf("q = %ld\n", q);
-  printf("n = %ld\n", n);
-  printf("d = %ld\n", d);
-  printf("e = %ld\n", e);
-  printf("\n");
-
-  printf("Original message:\n");
-  for(int i = 0; i < m_len; i++){
-    printf("%c", message[i]);
-  }
-  printf("\n\n");
-
-  int block_count;
-  long *message_blocks = break_message_into_blocks(message, m_len, n, &block_count);
-  long *encoded_m = encode_message(message_blocks, block_count, n, e);
-
-  long *decoded_m = decode_message(encoded_m, block_count, n, d);
-  char *retrieved_message = build_message_from_blocks(decoded_m, block_count, n);
-
-  printf("\nMessage/Encoded/Decoded:\n");
-  for(int i = 0; i < block_count; i++){
-    printf("%ld    %ld   %ld\n", message_blocks[i], encoded_m[i], decoded_m[i]);
-  }
-  printf("\n\n");
-
-  printf("Retrieved message:\n");
-  for(int i = 0; i < m_len; i++){
-    printf("%c", retrieved_message[i]);
-  }
-  printf("\n");
-}
+#include "rsa.h"
 
 void choose_variables(long p, long q, long *n, long *d, long *e){
   *n = p * q;
@@ -212,16 +146,16 @@ long power_mod(long a, long b, long m){
 }
 
 long mul_inv(long a, long b){
-	long b0 = b, t, q;
-	long x0 = 0, x1 = 1;
-	if (b == 1) return 1;
-	while (a > 1) {
-		q = a / b;
-		t = b, b = a % b, a = t;
-		t = x0, x0 = x1 - q * x0, x1 = t;
-	}
-	if (x1 < 0) x1 += b0;
-	return x1;
+  long b0 = b, t, q;
+  long x0 = 0, x1 = 1;
+  if (b == 1) return 1;
+  while (a > 1) {
+    q = a / b;
+    t = b, b = a % b, a = t;
+    t = x0, x0 = x1 - q * x0, x1 = t;
+  }
+  if (x1 < 0) x1 += b0;
+  return x1;
 }
 
 long greatest_common_divisor(long a, long b){
