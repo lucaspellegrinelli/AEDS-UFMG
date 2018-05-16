@@ -6,8 +6,26 @@
 #include "rsa.h"
 
 void write_variables_to_file();
+int is_prime(long n);
 
 int main(int argc, char* argv[]) {
+  if(argc <= 2){
+    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber a mensagem, o 'p', e o 'q'.\n");
+    exit(1);
+  }else if(strlen(argv[1]) == 0){
+    printf("A mensagem informada tem tamanho 0, favor corrigir a mensagem informada.\n");
+    exit(1);
+  }else if(is_prime(atol(argv[2])) == 0 || is_prime(atol(argv[3])) == 0){
+    printf("Um (ou os dois) dos números informados não são primos.\n");
+    exit(1);
+  }else if(atol(argv[2]) <= 2 || atol(argv[3]) <= 2){
+    printf("Os primos tem que ser pelo menos 3.\n");
+    exit(1);
+  }else if(atol(argv[2]) * atol(argv[3]) < 3037000499){
+    printf("O produto entre os primos tem que ser menor que 3037000499 (raiz quadrada do valor máximo de um long).\n");
+    exit(1);
+  }
+
   char *message = argv[1];
   int m_len = strlen(message);
 
@@ -38,10 +56,21 @@ void write_variables_to_file(long n, long d){
   FILE *file = fopen("private.txt", "w");
 
   if (file == NULL){
-      printf("Error opening file!\n");
+      printf("Não foi possível abrir o arquivo.\n");
       exit(1);
   }
 
   fprintf(file, "%ld\n%ld", n, d);
   fclose(file);
+}
+
+int is_prime(long n) {
+  if(n == 2) return 1;
+	if (n % 2 == 0 || n <= 1) return 0;
+
+	for (int i = 3; i < sqrt(n); i += 2){
+		if (n % i == 0) return 0;
+	}
+
+	return 1;
 }

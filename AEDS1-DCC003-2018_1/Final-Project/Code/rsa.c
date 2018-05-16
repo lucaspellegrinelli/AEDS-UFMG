@@ -71,6 +71,8 @@ char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
   char *message = malloc(sizeof(char) * block_count * (log(n) + 1));
   char *full_decoded_message = recover_full_message_string(decoded_blocks, block_count, n);
 
+  printf("Full msg: %s\n", full_decoded_message);
+
   int char_ascii_length = 3;
   int last_stop = 0;
   int message_index = 0;
@@ -104,12 +106,11 @@ char * generate_full_message_string(char message[], int m_len){
 }
 
 char * recover_full_message_string(long *blocks, int block_len, long n){
-  char *full_decoded_message = malloc((log10(n) + 1) * block_len * sizeof(char));
-
+  char *full_decoded_message = malloc((int)((log10(n) + 1) * block_len) * sizeof(char));
   int index = 0;
-  for(int i = 0; i < block_len; i++){
-    char *block =  encode_char(blocks[i]);
 
+  for(int i = 0; i < block_len; i++){
+    char *block = encode_char(blocks[i]);
     for(int j = 0; j < strlen(block); j++)
       full_decoded_message[index++] = block[j];
   }
@@ -118,9 +119,11 @@ char * recover_full_message_string(long *blocks, int block_len, long n){
 }
 
 char * encode_char(long n){
-  int n_log = log10(n) + 2;
+  int n_log;
+  if(n > 0) n_log = log10(n) + 2;
+  else n_log = 2;
   char *number_array = (char *)malloc(n_log * sizeof(char));
-  sprintf(number_array, "%lu", n);
+  sprintf(number_array, "%ld", n);
   return number_array;
 }
 

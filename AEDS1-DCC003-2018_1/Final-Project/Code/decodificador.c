@@ -8,19 +8,31 @@
 #define MAX_PRIVATE_TXT_SIZE 64
 
 long * read_variables_from_file(char *file_path);
-long * get_blocks(char *encoded_message, int *block_count);
+long * get_blocks_from_string(char *encoded_message, int *block_count);
 
 int main(int argc, char* argv[]) {
+  if(argc <= 2){
+    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber a mensagem criptografada e o caminho para o arquivo 'private.txt'.\n");
+    exit(1);
+  }else if(strlen(argv[1]) == 0){
+    printf("A mensagem informada tem tamanho 0, favor corrigir a mensagem informada.\n");
+    exit(1);
+  }else if(strlen(argv[2]) == 0){
+    printf("O caminho para o arquivo tem tamanho 0, portanto o programa não conseguirá acessar 'd' e 'n', favor corrigir o caminho.\n");
+    exit(1);
+  }
+
+  printf("OI0\n");
+
   char *encoded_message = argv[1];
-  char sep = argv[2][0];
-  char *private_file_path = argv[3];
+  char *private_file_path = argv[2];
 
   int m_len = strlen(encoded_message);
 
   long *private_keys = read_variables_from_file(private_file_path);
 
   int block_count = 0;
-  long *encoded_blocks = get_blocks(encoded_message, &block_count);
+  long *encoded_blocks = get_blocks_from_string(encoded_message, &block_count);
 
   long *decoded_m = decode_message(encoded_blocks, block_count, private_keys[0], private_keys[1]);
 
@@ -32,13 +44,13 @@ int main(int argc, char* argv[]) {
 }
 
 long * read_variables_from_file(char *file_path){
-  long *variables = malloc(3 * sizeof(long));
+  long *variables = malloc(5 * sizeof(long));
   int variable_index = 0;
 
   FILE *file = fopen(file_path, "r");
 
   if (file == NULL){
-      printf("Could not open file %s", file_path);
+      printf("Não foi possível abrir o arquivo %s", file_path);
       exit(1);
   }
 
@@ -63,7 +75,7 @@ long * read_variables_from_file(char *file_path){
   return variables;
 }
 
-long * get_blocks(char *encoded_message, int *b_count){
+long * get_blocks_from_string(char *encoded_message, int *b_count){
   int block_count = 0;
 
   for(int i = 0; i < strlen(encoded_message); i++){
