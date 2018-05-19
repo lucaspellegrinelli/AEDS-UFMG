@@ -1,6 +1,6 @@
 /*
   Autor: Lucas Pellegrinelli
-  Data: 19/05/2018
+  Data: 07/05/2018
 
   Documentação de cada método/função pode ser encontrada no arquivo "rsa.h"
 */
@@ -82,8 +82,6 @@ long * break_message_into_blocks(char message[], long n, int *block_count){
 char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
   char *message = malloc(sizeof(char) * block_count * (log(n) + 1));
   char *full_decoded_message = recover_full_message_string(decoded_blocks, block_count, n);
-
-  printf("Full msg: %s\n", full_decoded_message);
 
   int char_ascii_length = 3;
   int last_stop = 0;
@@ -183,7 +181,7 @@ long greatest_common_divisor(long a, long b){
 
 char * concat_char(const char *s, const char c){
   char *result = malloc(strlen(s) + 2);
-  for(int i = 0; i < strlen(s1); i++) result[i] = s1[i];
+  for(int i = 0; i < strlen(s); i++) result[i] = s[i];
   result[strlen(s)] = c;
   return result;
 }

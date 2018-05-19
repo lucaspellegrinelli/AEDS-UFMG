@@ -1,6 +1,6 @@
 /*
   Autor: Lucas Pellegrinelli
-  Data: 19/05/2018
+  Data: 07/05/2018
 
   Documentação de cada método/função não declarado nesse arquivo pode ser
   encontrada no arquivo "rsa.h"
@@ -58,8 +58,6 @@ int main(int argc, char* argv[]) {
     printf("O caminho para o arquivo tem tamanho 0, portanto o programa não conseguirá acessar 'd' e 'n', favor corrigir o caminho.\n");
     exit(1);
   }
-
-  printf("OI0\n");
 
   char *encoded_message = argv[1];
   char *private_file_path = argv[2];

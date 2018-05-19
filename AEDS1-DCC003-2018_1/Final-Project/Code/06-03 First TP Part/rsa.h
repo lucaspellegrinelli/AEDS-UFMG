@@ -1,6 +1,6 @@
 /*
   Autor: Lucas Pellegrinelli
-  Data: 19/05/2018
+  Data: 07/05/2018
 */
 
 /*
@@ -19,7 +19,7 @@
   Saída:
   'n' -> Resultado da multiplicação entre 'p' e 'q'
   'e' -> Número entre 1 e (p-1)*(q-1) tal que 'e' e (p-1)*(q-1) sejam co-primos
-  'd' -> Inverso nodular multiplicativo de 'e'
+  'd' -> Inverso modular multiplicativo de 'e'
 */
 void choose_variables(long p, long q, long *n, long *d, long *e);
 

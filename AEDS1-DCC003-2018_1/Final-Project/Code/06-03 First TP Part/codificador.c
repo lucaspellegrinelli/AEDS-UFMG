@@ -1,6 +1,6 @@
 /*
   Autor: Lucas Pellegrinelli
-  Data: 19/05/2018
+  Data: 07/05/2018
 
   Documentação de cada método/função não declarado nesse arquivo pode ser
   encontrada no arquivo "rsa.h"
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
   choose_variables(p, q, &n, &d, &e);
 
   int block_count;
-  long *message_blocks = break_message_into_blocks(message, m_len, n, &block_count);
+  long *message_blocks = break_message_into_blocks(message, n, &block_count);
   long *encoded_m = encode_message(message_blocks, block_count, n, e);
 
   write_variables_to_file(n, d);
