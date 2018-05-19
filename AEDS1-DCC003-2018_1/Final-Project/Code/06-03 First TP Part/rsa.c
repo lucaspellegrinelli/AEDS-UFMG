@@ -1,3 +1,10 @@
+/*
+  Autor: Lucas Pellegrinelli
+  Data: 19/05/2018
+
+  Documentação de cada método/função pode ser encontrada no arquivo "rsa.h"
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -37,8 +44,8 @@ long * decode_message(long *encoded_blocks, int block_count, long n, long d){
   return message;
 }
 
-long * break_message_into_blocks(char message[], int m_len, long n, int *block_count){
-  char *full_encoded_message = generate_full_message_string(message, m_len);
+long * break_message_into_blocks(char message[], long n, int *block_count){
+  char *full_encoded_message = generate_full_message_string(message);
 
   long *blocks = malloc(strlen(full_encoded_message) * sizeof(long));
   char *current_word = malloc((log10(n) + 2) * sizeof(char));
@@ -92,7 +99,8 @@ char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
   return message;
 }
 
-char * generate_full_message_string(char message[], int m_len){
+char * generate_full_message_string(char message[]){
+  int m_len = strlen(message);
   char *full_encoded_message = malloc(m_len * 4 * sizeof(char));
   int index = 0;
   for(int i = 0; i < m_len * 2; i += 2){
@@ -168,19 +176,9 @@ long greatest_common_divisor(long a, long b){
   return greatest_common_divisor(a, b - a);
 }
 
-int * string_to_int(char str[], int str_len){
-  int *arr = malloc(str_len);
-
-  for(int i = 0; i < str_len; i++){
-    arr[i] = str[i];
-  }
-
-  return arr;
-}
-
-char * concat_char(const char *s1, const char c){
-  char *result = malloc(strlen(s1) + 2);
+char * concat_char(const char *s, const char c){
+  char *result = malloc(strlen(s) + 2);
   for(int i = 0; i < strlen(s1); i++) result[i] = s1[i];
-  result[strlen(s1)] = c;
+  result[strlen(s)] = c;
   return result;
 }

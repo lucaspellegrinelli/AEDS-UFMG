@@ -1,3 +1,11 @@
+/*
+  Autor: Lucas Pellegrinelli
+  Data: 19/05/2018
+
+  Documentação de cada método/função não declarado nesse arquivo pode ser
+  encontrada no arquivo "rsa.h"
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -5,9 +13,33 @@
 
 #include "rsa.h"
 
+/*
+  Número máximo de caracteres a serem lidos do arquivo 'private.txt'
+*/
 #define MAX_PRIVATE_TXT_SIZE 64
 
+/*
+  Lê os valores de 'n' e 'd' salvos no arquivo 'private.txt' indicado
+
+  Entrada:
+  'file_path' -> Caminho para o arquivo 'private.txt'
+
+  Saída:
+  'return' -> Valores para 'n' e 'd', um em cada posição do vetor
+*/
 long * read_variables_from_file(char *file_path);
+
+/*
+  Gera os blocos de mensagem criptografadas a partir da string recebida
+
+  Entrada:
+  'encoded_message' -> String contendo os blocos de mensagem cifradas separadas
+  por '/'
+
+  Saída:
+  'block_count' -> Número de blocos
+  'return' -> Os blocos gerados a partir da string fornecida
+*/
 long * get_blocks_from_string(char *encoded_message, int *block_count);
 
 int main(int argc, char* argv[]) {

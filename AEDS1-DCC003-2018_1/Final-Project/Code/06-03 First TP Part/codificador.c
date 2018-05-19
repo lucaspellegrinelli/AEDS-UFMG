@@ -1,3 +1,11 @@
+/*
+  Autor: Lucas Pellegrinelli
+  Data: 19/05/2018
+
+  Documentação de cada método/função não declarado nesse arquivo pode ser
+  encontrada no arquivo "rsa.h"
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -5,7 +13,24 @@
 
 #include "rsa.h"
 
-void write_variables_to_file();
+/*
+  Gera o arquivo 'private.txt' com os valores das variáveis recebidas
+
+  Entrada:
+  'n' -> Variável calculada no método 'choose_variables'
+  'd' -> Variável calculada no método 'choose_variables'
+*/
+void write_variables_to_file(long n, long d);
+
+/*
+  Testa se um número é primo
+
+  Entrada:
+  'n' -> Número a ser testado
+
+  Saída:
+  'return' -> '0' se o número nao for primo e '1' caso ela seja primo
+*/
 int is_prime(long n);
 
 int main(int argc, char* argv[]) {
