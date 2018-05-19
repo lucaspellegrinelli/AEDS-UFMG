@@ -4,6 +4,11 @@
 */
 
 /*
+  Nesse código temos a definição de todos os métodos que serão utilizados
+  no processo de criptografar/descriptografar mensagens.
+*/
+
+/*
   Gera as variáveis 'n', 'd' e 'e' (variáveis que vão ser usadas no algoritmo
   RSA) a partir das variáveis 'p' e 'q' dadas pelo usuário.
 

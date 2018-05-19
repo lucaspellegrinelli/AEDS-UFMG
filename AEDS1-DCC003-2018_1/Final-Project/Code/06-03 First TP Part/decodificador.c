@@ -6,6 +6,11 @@
   encontrada no arquivo "rsa.h"
 */
 
+/*
+  Nesse código temos a interface com o usuário na hora de descriptografar
+  uma mensagem.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

@@ -5,6 +5,11 @@
   Documentação de cada método/função pode ser encontrada no arquivo "rsa.h"
 */
 
+/*
+  Nesse código temos a declaração de todos os métodos que serão utilizados
+  no processo de criptografar/descriptografar mensagens.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
