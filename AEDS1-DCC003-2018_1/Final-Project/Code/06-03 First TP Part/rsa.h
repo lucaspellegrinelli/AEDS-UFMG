@@ -123,14 +123,15 @@ long decode_char(char *n, int base);
 /*
   Escolhe em qual base numérica o código irá trabalhar:
 
-  Se n > 8, então a base escolhida será a 8.
-  Se n <= 8, então a base escolhida será a maior base par menor que n
+  Se n > 10, então a base escolhida será a 10.
+  Se n <= 10, então a base escolhida será a n-1
 
-  OBS. A base 10 que seria a padrão não será utilizada pela possibilidade de
-  deixar '0's livres em blocos com 'p's e 'q's menores, perdendo informação.
-  Portanto as bases menores garantem que eu sempre possa gerar números sem
-  nenhum 0 em sua expansão decimal e assim garantir que nenhuma informação
-  será perdida.
+  OBS. A base 10 não deve ser utilizada para 'n' <= 10 já que como ASCII trabalha
+  com números na base decimal, um número pode ser por exemplo '97', sendo
+  impossível dividir esse número em blocos com valores menores que 'n' (para
+  um 'n' = 6 por exemplo, ambos '9' e '7' são maiores), comprometendo a criptografia.
+  Dessa forma é necessário converter para uma base menor para garantir que todos os
+  dígitos serão menores que 'n'.
 
   Entrada:
   'n' -> Variável calculada no método 'choose_variables'

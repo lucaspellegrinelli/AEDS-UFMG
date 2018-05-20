@@ -67,7 +67,7 @@ long * break_message_into_blocks(char message[], long n, int *block_count){
     char* next_block = concat_char(new_block, full_encoded_message[i + 1]);
     long next_block_value = char_to_long(next_block);
 
-    if(new_block_value >= n || (full_encoded_message[i + 1] == '0' && next_block_value > n)){
+    if(new_block_value >= n || (full_encoded_message[i + 1] == '0' && next_block_value > n) || current_word[0] == '0'){
       blocks[row] = char_to_long(current_word);
       row++;
       current_word = malloc((log10(n) + 1) * sizeof(char));
@@ -183,22 +183,16 @@ long * get_blocks_from_string(char *encoded_message, int *b_count){
 }
 
 char * encode_char(long n, int base){
-  long octal_n = as_other_base(n, 10, base);
-  // Adiciona "11111..." (com floor(log10(octal_n)) 1's) para retirar os 0's
-  octal_n += as_other_base(pow(2, floor(log10(octal_n))) - 1, 10, 2);
-  return long_to_char(octal_n);
+  return long_to_char(as_other_base(n, 10, base));
 }
 
 long decode_char(char *n, int base){
-  int octal_n = char_to_long(n);
-  // Retira "11111..." (com floor(log10(octal_n)) 1's) para retirar os 0's
-  octal_n -= as_other_base(pow(2, floor(log10(octal_n))) - 1, 10, 2);
-  return as_other_base(octal_n, base, 10);
+  return as_other_base(char_to_long(n), base, 10);
 }
 
 int choose_encoding_base(long n){
-  if(n <= 9) return n - 1;
-  else return 9;
+  if(n <= 10) return n - 1;
+  else return 10;
 }
 
 long power_mod(long a, long b, long m){

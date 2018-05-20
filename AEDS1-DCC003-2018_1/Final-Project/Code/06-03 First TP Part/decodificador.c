@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 
   char *retrieved_message = build_message_from_blocks(decoded_m, block_count, private_keys[0]);
 
-  printf("Message decoded:\n%s\n", retrieved_message);
+  printf("\nMessage decoded:\n%s\n", retrieved_message);
 
   return 0;
 }
