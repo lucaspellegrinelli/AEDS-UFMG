@@ -34,19 +34,6 @@
 */
 long * read_variables_from_file(char *file_path);
 
-/*
-  Gera os blocos de mensagem criptografadas a partir da string recebida
-
-  Entrada:
-  'encoded_message' -> String contendo os blocos de mensagem cifradas separadas
-  por '/'
-
-  Saída:
-  'block_count' -> Número de blocos
-  'return' -> Os blocos gerados a partir da string fornecida
-*/
-long * get_blocks_from_string(char *encoded_message, int *block_count);
-
 int main(int argc, char* argv[]) {
   if(argc <= 2){
     printf("Você esqueceu algumas informações. Lembre que o comando tem que receber a mensagem criptografada e o caminho para o arquivo 'private.txt'.\n");
@@ -108,32 +95,4 @@ long * read_variables_from_file(char *file_path){
   fclose(file);
 
   return variables;
-}
-
-long * get_blocks_from_string(char *encoded_message, int *b_count){
-  int block_count = 0;
-
-  for(int i = 0; i < strlen(encoded_message); i++){
-    if(encoded_message[i] == '/') block_count++;
-  }
-
-  *b_count = block_count;
-
-  long *blocks = malloc(block_count * sizeof(long));
-  int block_index = 0;
-
-  char *line = malloc(strlen(encoded_message) * sizeof(char));
-  int line_index = 0;
-
-  for(int i = 0; i < strlen(encoded_message); i++){
-    if(encoded_message[i] == '/'){
-      blocks[block_index++] = atol(line);
-      for(int j = 0; j < MAX_PRIVATE_TXT_SIZE; j++) line[j] = '\0';
-      line_index = 0;
-    }else{
-      line[line_index++] = encoded_message[i];
-    }
-  }
-
-  return blocks;
 }

@@ -48,10 +48,7 @@ int main(int argc, char* argv[]) {
   }else if(is_prime(atol(argv[2])) == 0 || is_prime(atol(argv[3])) == 0){
     printf("Um (ou os dois) dos números informados não são primos.\n");
     exit(1);
-  }else if(atol(argv[2]) <= 2 || atol(argv[3]) <= 2){
-    printf("Os primos tem que ser pelo menos 3.\n");
-    exit(1);
-  }else if(atol(argv[2]) * atol(argv[3]) < 3037000499){
+  }else if(atol(argv[2]) * atol(argv[3]) >= 3037000499){
     printf("O produto entre os primos tem que ser menor que 3037000499 (raiz quadrada do valor máximo de um long).\n");
     exit(1);
   }
@@ -69,6 +66,7 @@ int main(int argc, char* argv[]) {
 
   int block_count;
   long *message_blocks = break_message_into_blocks(message, n, &block_count);
+
   long *encoded_m = encode_message(message_blocks, block_count, n, e);
 
   write_variables_to_file(n, d);

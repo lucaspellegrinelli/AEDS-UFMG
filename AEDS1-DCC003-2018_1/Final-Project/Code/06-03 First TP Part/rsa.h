@@ -86,7 +86,7 @@ char * build_message_from_blocks(long *decoded_blocks, int block_count, long n);
   Saída:
   'return' -> A string contendo os valores ASCII de cada um dos caracteres da mensagem
 */
-char * generate_full_message_string(char message[]);
+char * generate_full_message_string(char message[], int encoding_base);
 
 /*
   Gera uma string juntando todos os valores ASCII de todos os blocos de blocos
@@ -104,30 +104,40 @@ char * generate_full_message_string(char message[]);
 char * recover_full_message_string(long *blocks, int block_len, long n);
 
 /*
-  Transforma um número em uma string contendo os dígitos do valor ASCII relacionado
-  ao caractere relacionado com o número recebido
+  Gera os blocos de mensagem criptografadas a partir da string recebida
 
   Entrada:
-  'n' -> Um número relacionado a um caractere
+  'encoded_message' -> String contendo os blocos de mensagem cifradas separadas
+  por '/'
 
   Saída:
-  'return' -> String contendo cada dígito do valor ASCII do caractere relacionado
-  com o número recebido
+  'block_count' -> Número de blocos
+  'return' -> Os blocos gerados a partir da string fornecida
 */
-char * encode_char(long n);
+long * get_blocks_from_string(char *encoded_message, int *block_count);
+
+char * encode_char(long n, int base);
+
+long decode_char(char *n, int base);
 
 /*
-  Transforma uma string contendo cada dígito de um valor ASCII de um caractere
-  no valor relacionado ao caractere em questão
+  Escolhe em qual base numérica o código irá trabalhar:
+
+  Se n > 8, então a base escolhida será a 8.
+  Se n <= 8, então a base escolhida será a maior base par menor que n
+
+  OBS. A base 10 que seria a padrão não será utilizada pela possibilidade de
+  deixar '0's livres em blocos com 'p's e 'q's menores, perdendo informação.
+  Portanto as bases menores garantem que eu sempre possa gerar números sem
+  nenhum 0 em sua expansão decimal.
 
   Entrada:
-  'c' -> String contendo os dígitos do valor ASCII
+  'n' -> Variável calculada no método 'choose_variables'
 
   Saída:
-  'return' -> Número ASCII relacionado ao caractere de valores ASCII recebidos
-  pela função
+  'return' -> Base numérica escolhida
 */
-long decode_char(char *c);
+int choose_encoding_base(long n);
 
 /*
   Implementação do algoritmo de Exponenciação Modular
@@ -168,6 +178,42 @@ long mul_inv(long a, long b);
   'return' -> Maior divisor comum entre 'a' e 'b'
 */
 long greatest_common_divisor(long a, long b);
+
+/*
+  Converte um número de um base específica para outra
+  OBS. Ambas bases precisam ser pares
+
+  Entrada:
+  'n' -> Número a ser convertido
+  'n_base' -> Base em que n está escrito
+  'to_base' -> Base em que n será convertido
+
+  Saída:
+  'return' -> Número convertido para a nova base
+*/
+long as_even_base(long n, int n_base, int to_base);
+
+/*
+  Converte um número em uma string contendo seus dígitos
+
+  Entrada:
+  'n' -> Número a ser convertido
+
+  Saída:
+  'return' -> String contendo os dígitos do número
+*/
+char * long_to_char(long n);
+
+/*
+  Converte uma string em um número com os dígitos contidos na string
+
+  Entrada:
+  'c' -> A string a ser convertida
+
+  Saída:
+  'return' -> O número gerado pela conversão da string
+*/
+long char_to_long(char *c);
 
 /*
   Concatena um caractere ao final de uma string
