@@ -18,6 +18,7 @@
 #include "rsa.h"
 
 #define MIN_ASCII_VALUE 32 // Space
+#define MAX_ASCII_VALUE 127 // DEL
 
 void choose_variables(long p, long q, long *n, long *d, long *e){
   *n = p * q;
@@ -94,7 +95,12 @@ char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
   int message_index = 0;
   char *current_word = malloc(char_ascii_length * sizeof(char));
   for(int i = 0; i < strlen(full_decoded_message); i++){
-    int char_length = base_min_ascii_length + (full_decoded_message[i] == '1');
+    if(full_decoded_message[i] < MIN_ASCII_VALUE) continue;
+    int char_length = base_min_ascii_length;
+    if(encoding_base == 5)
+      char_length += (full_decoded_message[i] == '1' && full_decoded_message[i + 1] == '0');
+    else
+      char_length += (full_decoded_message[i] == '1');
 
     for(; i < last_stop + char_length; i++){
       current_word[i - last_stop] = full_decoded_message[i];
@@ -164,22 +170,22 @@ long * get_blocks_from_string(char *encoded_message, int *b_count){
 }
 
 char * encode_char(long n, int base){
-  long octal_n = as_even_base(n, 10, base);
+  long octal_n = as_other_base(n, 10, base);
   // Adiciona "11111..." (com floor(log10(octal_n)) 1's) para retirar os 0's
-  octal_n += as_even_base(pow(2, floor(log10(octal_n))) - 1, 10, 2);
+  octal_n += as_other_base(pow(2, floor(log10(octal_n))) - 1, 10, 2);
   return long_to_char(octal_n);
 }
 
 long decode_char(char *n, int base){
   int octal_n = char_to_long(n);
   // Retira "11111..." (com floor(log10(octal_n)) 1's) para retirar os 0's
-  octal_n -= as_even_base(pow(2, floor(log10(octal_n))) - 1, 10, 2);
-  return as_even_base(octal_n, base, 10);
+  octal_n -= as_other_base(pow(2, floor(log10(octal_n))) - 1, 10, 2);
+  return as_other_base(octal_n, base, 10);
 }
 
 int choose_encoding_base(long n){
-  if(n < 8) return pow(2, floor(log2(n - 1)));
-  else return 8;
+  if(n <= 9) return n - 1;
+  else return 9;
 }
 
 long power_mod(long a, long b, long m){
@@ -219,14 +225,25 @@ long greatest_common_divisor(long a, long b){
   return greatest_common_divisor(a, b - a);
 }
 
-long as_even_base(long n, int n_base, int to_base){
-  long other_n = 0;
+long as_other_base(long n, int n_base, int to_base){
+  int other_n = 0;
+  int k = n;
   int i = 1;
 
-  while (n != 0){
-      other_n += (n % to_base) * i;
-      n /= to_base;
-      i *= n_base;
+  while(k != 0){
+    other_n += k % 10 * i;
+    k /= 10;
+    i *= n_base;
+  }
+
+  k = other_n;
+  other_n = 0;
+  i = 1;
+
+  while(k != 0){
+    other_n += k % to_base * i;
+    k /= to_base;
+    i *= 10;
   }
 
   return other_n;

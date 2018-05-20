@@ -129,7 +129,8 @@ long decode_char(char *n, int base);
   OBS. A base 10 que seria a padrão não será utilizada pela possibilidade de
   deixar '0's livres em blocos com 'p's e 'q's menores, perdendo informação.
   Portanto as bases menores garantem que eu sempre possa gerar números sem
-  nenhum 0 em sua expansão decimal.
+  nenhum 0 em sua expansão decimal e assim garantir que nenhuma informação
+  será perdida.
 
   Entrada:
   'n' -> Variável calculada no método 'choose_variables'
@@ -181,7 +182,6 @@ long greatest_common_divisor(long a, long b);
 
 /*
   Converte um número de um base específica para outra
-  OBS. Ambas bases precisam ser pares
 
   Entrada:
   'n' -> Número a ser convertido
@@ -191,7 +191,7 @@ long greatest_common_divisor(long a, long b);
   Saída:
   'return' -> Número convertido para a nova base
 */
-long as_even_base(long n, int n_base, int to_base);
+long as_other_base(long n, int n_base, int to_base);
 
 /*
   Converte um número em uma string contendo seus dígitos
