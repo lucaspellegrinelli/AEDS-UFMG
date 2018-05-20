@@ -97,6 +97,19 @@ char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
   for(int i = 0; i < strlen(full_decoded_message); i++){
     if(full_decoded_message[i] < MIN_ASCII_VALUE) continue;
     int char_length = base_min_ascii_length;
+
+    /*
+      "Gambiarrinha" já que para a base 5, existem 2 intervalos de números
+      dentro do ASCII utilizável (32 <= n <= 127) que começam com 1.
+      Até 32 <= n <= 49, os números são do tipo 1XX e para n >= 125, os valores
+      são do tipo 1XXX, portanto a lógica de testar se são x ou x+1 dígitos
+      por número falha nesse caso específico da base 5 (nas outras bases essa
+      interceção entre os extremos do ASCII não acontecem). Dessa forma, para
+      a base 5, tenho que testar os 2 primeiros números já que para n >= 125,
+      o segundo número é sempre 0 e para 32 <= n <= 49, o segundo número nunca é
+      0, portanto está ai um meio de diferenciar números de x dígitos e x+1
+      dígitos nessa base.
+    */
     if(encoding_base == 5)
       char_length += (full_decoded_message[i] == '1' && full_decoded_message[i + 1] == '0');
     else
