@@ -116,8 +116,30 @@ char * recover_full_message_string(long *blocks, int block_len, long n);
 */
 long * get_blocks_from_string(char *encoded_message, int *block_count);
 
+/*
+  Converte o número recebido para a base desejada e depois converte esse
+  número em uma string contendo os dígitos do mesmo.
+
+  Entrada:
+  'n' -> Número a ser processado
+  'base' -> Base que o número vai ser convertido
+
+  Saída:
+  'return' -> String contendo os digitos do número convertido para a outra base
+*/
 char * encode_char(long n, int base);
 
+/*
+  Converte uma string contendo os dígitos de um número escrito em alguma base
+  para um número na base decimal
+
+  Entrada:
+  'n' -> String contendo os dígitos do número
+  'base' -> Base em que o número está escrito
+
+  Saída:
+  'return' -> Número na base decimal correspondente aos dígitos recebidos
+*/
 long decode_char(char *n, int base);
 
 /*
