@@ -34,19 +34,19 @@ int main(int argc, char* argv[]) {
   }else if(strlen(argv[1]) == 0){
     printf("A mensagem informada tem tamanho 0, favor corrigir a mensagem informada.\n");
     exit(1);
-  }else if(is_prime(atol(argv[2])) == 0 || is_prime(atol(argv[3])) == 0){
+  }else if(is_prime(char_to_long(argv[2])) == 0 || is_prime(char_to_long(argv[3])) == 0){
     printf("Um (ou os dois) dos números informados não são primos.\n");
     exit(1);
-  }else if(atol(argv[2]) * atol(argv[3]) >= 4294967296){
-    printf("O produto entre os primos tem que ser menor que 4294967296 (raiz quadrada do valor máximo de um long).\n");
+  }else if(char_to_long(argv[2]) * char_to_long(argv[3]) >= 4294967296){
+    printf("O produto entre os primos tem que ser menor que 4294967296 (raiz quadrada do valor máximo de um unsigned long).\n");
     exit(1);
   }
 
   char *message = argv[1];
   int m_len = strlen(message);
 
-  long p = atol(argv[2]);
-  long q = atol(argv[3]);
+  long p = char_to_long(argv[2]);
+  long q = char_to_long(argv[3]);
   long e = 1;
   long d;
   long n;

@@ -84,13 +84,13 @@ long * read_variables_from_file(char *file_path){
     if(c != '\n'){
       line[line_index++] = c;
     }else{
-      variables[variable_index++] = atol(line);
+      variables[variable_index++] = char_to_long(line);
       line_index = 0;
       for(int j = 0; j < MAX_PRIVATE_TXT_SIZE; j++) line[j] = '\0';
     }
   }
 
-  variables[variable_index++] = atol(line);
+  variables[variable_index++] = char_to_long(line);
 
   fclose(file);
 
