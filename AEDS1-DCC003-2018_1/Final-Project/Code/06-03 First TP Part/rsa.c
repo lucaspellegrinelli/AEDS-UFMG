@@ -171,7 +171,7 @@ long * get_blocks_from_string(char *encoded_message, int *b_count){
 
   for(int i = 0; i < strlen(encoded_message); i++){
     if(encoded_message[i] == '/'){
-      blocks[block_index++] = atol(line);
+      blocks[block_index++] = char_to_long(line);
       for(int j = 0; j < strlen(encoded_message); j++) line[j] = '\0';
       line_index = 0;
     }else{
