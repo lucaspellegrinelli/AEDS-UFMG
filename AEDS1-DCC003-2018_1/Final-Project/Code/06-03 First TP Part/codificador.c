@@ -37,8 +37,8 @@ int main(int argc, char* argv[]) {
   }else if(is_prime(atol(argv[2])) == 0 || is_prime(atol(argv[3])) == 0){
     printf("Um (ou os dois) dos números informados não são primos.\n");
     exit(1);
-  }else if(atol(argv[2]) * atol(argv[3]) >= 3037000499){
-    printf("O produto entre os primos tem que ser menor que 3037000499 (raiz quadrada do valor máximo de um long).\n");
+  }else if(atol(argv[2]) * atol(argv[3]) >= 4294967296){
+    printf("O produto entre os primos tem que ser menor que 4294967296 (raiz quadrada do valor máximo de um long).\n");
     exit(1);
   }
 
