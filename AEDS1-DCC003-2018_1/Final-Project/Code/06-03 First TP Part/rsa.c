@@ -183,7 +183,7 @@ long * get_blocks_from_string(char *encoded_message, int *b_count){
 }
 
 char * encode_char(long n, int base){
-  return long_to_char(as_other_base(n, 10, base));
+	return long_to_char(as_other_base(n, 10, base));
 }
 
 long decode_char(char *n, int base){
@@ -197,13 +197,13 @@ int choose_encoding_base(long n){
 
 int is_prime(long n) {
   if(n == 2) return 1;
-	if (n % 2 == 0 || n <= 1) return 0;
+  if (n % 2 == 0 || n <= 1) return 0;
+	
+  for (int i = 3; i < sqrt(n); i += 2){
+    if (n % i == 0) return 0;
+  }
 
-	for (int i = 3; i < sqrt(n); i += 2){
-		if (n % i == 0) return 0;
-	}
-
-	return 1;
+  return 1;
 }
 
 long power_mod(long a, long b, long m){
