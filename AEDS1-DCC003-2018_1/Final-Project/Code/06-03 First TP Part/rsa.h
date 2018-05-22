@@ -164,6 +164,17 @@ long decode_char(char *n, int base);
 int choose_encoding_base(long n);
 
 /*
+  Testa se um número é primo
+
+  Entrada:
+  'n' -> Número a ser testado
+
+  Saída:
+  'return' -> '0' se o número nao for primo e '1' caso ela seja primo
+*/
+int is_prime(long n);
+
+/*
   Implementação do algoritmo de Exponenciação Modular
 
   PS. Não deve ser a implementação mais eficiente dito que não peguei o código

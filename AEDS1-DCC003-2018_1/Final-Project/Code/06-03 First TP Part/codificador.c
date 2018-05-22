@@ -27,17 +27,6 @@
 */
 void write_variables_to_file(long n, long d);
 
-/*
-  Testa se um número é primo
-
-  Entrada:
-  'n' -> Número a ser testado
-
-  Saída:
-  'return' -> '0' se o número nao for primo e '1' caso ela seja primo
-*/
-int is_prime(long n);
-
 int main(int argc, char* argv[]) {
   if(argc <= 2){
     printf("Você esqueceu algumas informações. Lembre que o comando tem que receber a mensagem, o 'p', e o 'q'.\n");
@@ -90,15 +79,4 @@ void write_variables_to_file(long n, long d){
 
   fprintf(file, "%ld\n%ld", n, d);
   fclose(file);
-}
-
-int is_prime(long n) {
-  if(n == 2) return 1;
-	if (n % 2 == 0 || n <= 1) return 0;
-
-	for (int i = 3; i < sqrt(n); i += 2){
-		if (n % i == 0) return 0;
-	}
-
-	return 1;
 }
