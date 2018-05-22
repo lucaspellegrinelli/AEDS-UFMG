@@ -11,6 +11,12 @@
 /*
   Gera as variáveis 'n', 'd' e 'e' (variáveis que vão ser usadas no algoritmo
   RSA) a partir das variáveis 'p' e 'q' dadas pelo usuário.
+  
+  PS. Devido ao limíte do valor do long, p*q não pode ultrapassar o valor de 
+  3037000499 pois posteriormente no algorítimo, é necessário fazer potências
+  de segunda ordem com p*q, portanto, caso p*q fosse maior que 4294967296,
+  (p*q)^2 seria maior que o maior valor possível para um unsigned long
+  (18446744073709551615), gerando erros. 
 
   Entradas:
   'p' -> Primeiro número primo informado
