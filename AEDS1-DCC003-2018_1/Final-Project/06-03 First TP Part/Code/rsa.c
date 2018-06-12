@@ -99,7 +99,7 @@ char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
     int char_length = base_min_ascii_length;
 
     /*
-      "Gambiarrinha" já que para a base 5, existem 2 intervalos de números
+      Exceção já que para a base 5, existem 2 intervalos de números
       dentro do ASCII utilizável (32 <= n <= 127) que começam com 1.
       Até 32 <= n <= 49, os números são do tipo 1XX e para n >= 125, os valores
       são do tipo 1XXX, portanto a lógica de testar se são x ou x+1 dígitos
