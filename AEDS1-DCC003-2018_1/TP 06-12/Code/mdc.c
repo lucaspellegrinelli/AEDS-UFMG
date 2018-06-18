@@ -17,6 +17,7 @@ int main(){
 }
 
 int divisores(int a, int b, int n, int *mdc){
+  printf("Chamei\n");
   if (a == 0){
     *mdc = b;
     return contarFatores(b);
