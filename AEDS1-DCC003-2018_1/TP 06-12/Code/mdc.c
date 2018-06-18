@@ -16,11 +16,6 @@ int main(){
   printf("%d %d\n", mdc, n);
 }
 
-int min(int a, int b){
-  if(a < b) return a;
-  else return b;
-}
-
 int divisores(int a, int b, int n, int *mdc){
   if(n == -1){
     if (a == 0){
@@ -46,4 +41,9 @@ int divisores(int a, int b, int n, int *mdc){
       return min(a, b);
     }
   }
+}
+
+int min(int a, int b){
+  if(a < b) return a;
+  else return b;
 }
