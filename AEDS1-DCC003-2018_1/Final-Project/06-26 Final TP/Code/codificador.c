@@ -17,6 +17,8 @@
 #include <string.h>
 
 #include "rsa.h"
+#include "steganography.h"
+#include "PPMIO.h"
 
 /*
   Gera o arquivo 'private.txt' com os valores das variáveis recebidas
@@ -28,25 +30,31 @@
 void write_variables_to_file(long n, long d);
 
 int main(int argc, char* argv[]) {
-  if(argc <= 2){
-    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber a mensagem, o 'p', e o 'q'.\n");
+  if(argc <= 4){
+    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber o caminho para a imagem de entrada, a mensagem, o caminhi para a imagem de saída, o 'p', e o 'q'.\n");
     exit(1);
-  }else if(strlen(argv[1]) == 0){
+  }else if(strlen(argv[2]) == 0){
     printf("A mensagem informada tem tamanho 0, favor corrigir a mensagem informada.\n");
     exit(1);
-  }else if(is_prime(char_to_long(argv[2])) == 0 || is_prime(char_to_long(argv[3])) == 0){
+  }else if(is_prime(char_to_long(argv[4])) == 0 || is_prime(char_to_long(argv[5])) == 0){
     printf("Um (ou os dois) dos números informados não são primos.\n");
     exit(1);
-  }else if(char_to_long(argv[2]) * char_to_long(argv[3]) >= 4294967296){
+  }else if(char_to_long(argv[4]) * char_to_long(argv[5]) >= 4294967296){
     printf("O produto entre os primos tem que ser menor que 4294967296 (raiz quadrada do valor máximo de um unsigned long).\n");
+    exit(1);
+  }else if(char_to_long(argv[4]) == char_to_long(argv[5])){
+    printf("Os primos informados não podem ser iguais. Tente novamente escolhendo outros primos.\n");
     exit(1);
   }
 
-  char *message = argv[1];
+  char *input_image_path = argv[1];
+  char *output_image_path = argv[3];
+
+  char *message = argv[2];
   int m_len = strlen(message);
 
-  long p = char_to_long(argv[2]);
-  long q = char_to_long(argv[3]);
+  long p = char_to_long(argv[4]);
+  long q = char_to_long(argv[5]);
   long e = 1;
   long d;
   long n;
@@ -60,11 +68,11 @@ int main(int argc, char* argv[]) {
 
   write_variables_to_file(n, d);
 
-  printf("\nMessage Encoded:\n");
-  for(int i = 0; i < block_count; i++){
-    printf("%ld/", encoded_m[i]);
-  }
-  printf("\n");
+  /* ----- Esteganografia ----- */
+
+  struct Image original_image = read_image(input_image_path);
+  struct Image encoded_image = hide_message_in_image(original_image, encoded_m, block_count, n, '.');
+  write_image(encoded_image, output_image_path);
 
   return 0;
 }

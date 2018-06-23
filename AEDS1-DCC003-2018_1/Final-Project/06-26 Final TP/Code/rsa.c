@@ -154,34 +154,6 @@ char * recover_full_message_string(long *blocks, int block_len, long n){
   return full_decoded_message;
 }
 
-long * get_blocks_from_string(char *encoded_message, int *b_count){
-  int block_count = 0;
-
-  for(int i = 0; i < strlen(encoded_message); i++){
-    if(encoded_message[i] == '/') block_count++;
-  }
-
-  *b_count = block_count;
-
-  long *blocks = malloc(block_count * sizeof(long));
-  int block_index = 0;
-
-  char *line = malloc(strlen(encoded_message) * sizeof(char));
-  int line_index = 0;
-
-  for(int i = 0; i < strlen(encoded_message); i++){
-    if(encoded_message[i] == '/'){
-      blocks[block_index++] = char_to_long(line);
-      for(int j = 0; j < strlen(encoded_message); j++) line[j] = '\0';
-      line_index = 0;
-    }else{
-      line[line_index++] = encoded_message[i];
-    }
-  }
-
-  return blocks;
-}
-
 char * encode_char(long n, int base){
   return long_to_char(as_other_base(n, 10, base));
 }

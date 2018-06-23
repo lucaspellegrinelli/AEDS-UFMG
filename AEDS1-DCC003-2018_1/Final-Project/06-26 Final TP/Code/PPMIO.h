@@ -9,9 +9,12 @@
 */
 
 struct Image{
-	int height;
 	int width;
-	int pixels[][]; // Linha: Cada pixel.    Coluna: Cada valor RGB
+	int height;
+	char **header;
+	int **pixels; // Linha: Cada pixel.    Coluna: Cada valor RGB
 };
 
 struct Image read_image(char *path);
+
+void write_image(struct Image image, char *output_name);

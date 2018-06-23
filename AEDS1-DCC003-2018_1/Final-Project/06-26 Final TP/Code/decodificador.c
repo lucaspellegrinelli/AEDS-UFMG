@@ -17,6 +17,8 @@
 #include <string.h>
 
 #include "rsa.h"
+#include "steganography.h"
+#include "PPMIO.h"
 
 /*
   Número máximo de caracteres a serem lidos do arquivo 'private.txt'
@@ -36,25 +38,26 @@ long * read_variables_from_file(char *file_path);
 
 int main(int argc, char* argv[]) {
   if(argc <= 2){
-    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber a mensagem criptografada e o caminho para o arquivo 'private.txt'.\n");
+    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber o caminho para a imagem, o delimitador e o arquivo private.txt'.\n");
     exit(1);
-  }else if(strlen(argv[1]) == 0){
-    printf("A mensagem informada tem tamanho 0, favor corrigir a mensagem informada.\n");
+  }else if(strlen(argv[2]) == 0){
+    printf("O delimitador informado tem tamanho 0. Favor tentar novamente com um delimitador válido.\n");
     exit(1);
   }else if(strlen(argv[2]) == 0){
     printf("O caminho para o arquivo tem tamanho 0, portanto o programa não conseguirá acessar 'd' e 'n', favor corrigir o caminho.\n");
     exit(1);
   }
 
-  char *encoded_message = argv[1];
-  char *private_file_path = argv[2];
-
-  int m_len = strlen(encoded_message);
+  char *input_image_path = argv[1];
+  char delimiter = argv[2][0];
+  char *private_file_path = argv[3];
 
   long *private_keys = read_variables_from_file(private_file_path);
 
+  struct Image original_image = read_image(input_image_path);
+
   int block_count = 0;
-  long *encoded_blocks = get_blocks_from_string(encoded_message, &block_count);
+  long *encoded_blocks = recover_message_from_image(original_image, delimiter, &block_count, private_keys[0]);
 
   long *decoded_m = decode_message(encoded_blocks, block_count, private_keys[0], private_keys[1]);
 
