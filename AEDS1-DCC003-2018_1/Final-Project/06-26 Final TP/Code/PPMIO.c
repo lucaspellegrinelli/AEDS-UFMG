@@ -19,6 +19,7 @@ struct Image read_image(char *path){
 
 	int header_count = 0;
 	int body_count = 0;
+	int rgb_component_index = 0;
 	int comment_lines = 0;
 
 	char **header = (char **)malloc(sizeof(char *) * HEADER_MAX_LINES);
@@ -38,37 +39,31 @@ struct Image read_image(char *path){
 
 	char *splitted_dimensions = strtok(header[STANDARD_DIMENSION_INDEX + comment_lines], " "); // Divide o texto com as dimensões
 	output.width = atoi(splitted_dimensions); // Coloca a largura
-	splitted_dimensions = strtok(NULL, " "); // Pula para a altura
+	splitted_dimensions = strtok(NULL, " \t"); // Pula para a altura
 	output.height = atoi(splitted_dimensions); // Coloca a altura
 
 	int **body = (int **)malloc(sizeof(int *) * output.width * output.height);
+	body[0] = malloc(sizeof(int) * RGB_NUMBER_COMPONENTS);
 
 	do{ // Do .. While pois temos a primeira linha da imagem como resto no buffer de quando pegamos a header
-		char *pixels = strtok(buffer, "\t"); // Divide a linha por 'tabs' já que cada pixel está separado do outro por 'tabs'
-		char **pixels_rgb = malloc(sizeof(char*) * output.width);
+		int buffer_size = 0;
+		for(int i = 0; i < strlen(buffer); i++) if(buffer[i] == ' ' || buffer[i] == '\t' || buffer[i] == '\n') buffer_size++;
 
-		for(int i = 0; i < output.width; i++){
-			pixels_rgb[i] = malloc(sizeof(char) * (RGB_NUMBER_COMPONENTS * 3 + 2));
-			strcpy(pixels_rgb[i], pixels);
-			pixels = strtok(NULL, "\t");
-		}
+		char delimit[3] = " \n\t";
 
-		for(int i = 0; i < output.width; i++){
-			body[body_count] = malloc(sizeof(int) * RGB_NUMBER_COMPONENTS);
+		char *rgb_components = strtok(buffer, delimit);
 
-			char *rgb_components = strtok(pixels_rgb[i], " ");
+		while(rgb_components != NULL){
+			body[body_count][rgb_component_index] = atoi(rgb_components);
 
-			body[body_count][0] = atoi(rgb_components); // Salva o RED
-			rgb_components = strtok(NULL, " ");
+			rgb_component_index++;
+			if(rgb_component_index > 2){
+				rgb_component_index = 0;
+				body_count++;
+				body[body_count] = malloc(sizeof(int) * RGB_NUMBER_COMPONENTS);
+			}
 
-			body[body_count][1] = atoi(rgb_components); // Salva o GREEN
-			rgb_components = strtok(NULL, " ");
-
-			body[body_count][2] = atoi(rgb_components); // Salva o BLUE
-
-			body_count++;
-
-			rgb_components = strtok(pixels, " ");
+			rgb_components = strtok(NULL, delimit);
 		}
 	}while ((read = getline(&buffer, &len, image_file)) != -1);
 
@@ -84,7 +79,7 @@ void write_image(struct Image image, char *output_name){
 
   for(int i = 0; i < image.height; i++){
     for(int j = 0; j < image.width; j++){
-      fprintf(fp, "%d %d %d\t", image.pixels[j + i * image.height][0],
+      fprintf(fp, "%d\n%d\n%d\n", image.pixels[j + i * image.height][0],
 														image.pixels[j + i * image.height][1],
 														image.pixels[j + i * image.height][2]);
     }
