@@ -47,9 +47,12 @@ struct Image read_image(char *path){
 
 	do{ // Do .. While pois temos a primeira linha da imagem como resto no buffer de quando pegamos a header
 		int buffer_size = 0;
-		for(int i = 0; i < strlen(buffer); i++) if(buffer[i] == ' ' || buffer[i] == '\t' || buffer[i] == '\n') buffer_size++;
+		for(int i = 0; i < strlen(buffer); i++){
+			if(buffer[i] == ' ' || buffer[i] == '\t' || buffer[i] == '\r' || buffer[i] == '\n' || buffer[i] == '\v' || buffer[i] == '\f')
+				buffer_size++;
+		}
 
-		char delimit[3] = " \n\t";
+		char delimit[6] = " \t\r\n\v\f";
 
 		char *rgb_components = strtok(buffer, delimit);
 
