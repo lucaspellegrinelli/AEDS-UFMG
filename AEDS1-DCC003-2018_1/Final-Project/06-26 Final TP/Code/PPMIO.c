@@ -1,3 +1,15 @@
+/*
+  Autor: Lucas Pellegrinelli
+  Data: 07/05/2018
+
+  Documentação de cada método/função pode ser encontrada no arquivo "PPMIO.h"
+*/
+
+/*
+  Nesse código temos a declaração de todos os métodos que serão utilizados
+  no processo de leitura e escrita de arquivos do tipo PPM (ASCII, P3)
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

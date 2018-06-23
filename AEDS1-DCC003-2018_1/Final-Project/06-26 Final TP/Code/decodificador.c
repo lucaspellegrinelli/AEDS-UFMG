@@ -3,7 +3,7 @@
   Data: 07/05/2018
 
   Documentação de cada método/função não declarado nesse arquivo pode ser
-  encontrada no arquivo "rsa.h"
+  encontrada nos arquivos "rsa.h", "steganography.h" e "PPMIO.h".
 */
 
 /*

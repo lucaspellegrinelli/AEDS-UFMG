@@ -1,3 +1,15 @@
+/*
+  Autor: Lucas Pellegrinelli
+  Data: 07/05/2018
+
+  Documentação de cada método/função pode ser encontrada no arquivo "steganography.h"
+*/
+
+/*
+  Nesse código teremos a declaração de todos os métodos/funções responsáveis
+  por esconder uma mensagem já criptografada em um aquivo PPM (ASCII, P3)
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
