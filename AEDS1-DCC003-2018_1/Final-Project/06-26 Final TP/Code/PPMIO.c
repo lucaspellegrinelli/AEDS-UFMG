@@ -17,6 +17,11 @@ struct Image read_image(char *path){
   const char* open_mode = "r";
   FILE *image_file = fopen(path, open_mode);
 
+  if (image_file == NULL){
+      printf("Não foi possível abrir a imagem especificada.\n");
+      exit(1);
+  }
+
   int header_count = 0;
   int body_count = 0;
   int rgb_component_index = 0;

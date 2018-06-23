@@ -45,6 +45,8 @@ int main(int argc, char* argv[]) {
   }else if(char_to_long(argv[4]) == char_to_long(argv[5])){
     printf("Os primos informados não podem ser iguais. Tente novamente escolhendo outros primos.\n");
     exit(1);
+  }else if(char_to_long(argv[4]) <= 1 || char_to_long(argv[5]) <= 1){
+    printf("Não é permitido a utilização do número 1 ou menores como primo. Tente novamente com outro número\n");
   }
 
   char *input_image_path = argv[1];
@@ -77,7 +79,7 @@ int main(int argc, char* argv[]) {
     - Temos (image_pixel_count * 3) componentes RGB para esconder bits, um em cada.
 
     - Cada bloco tem no máximo (log(n) / log(2) + 1.0) bits, portanto temos
-    (log(n) / log(2) + 1.0) * block_count) bits no total para esconder.
+    ((log(n) / log(2) + 1.0) * block_count) bits no total para esconder.
 
     Se (image_pixel_count * 3) < (log(n) / log(2) + 1.0) * (block_count + 1)), então
     precisamos de mais componentes RGB do que temos, impossibilitando a cifragem
