@@ -71,6 +71,28 @@ int main(int argc, char* argv[]) {
   /* ----- Esteganografia ----- */
 
   struct Image original_image = read_image(input_image_path);
+  int image_pixel_count = original_image.width * original_image.height;
+
+  /*
+    - Temos (image_pixel_count * 3) componentes RGB para esconder bits, um em cada.
+
+    - Cada bloco tem no máximo (log(n) / log(2) + 1.0) bits, portanto temos
+    (log(n) / log(2) + 1.0) * block_count) bits no total para esconder.
+
+    Se (image_pixel_count * 3) < (log(n) / log(2) + 1.0) * (block_count + 1)), então
+    precisamos de mais componentes RGB do que temos, impossibilitando a cifragem
+
+    OBS. (block_count + 1) é porque temos que ter a linha que indica a parada
+    da leitura depois dos blocos da mensagem
+  */
+  int rgb_components_in_image = image_pixel_count * 3.0;
+  int rgb_components_needed = (log(n) / log(2) + 1) * (block_count + 1);
+
+  if(rgb_components_in_image < rgb_components_needed){
+    printf("A imagem escolhida é muito pequena para guardar essa mensagem. Escolha uma imagem maior ou diminua a mensagem.\n");
+    exit(1);
+  }
+
   struct Image encoded_image = hide_message_in_image(original_image, encoded_m, block_count, n, '.');
   write_image(encoded_image, output_image_path);
 
