@@ -31,7 +31,7 @@ void write_variables_to_file(long n, long d);
 
 int main(int argc, char* argv[]) {
   if(argc <= 4){
-    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber o caminho para a imagem de entrada, a mensagem, o caminhi para a imagem de saída, o 'p', e o 'q'.\n");
+    printf("Você esqueceu algumas informações. Lembre que o comando tem que receber o caminho para a imagem de entrada, a mensagem, o caminho para a imagem de saída, o 'p', e o 'q'.\n");
     exit(1);
   }else if(strlen(argv[2]) == 0){
     printf("A mensagem informada tem tamanho 0, favor corrigir a mensagem informada.\n");
