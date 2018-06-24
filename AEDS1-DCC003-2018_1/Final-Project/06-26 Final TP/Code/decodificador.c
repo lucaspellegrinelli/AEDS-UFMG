@@ -58,12 +58,12 @@ int main(int argc, char* argv[]) {
 
   int block_count = 0;
   long *encoded_blocks = recover_message_from_image(original_image, delimiter, &block_count, private_keys[0]);
-
+  
   long *decoded_m = decode_message(encoded_blocks, block_count, private_keys[0], private_keys[1]);
 
   char *retrieved_message = build_message_from_blocks(decoded_m, block_count, private_keys[0]);
 
-  printf("\nMessage decoded:\n%s\n", retrieved_message);
+  printf("Message decoded:\n%s\n", retrieved_message);
 
   return 0;
 }

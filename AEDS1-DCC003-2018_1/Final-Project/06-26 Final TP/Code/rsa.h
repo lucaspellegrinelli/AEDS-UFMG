@@ -104,6 +104,19 @@ char * generate_full_message_string(char message[], int encoding_base);
 char * recover_full_message_string(long *blocks, int block_len, long n);
 
 /*
+  Gera os blocos de mensagem criptografadas a partir da string recebida
+
+  Entrada:
+  'encoded_message' -> String contendo os blocos de mensagem cifradas separadas
+  por '/'
+
+  Saída:
+  'block_count' -> Número de blocos
+  'return' -> Os blocos gerados a partir da string fornecida
+*/
+long * get_blocks_from_string(char *encoded_message, int *block_count);
+
+/*
   Converte o número recebido para a base desejada e depois converte esse
   número em uma string contendo os dígitos do mesmo.
 

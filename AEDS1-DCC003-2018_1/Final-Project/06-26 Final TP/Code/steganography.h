@@ -21,7 +21,7 @@
   Saída:
   'return' -> Novo struct Image similar a 'original_image' porém já com os bits de 'encoded_message' escondidos
 */
-struct Image hide_message_in_image(struct Image original_image, long *encoded_message, int block_count, int rsa_n, char delimiter);
+struct Image hide_message_in_image(struct Image original_image, long *encoded_message, int block_count, long rsa_n, char delimiter);
 
 /*
   Recupera os blocos de mensagem cifrados a partir de uma imagem com os blocos escondidos
@@ -35,7 +35,7 @@ struct Image hide_message_in_image(struct Image original_image, long *encoded_me
   Saída:
   'return' -> Os blocos de mensagem criptografados
 */
-long * recover_message_from_image(struct Image image, char delimiter, int *block_count, int rsa_n);
+long * recover_message_from_image(struct Image image, char delimiter, int *block_count, long rsa_n);
 
 /*
   Transforma um inteiro em uma string com sua representação binária
@@ -47,7 +47,7 @@ long * recover_message_from_image(struct Image image, char delimiter, int *block
   Saída:
   'return' -> A string com a representação binária de 'n'
 */
-char* integer_to_binary_string(int n, int str_size);
+char* integer_to_binary_string(long n, int str_size);
 
 /*
   Transforma uma string com a representação binária de um inteiro no respectivo inteiro
@@ -58,4 +58,4 @@ char* integer_to_binary_string(int n, int str_size);
   Saída:
   'return' -> O inteiro cuja representação binária é 'b'
 */
-int binary_string_to_int(char *b);
+long binary_string_to_int(char *b);

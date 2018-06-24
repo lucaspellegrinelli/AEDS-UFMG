@@ -19,14 +19,14 @@
 #include "PPMIO.h"
 #include "rsa.h"
 
-struct Image hide_message_in_image(struct Image original_image, long *encoded_message, int block_count, int rsa_n, char delimiter){
+struct Image hide_message_in_image(struct Image original_image, long *encoded_message, int block_count, long rsa_n, char delimiter){
   int pixel_counter = 0;
   int rgb_component_counter = 0;
 
   int max_block_size_binary = log(rsa_n) / log(2) + 1;
 
   for(int i = 0; i < block_count; i++){
-    char *block_as_binary = integer_to_binary_string((int)encoded_message[i], max_block_size_binary);
+    char *block_as_binary = integer_to_binary_string(encoded_message[i], max_block_size_binary);
 
     for(int i = 0; i < max_block_size_binary; i++){
       char current_bit = block_as_binary[i];
@@ -79,7 +79,7 @@ struct Image hide_message_in_image(struct Image original_image, long *encoded_me
   return original_image;
 }
 
-long * recover_message_from_image(struct Image image, char delimiter, int *block_count, int rsa_n){
+long * recover_message_from_image(struct Image image, char delimiter, int *block_count, long rsa_n){
   int max_block_size_binary = log(rsa_n) / log(2) + 1;
 
   // Cada pixel pode armazenar 3 bits e cada bloco tem 32 bits
@@ -100,9 +100,17 @@ long * recover_message_from_image(struct Image image, char delimiter, int *block
         current_block_int++;
         if(current_block_int >= max_block_size_binary){
           current_block_int = 0;
-          int block_value = binary_string_to_int(current_block_buffer);
+          long block_value = binary_string_to_int(current_block_buffer);
 
-          if(block_value == pow(2, max_block_size_binary) - 1) return message_blocks; // Linha de parada, tudo 1
+          int allOnes = 1;
+          for(int i = 0; i < max_block_size_binary; i++){
+            if(current_block_buffer[i] == '0'){
+              allOnes = 0;
+              break;
+            }
+          }
+
+          if(allOnes) return message_blocks; // Linha de parada, tudo 1
 
           message_blocks[message_blocks_index++] = block_value;
           *block_count = *block_count + 1;
@@ -115,7 +123,7 @@ long * recover_message_from_image(struct Image image, char delimiter, int *block
   return message_blocks;
 }
 
-char* integer_to_binary_string(int n, int str_size){
+char* integer_to_binary_string(long n, int str_size){
   char *binary = malloc(str_size);
 
   for (int i = str_size - 1; i >= 0; i--){
@@ -126,6 +134,6 @@ char* integer_to_binary_string(int n, int str_size){
   return binary;
 }
 
-int binary_string_to_int(char *b){
-  return (int) strtol(b, NULL, 2);
+long binary_string_to_int(char *b){
+  return strtol(b, NULL, 2);
 }

@@ -68,9 +68,11 @@ long * break_message_into_blocks(char message[], long n, int *block_count){
     long next_block_value = char_to_long(next_block);
 
     if(new_block_value >= n || (full_encoded_message[i + 1] == '0' && next_block_value > n) || current_word[0] == '0'){
-      blocks[row] = char_to_long(current_word);
-      row++;
-      current_word = malloc((log10(n) + 1) * sizeof(char));
+      if(strlen(current_word) > 0){
+        blocks[row] = char_to_long(current_word);
+        row++;
+        current_word = malloc((log10(n) + 1) * sizeof(char));
+      }
     }
 
     current_word = concat_char(current_word, full_encoded_message[i]);
@@ -94,12 +96,13 @@ char * build_message_from_blocks(long *decoded_blocks, int block_count, long n){
   int last_stop = 0;
   int message_index = 0;
   char *current_word = malloc(char_ascii_length * sizeof(char));
+
   for(int i = 0; i < strlen(full_decoded_message); i++){
     if(full_decoded_message[i] < MIN_ASCII_VALUE) continue;
     int char_length = base_min_ascii_length;
 
     /*
-      "Gambiarrinha" já que para a base 5, existem 2 intervalos de números
+      Exceção já que para a base 5, existem 2 intervalos de números
       dentro do ASCII utilizável (32 <= n <= 127) que começam com 1.
       Até 32 <= n <= 49, os números são do tipo 1XX e para n >= 125, os valores
       são do tipo 1XXX, portanto a lógica de testar se são x ou x+1 dígitos
