@@ -27,9 +27,11 @@ void ListaEncadeada::insere_elemento(int elem){
     this->primeiro = newNode;
     this->ultimo = newNode;
   } else{
-    newNode->anterior = this->ultimo;
-    this->ultimo->proximo = newNode;
-    this->ultimo = newNode;
+    if(this->ultimo->elemento != elem){
+      newNode->anterior = this->ultimo;
+      this->ultimo->proximo = newNode;
+      this->ultimo = newNode;
+    }
   }
 }
 

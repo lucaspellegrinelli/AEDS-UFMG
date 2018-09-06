@@ -42,13 +42,19 @@ void ListaEncadeada::insere_primeiro(int elem){
   this->primeiro = newNode;
 }
 
-int ListaEncadeada::get_iesimo(int pos){
-  node_t *nodeAtual = this->primeiro;
+int ListaEncadeada::k_esimo(bool dir, int pos){
+  node_t *nodeAtual = dir ? this->primeiro : this->ultimo;
   int cont = 0;
-  while(nodeAtual != nullptr && cont++ < pos) nodeAtual = nodeAtual->proximo;
+
+  while(nodeAtual != nullptr && cont++ < pos)
+    nodeAtual = dir ? nodeAtual->proximo : nodeAtual->anterior;
 
   if(cont - 1 != pos) return 0;
   else return nodeAtual->elemento;
+}
+
+int ListaEncadeada::get_iesimo(int pos){
+  return k_esimo(true, pos);
 }
 
 void ListaEncadeada::remover_elemento(){

@@ -126,3 +126,12 @@ int ListaEncadeada::tamanho(){
 
   return tamanho;
 }
+
+bool ListaEncadeada::checa_palindromo(){
+  int size = tamanho();
+  for(int i = 0; i < (size / 2); i++){
+    if(get_iesimo(i) != get_iesimo(size - i - 1)) return false;
+  }
+
+  return true;
+}

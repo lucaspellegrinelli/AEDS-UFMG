@@ -17,6 +17,7 @@ public:
   void insere_elemento(int);
   void insere_primeiro(int);
   int get_iesimo(int);
+  int k_esimo(bool, int);
   void remover_elemento();
   void remover_primeiro();
   void inserir_iesimo(int, int);

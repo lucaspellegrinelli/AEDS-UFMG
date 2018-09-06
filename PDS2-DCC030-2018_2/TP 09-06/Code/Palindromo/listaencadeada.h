@@ -22,6 +22,7 @@ public:
   void inserir_iesimo(int, int);
   void remover_iesimo(int);
   int tamanho();
+  bool checa_palindromo();
 };
 
 #endif
