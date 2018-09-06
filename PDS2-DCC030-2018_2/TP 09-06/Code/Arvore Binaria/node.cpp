@@ -31,16 +31,68 @@ bool Node::existe_element(int elemento){
   else return false;
 }
 
-ListaEncadeada Node::pre_order(){
+ListaEncadeada Node::pre_ordem(){
   ListaEncadeada l;
+
+  l.insere_elemento(this->valor);
+
+  if(esquerda != nullptr){
+    ListaEncadeada listEsq = esquerda->pre_ordem();
+    for(int i = 0; i < listEsq.tamanho(); i++){
+      l.insere_elemento(listEsq.get_iesimo(i));
+    }
+  }
+
+  if(direita != nullptr){
+    ListaEncadeada listDir = direita->pre_ordem();
+    for(int i = 0; i < listDir.tamanho(); i++){
+      l.insere_elemento(listDir.get_iesimo(i));
+    }
+  }
+
+  return l;
 }
 
 ListaEncadeada Node::em_ordem(){
   ListaEncadeada l;
+
+  if(esquerda != nullptr){
+    ListaEncadeada listEsq = esquerda->em_ordem();
+    for(int i = 0; i < listEsq.tamanho(); i++){
+      l.insere_elemento(listEsq.get_iesimo(i));
+    }
+  }
+
+  l.insere_elemento(this->valor);
+
+  if(direita != nullptr){
+    ListaEncadeada listDir = direita->em_ordem();
+    for(int i = 0; i < listDir.tamanho(); i++){
+      l.insere_elemento(listDir.get_iesimo(i));
+    }
+  }
+
   return l;
 }
 
 ListaEncadeada Node::pos_ordem(){
   ListaEncadeada l;
+
+  if(esquerda != nullptr){
+    ListaEncadeada listEsq = esquerda->pos_ordem();
+    for(int i = 0; i < listEsq.tamanho(); i++){
+      l.insere_elemento(listEsq.get_iesimo(i));
+    }
+  }
+
+  if(direita != nullptr){
+    ListaEncadeada listDir = direita->pos_ordem();
+    for(int i = 0; i < listDir.tamanho(); i++){
+      l.insere_elemento(listDir.get_iesimo(i));
+    }
+  }
+
+  l.insere_elemento(this->valor);
+
   return l;
 }

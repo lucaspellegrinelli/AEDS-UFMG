@@ -22,16 +22,13 @@ bool BST::existe_element(int elemento){
 }
 
 ListaEncadeada BST::pre_ordem(){
-  ListaEncadeada l;
-  return l;
+  return this->raiz->pre_ordem();
 }
 
 ListaEncadeada BST::em_ordem(){
-  ListaEncadeada l;
-  return l;
+  return this->raiz->em_ordem();
 }
 
 ListaEncadeada BST::pos_ordem(){
-  ListaEncadeada l;
-  return l;
+  return this->raiz->pos_ordem();
 }
