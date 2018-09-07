@@ -1,5 +1,3 @@
-#include <cstddef>
-#include <iostream>
 #include "listaencadeada.h"
 
 ListaEncadeada::ListaEncadeada(){

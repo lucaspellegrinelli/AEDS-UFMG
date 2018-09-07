@@ -13,7 +13,7 @@ public:
   Node(int valor);
   ~Node();
   void inserir_elemento(int elemento);
-  bool existe_element(int elemento);
+  bool existe_elemento(int elemento);
   ListaEncadeada pre_ordem();
   ListaEncadeada em_ordem();
   ListaEncadeada pos_ordem();

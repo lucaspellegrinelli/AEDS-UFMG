@@ -21,13 +21,13 @@ void Node::inserir_elemento(int elemento){
   }
 }
 
-bool Node::existe_element(int elemento){
+bool Node::existe_elemento(int elemento){
   if(elemento == valor)
     return true;
   else if(elemento < valor && esquerda != nullptr)
-    return esquerda->existe_element(elemento);
+    return esquerda->existe_elemento(elemento);
   else if(direita != nullptr)
-    return direita->existe_element(elemento);
+    return direita->existe_elemento(elemento);
   else return false;
 }
 
