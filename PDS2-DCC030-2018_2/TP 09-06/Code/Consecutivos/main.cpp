@@ -20,6 +20,8 @@ int main(){
   lista.insere_elemento(3);
   lista.insere_elemento(2);
 
+  lista.remove_consecutivos();
+
   int element1 = lista.get_iesimo(0);
   int element2 = lista.get_iesimo(1);
   int element3 = lista.get_iesimo(2);

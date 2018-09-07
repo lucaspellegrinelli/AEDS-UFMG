@@ -128,3 +128,13 @@ int ListaEncadeada::tamanho(){
 
   return tamanho;
 }
+
+void ListaEncadeada::remove_consecutivos(){
+  int size = tamanho();
+
+  for(int i = size - 1; i >= 1; i--){
+    if(get_iesimo(i) == get_iesimo(i - 1)){
+      remover_iesimo(i);
+    }
+  }
+}
