@@ -23,13 +23,29 @@ bool BST::existe_elemento(int elemento){
 }
 
 ListaEncadeada BST::pre_ordem(){
-  return this->raiz->pre_ordem();
+  std::cout << (this->raiz == nullptr) << std::endl;
+  if(this->raiz != nullptr){
+    return this->raiz->pre_ordem();
+  }else{
+    ListaEncadeada l;
+    return l;
+  }
 }
 
 ListaEncadeada BST::em_ordem(){
-  return this->raiz->em_ordem();
+  if(this->raiz != nullptr){
+    return this->raiz->em_ordem();
+  }else{
+    ListaEncadeada l;
+    return l;
+  }
 }
 
 ListaEncadeada BST::pos_ordem(){
-  return this->raiz->pos_ordem();
+  if(this->raiz != nullptr){
+    return this->raiz->pos_ordem();
+  }else{
+    ListaEncadeada l;
+    return l;
+  }
 }
