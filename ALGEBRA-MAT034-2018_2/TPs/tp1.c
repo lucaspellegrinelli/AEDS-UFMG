@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <gmp.h>
 
@@ -53,18 +52,31 @@ void mdc_estendido(mpz_t g, mpz_t x, mpz_t y, const mpz_t a, const mpz_t b){
 }
 
 int inverso_modular(mpz_t r, const mpz_t a, const mpz_t n){
-
+	mpz_t g, x, y;
+	mpz_inits(g, x, y, NULL);
+	mdc_estendido(g, x, y, a, n);
+	return mpz_cmp_ui(g, 1) == 0;
 }
 
-int main(){
-	mpz_t g, x, y, a, b;
-  mpz_inits(g, x, y, a, b, NULL);
+void exp_binaria(mpz_t r, const mpz_t b, const mpz_t e, const mpz_t n){
+	mpz_t out, xmodp, exp, base, rx, bb, expmod2;
+	mpz_inits(out, xmodp, exp, base, rx, bb, expmod2, NULL);
 
-  mpz_set_ui(a, 2345);
-  mpz_set_ui(b, 554);
+	mpz_set(exp, e);
+	mpz_set(base, b);
 
-  mdc_estendido(g, x, y, a, b);
+	mpz_set_ui(r, 1);
+	mpz_fdiv_r(xmodp, base, n);
 
-  gmp_printf ("a = %Zd\nb = %Zd\nGCD: %Zd\nx: %Zd\ny: %Zd\n", a, b, g, x, y);
-  return 0;
+	while(mpz_cmp_ui(exp, 0) > 0){
+		mpz_fdiv_r_ui(expmod2, exp, 2);
+		if(mpz_cmp_ui(expmod2, 1) == 0){
+			mpz_mul(rx, r, base);
+			mpz_fdiv_r(r, rx, n);
+		}
+
+		mpz_tdiv_q_ui(exp, exp, 2);
+		mpz_mul(bb, base, base);
+		mpz_fdiv_r(base, bb, n);
+	}
 }
