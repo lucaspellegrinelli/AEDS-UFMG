@@ -48,19 +48,29 @@ void mdc_estendido(mpz_t g, mpz_t x, mpz_t y, const mpz_t a, const mpz_t b){
 			mpz_set(y, b0);
 			return;
 		}
+
+		mpz_clear(qa);
+		mpz_clear(qb);
 	}
+
+	mpz_clears(ta, tb, a0, a1, b0, b1, q, NULL);
 }
 
 int inverso_modular(mpz_t r, const mpz_t a, const mpz_t n){
 	mpz_t g, x, y;
 	mpz_inits(g, x, y, NULL);
 	mdc_estendido(g, x, y, a, n);
-	return mpz_cmp_ui(g, 1) == 0;
+
+	int out = mpz_cmp_ui(g, 1) == 0;
+
+	mpz_clears(g, x, y, NULL);
+
+	return out;
 }
 
 void exp_binaria(mpz_t r, const mpz_t b, const mpz_t e, const mpz_t n){
-	mpz_t out, xmodp, exp, base, rx, bb, expmod2;
-	mpz_inits(out, xmodp, exp, base, rx, bb, expmod2, NULL);
+	mpz_t xmodp, exp, base, rx, bb, expmod2;
+	mpz_inits(xmodp, exp, base, rx, bb, expmod2, NULL);
 
 	mpz_set(exp, e);
 	mpz_set(base, b);
@@ -79,4 +89,6 @@ void exp_binaria(mpz_t r, const mpz_t b, const mpz_t e, const mpz_t n){
 		mpz_mul(bb, base, base);
 		mpz_fdiv_r(base, bb, n);
 	}
+
+	mpz_clears(xmodp, exp, base, rx, bb, expmod2, NULL);
 }
