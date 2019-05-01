@@ -1,0 +1,200 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{listings}
+\usepackage{color}
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\topmargin -.5in
+\textheight 9in
+\oddsidemargin -.25in
+\evensidemargin -.25in
+\textwidth 7in
+
+\begin{document}
+
+\newtheoremstyle{break}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
+\theoremstyle{definition}
+\theoremstyle{break}
+\newtheorem{exerc}{Exercício}
+
+\author{Lucas Resende Pellegrinelli Machado (2018126673)}
+\title{Algebra Linear Computacional - Lista de Exercicios 3}
+\maketitle
+
+\medskip
+
+\begin{exerc}
+\begin{enumerate}[a.]
+.
+\item
+O script requerido pelo exercicio é
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+def func(m):
+  W = np.abs(np.random.randn(m, 4))
+  W_ = np.sqrt(W)
+  Z = W_.T @ W_
+  print(Z)
+  return np.linalg.norm(Z - np.eye(4))
+\end{lstlisting}
+
+\item
+A diferença de normas obtida com $m = 100$ é $\approx 0.44$. Já para $m = 10000$, a diferença é $\approx 0.043$.
+
+\item
+A matriz se aproxima de uma matriz ortogonal à medida que que $m$ aumenta.
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}[a.]
+.
+\item
+Como a fórmula para calcular projeções entre vetores é
+
+$$Proj_u(x) = \frac{x \cdot u}{||u||} u$$
+
+Temos que no nosso exemplo, usando o vetor $u$
+
+$$Proj_x(u) = \frac{(1, 1, 0) \cdot (1, 2, 3)}{||(1, 1, 0)||} (1, 1, 0)$$
+
+Que desenvolvendo temos:
+
+$$Proj_x(u) = \frac{1 + 2 + 0}{\sqrt{2}} (1, 1, 0) = (\frac{3}{\sqrt{2}}, \frac{3}{\sqrt{2}}, 0)$$
+
+Já usando o vetor $v$, semelhantemente temos
+
+$$Proj_x(v) = \frac{(1, -1, 1) \cdot (1, 2, 3)}{||(1, -1, 1)||} (1, -1, 1)$$
+
+Que desenvolvendo obtemos:
+
+$$Proj_x(u) = \frac{1 - 2 + 3}{\sqrt{3}} (1, -1, 1) = (\frac{2}{\sqrt{3}}, -\frac{2}{\sqrt{3}}, \frac{2}{\sqrt{3}})$$
+
+\item
+Como a projeção de um vetor $x$ em um espaço $S$ formado por vetores $v_i$ é dado por:
+
+$$Proj_x(S) = \sum_{v_i \in S} Proj_x(v_i)$$
+
+Temos que:
+
+$$Proj_x({u, v}) = Proj_x(u) + Proj_x(v) = (\frac{3}{\sqrt{2}}, \frac{3}{\sqrt{2}}, 0) + (\frac{2}{\sqrt{3}}, -\frac{2}{\sqrt{3}}, \frac{2}{\sqrt{3}})$$
+$$ = (\frac{3}{\sqrt{2}} + \frac{2}{\sqrt{3}}, \frac{3}{\sqrt{2}} - \frac{2}{\sqrt{3}}, \frac{2}{\sqrt{3}}) \neq (1, 2, 3) = x$$
+
+Isso acontece pois só com 2 vetores ($u$ e $v$) não é possível formar um espaço em $R^3$, logo não é possível obter o vetor $x$ (que é em $R^3$) a partir de uma combinação linear entre $u$ e $v$.
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}[a.]
+Como a matriz de covariancia é dada por
+
+$$C_x = \frac{1}{n - 1}X^TX$$
+
+depois de ja ter tratado a matriz subtraindo de cada coluna sua média
+
+
+Podemos fazer um script em python para calcula-la:
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+M = np.array([
+  [90, 80, 60, 95],
+  [65, 75, 90, 70],
+  [40, 90, 60, 55],
+  [80, 60, 59, 75],
+  [60, 100, 80, 80]
+])
+
+A = M - M.mean(axis=0, keepdims=True)
+
+C = (A.T @ A) / (A.shape[0] - 1)
+print(C)
+\end{lstlisting}
+
+Que nos da como resposta
+
+$$\begin{bmatrix}
+	370 & -165 & -53.25 & 243.75\\
+	-165 & 230 & 52 & -18.75\\
+	-51 & 52 & 190.5 & -12.5\\
+	243.75 & -18.75 & -12.5 & 212.5\\
+\end{bmatrix}$$
+
+
+\end{enumerate}
+\end{exerc}
+
+\newpage
+
+\begin{exerc}
+\begin{enumerate}[a.]
+.
+\item
+Verdadeiro.
+
+\item
+Falso.
+
+\item
+Falso.
+
+\item
+Verdadeiro
+
+\item
+Falso
+
+\item
+Falso
+
+\end{enumerate}
+\end{exerc}
+
+\end{document}
+\grid
+\grid

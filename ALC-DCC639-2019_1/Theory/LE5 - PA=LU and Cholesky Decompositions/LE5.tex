@@ -1,0 +1,477 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{listings}
+\usepackage{color}
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\topmargin -.5in
+\textheight 9in
+\oddsidemargin -.25in
+\evensidemargin -.25in
+\textwidth 7in
+
+\begin{document}
+
+\newtheoremstyle{break}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
+\theoremstyle{definition}
+\theoremstyle{break}
+\newtheorem{exerc}{Exercício}
+
+\author{Lucas Resende Pellegrinelli Machado (2018126673)}
+\title{Algebra Linear Computacional - Lista de Exercicios 5}
+\maketitle
+
+\medskip
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+\item
+Dada a matriz
+
+$$
+A = \begin{bmatrix}
+	3 & 2 & 4\\
+	1 & 1 & 2\\
+	4 & 3 & -2\\
+\end{bmatrix}
+$$
+
+devemos encontrar as matrizes resultantes da decomposição $PA=LU$ da forma.
+
+$$\begin{tabular}{l|l|lll|l|l|}
+	L & multiplicador &  & A & & operações  & P\\
+\hline
+	1 &  & 3 & 2 & 4 & & 1\\
+	2 & $m_{21} = \frac{1}{3}$ & 1 & 1 & 2 & & 2\\
+	3 & $m_{31} = \frac{4}{3}$ & 4 & 3 & -2 & & 3\\
+\hline
+	4 &  & 0 & $-\frac{1}{4}$ & $\frac{11}{2}$ & $-\frac{3}{4}l_3 + l_1$ & 1\\
+	5 & $m_{32} = 1$ & 0 & $\frac{1}{4}$ & $\frac{5}{2}$ & $-\frac{1}{4}l_3 + l_2$ & 2\\
+\hline
+	6 & & 0 & 0 & 8 & $l_5 + l_4$ & 1\\
+\end{tabular}$$
+
+Pela coluna $P$, é possível concluir que a matriz de permutação será:
+
+$$
+P = \begin{bmatrix}
+	0 & 0 & 1\\
+	0 & 1 & 0\\
+	1 & 0 & 0\\
+\end{bmatrix}
+$$
+
+E pelas outra colunas também temos:
+
+$$
+L = \begin{bmatrix}
+	1 & 0 & 0\\
+	\frac{1}{4} & 1 & 0\\
+	\frac{3}{4} & -1 & 1\\
+\end{bmatrix}
+,
+U = \begin{bmatrix}
+	4 & 3 & -2\\
+	0 & \frac{1}{4} & \frac{5}{2}\\
+	0 & 0 & 8\\
+\end{bmatrix}
+$$
+
+Assim a decomposição fica:
+
+$$
+\begin{bmatrix}
+	0 & 0 & 1\\
+	0 & 1 & 0\\
+	1 & 0 & 0\\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+	3 & 2 & 4\\
+	1 & 1 & 2\\
+	4 & 3 & -2\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	1 & 0 & 0\\
+	\frac{1}{4} & 1 & 0\\
+	\frac{3}{4} & -1 & 1\\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+	4 & 3 & -2\\
+	0 & \frac{1}{4} & \frac{5}{2}\\
+	0 & 0 & 8\\
+\end{bmatrix}
+$$
+\newpage
+\item
+Definindo $p$ como o número de permutações entre uma matriz identidade $I$ e a matriz de permutação $P$, sabemos que
+
+$$det(A) = (-1)^p det(U)$$
+
+E como todas as linhas da matriz $P$ são diferentes da matriz $I$ sabemos que o número de trocas é igual a ordem da matriz, no execício, $p = 3$, logo:
+
+$$det(A) = (-1)^3 det(U) = -det(U)$$
+
+E visto que $det(U) = 8$, temos que:
+
+$$det(A) = -8$$
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}
+Para calcularmos a solução, primeiros calcularemos a decomposição Cholesky da matriz
+
+$$
+A = \begin{bmatrix}
+	9 & 18\\
+	18 & 52\\
+\end{bmatrix}
+$$
+
+Utilizaremos das fórmulas (assuma $L$ como a matriz resultante):
+
+$$L_{j, j} = \sqrt{A_{j,j} - \sum_{k = 1}^{j - 1}L_{j, k}^2}$$
+
+$$L_{i, j} = \frac{1}{L_{j, j}}(A_{i, j} - \sum_{k = 1}^{j - 1}L_{i, k}L_{j, k})$$
+
+Logo temos que dada ($L_{1, 2} = 0$ pois $L$ tem que ser triangular inferior)
+
+$$
+L = \begin{bmatrix}
+	L_{1, 1} & 0\\
+	L_{2, 1} & L_{2, 2}\\
+\end{bmatrix}
+$$
+
+Temos:
+
+$$L_{1, 1} = \sqrt{A_{1, 1} - \sum_{k = 1}^{0}L_{1, k}^2} = \sqrt{9 - 0} = 3$$
+
+$$L_{2, 1} = \frac{1}{L_{1, 1}} (A_{2, 1} - \sum_{k = 1}^{0}L_{2, k}L_{1, k}) = \frac{1}{3}(18 - 0) = 6$$
+
+$$L_{2, 2} = \sqrt{A_{2,2} - \sum_{k = 1}^{1}L_{2, k}^2} = \sqrt{A_{2,2} - L_{2, 1}^2} = \sqrt{52 - 36} = 4$$
+
+Assim
+
+$$
+L = \begin{bmatrix}
+	3 & 0\\
+	6 & 4\\
+\end{bmatrix}
+$$
+
+Dessa forma temos agora o sistema:
+
+$$L \cdot L^T \cdot x = b$$
+
+Substituindo $L^T \cdot x$ por $y$:
+
+$$L \cdot y = b$$
+
+$$
+\begin{bmatrix}
+	3 & 0\\
+	6 & 4\\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+	y_1\\
+	y_2\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	3\\
+	4\\
+\end{bmatrix}
+$$
+
+Assim, resolvendo o sistema:
+
+$$\begin{cases}
+3y_1 + 0y_2 = 3\\
+6y_1 + 4y_2 = 4
+\end{cases}
+\implies
+\begin{cases}
+y_1 = 1\\
+6y_1 + 4y_2 = 4
+\end{cases}
+\implies
+\begin{cases}
+y_1 = 3\\
+6 + 4y_2 = 4
+\end{cases}
+\implies
+\begin{cases}
+y_1 = 1\\
+4y_2 = -2
+\end{cases}
+$$
+
+$$
+\implies
+y = 
+\begin{bmatrix}
+	1\\
+	-0.5\\
+\end{bmatrix}
+$$
+
+Retornando à substituição feita:
+
+$$L^T \cdot x = y$$
+
+$$
+\begin{bmatrix}
+	3 & 6\\
+	0 & 4\\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+	x_1\\
+	x_2\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	1\\
+	-0.5\\
+\end{bmatrix}
+$$
+
+Resolvendo:
+
+$$
+\begin{cases}
+3x_1 + 6x_2 = 1\\
+0x_1 + 4x_2 = -0.5
+\end{cases}
+\implies
+\begin{cases}
+3x_1 + 6x_2 = 1\\
+x_2 = -0.125
+\end{cases}
+\implies
+\begin{cases}
+3x_1 - 0.75 = 1\\
+x_2 = -0.125
+\end{cases}
+\implies
+\begin{cases}
+3x_1 = 1.75\\
+x_2 = -0.125
+\end{cases}
+$$
+
+$$
+\implies
+x = 
+\begin{bmatrix}
+	\frac{7}{12}\\
+	-\frac{1}{8}\\
+\end{bmatrix}
+$$
+
+\end{enumerate}
+\end{exerc}
+
+\newpage
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+\item
+
+Dado que $x^{(0)} =
+\begin{bmatrix}
+	0.5\\
+	-0.1\\
+\end{bmatrix}$, temos que:
+
+$$Ax^{(0)} =
+\begin{bmatrix}
+	9 & 18\\
+	18 & 52\\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+	0.5\\
+	-0.1\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	2.7\\
+	3.8\\
+\end{bmatrix}
+$$
+
+Calculando o erro residual $r^{(0)}$:
+
+$$r^{(0)} = b - Ax^{(0)} =
+\begin{bmatrix}
+	3\\
+	4\\
+\end{bmatrix}
+-
+\begin{bmatrix}
+	2.7\\
+	3.8\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	0.3\\
+	0.2\\
+\end{bmatrix}
+$$
+
+\item
+Para refinar $x{(0)}$ e obter a solução refinada $x_r$ temos que:
+
+$$x_r = x^{(0)} + c^{(0)}$$
+
+Para achar $c^{(0)}$ precisamos de
+
+$$Ly = r^{(0)} \text{ e } L^Tc^{(0)} = y$$
+
+Assim
+
+$$\begin{bmatrix}
+	3 & 0\\
+	6 & 4\\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+	y_1\\
+	y_2\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	0.3\\
+	0.2\\
+\end{bmatrix}
+\implies
+\begin{cases}
+3y_1 + 0y_2 = 0.3\\
+6y_1 + 4y_2 = 0.2
+\end{cases}
+\implies
+y
+=
+\begin{bmatrix}
+	0.1\\
+	-0.1\\
+\end{bmatrix}
+$$
+
+E então:
+
+$$
+\begin{bmatrix}
+	3 & 6\\
+	0 & 4\\
+\end{bmatrix}
+\begin{bmatrix}
+	c^{(0)}_1\\
+	c^{(0)}_2\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	0.1\\
+	-0.1\\
+\end{bmatrix}
+\implies
+\begin{cases}
+3c^{(0)}_1 + 6c^{(0)}_2 = 0.1\\
+0c^{(0)}_1 + 4c^{(0)}_2 = -0.1
+\end{cases}
+\implies
+c^{(0)}
+=
+\begin{bmatrix}
+	\frac{1}{12}\\
+	-\frac{1}{40}\\
+\end{bmatrix}
+$$
+
+Com o valor de $c^{(0)}$ temos agora:
+
+$$x_r =
+\begin{bmatrix}
+	\frac{1}{2}\\
+	-\frac{1}{10}\\
+\end{bmatrix}
++
+\begin{bmatrix}
+	\frac{1}{12}\\
+	-\frac{1}{40}\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	\frac{7}{12}\\
+	-\frac{1}{8}\\
+\end{bmatrix}$$
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+\item Verdadeiro. Visto que $AA^T$ é uma matriz simética definida positiva, ela pode ser decomposta pela decomposição Cholesky.
+
+\item Falso. Como a matriz $A$ tem posto $n$, é impossível reconstrui-la por meio de uma multiplicação de matrizes de posto menor que $n$. Como a matriz $U$ não tem posto $n$ visto que uma de suas linhas é nula e pode ser representada por qualquer outra linha multiplicada por 0, então a afirmativa é falsa;
+
+\item Verdadeiro. Visto que Cholesky precisa resolver apenas uma matriz, ela precisa de metade do tempo que o LU já que a LU gera duas matrizes. Porém em questão de espaço, as duas precisam de gerar matrizes intermediarias para o processamento, ou seja, ocupam o mesmo espaço.
+
+\end{enumerate}
+\end{exerc}
+
+\end{document}
+\grid
+\grid

@@ -1,0 +1,281 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{listings}
+\usepackage{color}
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\topmargin -.5in
+\textheight 9in
+\oddsidemargin -.25in
+\evensidemargin -.25in
+\textwidth 7in
+
+\begin{document}
+
+\newtheoremstyle{break}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
+\theoremstyle{definition}
+\theoremstyle{break}
+\newtheorem{exerc}{Exercício}
+
+\author{Lucas Resende Pellegrinelli Machado (2018126673)}
+\title{Algebra Linear Computacional - Lista de Exercicios 4}
+\maketitle
+
+\medskip
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+\item
+Dado que a determinante da matriz é 60 (ou seja $\neq 0$) e que seu posto é $3$ (ou seja, todas as colunas são linearmente independentes) sabemos que o sistema possuí uma única solução.
+\item
+Dada a matriz da questão, temos também o seguinte sistema:
+
+$$\begin{cases}
+4x_1 + 0x_2 + 0x_3 = 12\\
+-2x_1 + 5x_2 + 0x_3 = 4\\
+1x_1 + 7x_2 + 3x_3 = 20
+\end{cases}$$
+
+Resolvendo a primeira linha
+
+$$4x_1 = 12 \implies x_1 = 3$$
+
+Da mesma forma a segunda linha
+
+$$-2(3) + 5x_2 = 4 \implies -6 + 5x_2 = 4 \implies x_2 = 2$$
+
+E por fim a terceira linha
+
+$$1(3) + 7(2) + 3x_3 = 20 \implies 17 + 3x_3 = 20 \implies x_3 = 1$$
+
+Logo temos que $x_1 = 3, x_2 = 2, x_3 = 1$.
+\\
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}
+\
+O código da decomposição LU in-place é
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+def LU(A):
+  m, n = A.shape
+  for k in range(n - 1):
+    for j in range(k + 1, n):
+      aux = A[j, k] / A[k, k]
+      A[j, k:n] -= aux * A[k, k:n]
+      A[j, k] = aux
+\end{lstlisting}
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+\item
+Fazendo o diagrama para calcular as matrizes L e U:
+
+\begin{tabular}{l|l|lll|}
+	L & multiplicador &  & A & \\
+\hline
+	1 &  & 3 & 2 & 4\\
+	2 & $m_{21} = \frac{1}{3}$ & 1 & 1 & 2\\
+	3 & $m_{31} = \frac{4}{3}$ & 4 & 3 & -2\\
+\hline
+	4 &  & 0 & $\frac{1}{3}$ & $\frac{2}{3}$\\
+	5 & $m_{32} = 1$ & 0 & $\frac{1}{3}$ & $-\frac{8}{3}$\\
+\hline
+	6 & & 0 & 0 & -8\\
+\end{tabular}
+
+Logo a matriz L é:
+
+$$\begin{bmatrix}
+	1 & 0 & 0\\
+	m_{21} & 1 & 0\\
+	m_{31} & m_{32} & 1\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	1 & 0 & 0\\
+	\frac{1}{2} & 1 & 0\\
+	\frac{4}{3} & 1 & 1\\
+\end{bmatrix}
+$$
+
+E a matriz U é:
+
+$$\begin{bmatrix}
+	3 & 2 & 4\\
+	0 & \frac{1}{3} & \frac{2}{3}\\
+	0 & 0 & -8\\
+\end{bmatrix}
+$$
+
+\item
+Usando o método da expansão de fatores para calcular a determinante temos que:
+
+$$det(\begin{bmatrix}
+	3 & 2 & 4\\
+	1 & 1 & 2\\
+	4 & 3 & -2\\
+\end{bmatrix})
+=
+(-1)det(\begin{bmatrix}
+	2 & 4\\
+	3 & -2\\
+\end{bmatrix})
++
+(1)det(\begin{bmatrix}
+	3 & 4\\
+	4 & -2\\
+\end{bmatrix})
++
+(-2)det(\begin{bmatrix}
+	3 & 2\\
+	4 & 3\\
+\end{bmatrix})$$
+
+E como visto que
+
+$$det(\begin{bmatrix}
+	2 & 4\\
+	3 & -2\\
+\end{bmatrix})
+= -16$$
+
+$$det(\begin{bmatrix}
+	3 & 4\\
+	4 & -2\\
+\end{bmatrix})
+= -22$$
+
+$$det(\begin{bmatrix}
+	3 & 2\\
+	4 & 3\\
+\end{bmatrix})
+= 1$$
+
+Temos
+
+$$det(\begin{bmatrix}
+	3 & 2 & 4\\
+	1 & 1 & 2\\
+	4 & 3 & -2\\
+\end{bmatrix})
+=
+(-1)(-16)+(1)(-22)+(-2)(1) = 16 - 22 - 2 = -8$$
+
+\end{enumerate}
+\end{exerc}
+
+\newpage
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\item
+Falso. Contra exemplo:
+
+$$C =
+\begin{bmatrix}
+	1 & 5\\
+	4 & 2\\
+\end{bmatrix}
+,
+A = 
+\begin{bmatrix}
+	0 & 0\\
+	0 & 0\\
+\end{bmatrix}
+$$
+
+Nesse caso $C$ é não singular visto que sua determinante não é nula, ou seja, está nos moldes do problema.
+
+Caso fizermos $C \times A$ temos:
+
+$$C \times A =
+\begin{bmatrix}
+	0 & 0\\
+	0 & 0\\
+\end{bmatrix}$$
+
+Cuja determinante é nula, ou seja, $CA$ é singular.
+
+\item
+Falso. Visto que C é uma matriz de permutação, sua determinante é $\pm1$. Dado que a determinante do produto entre duas matrizes $A$ e $B$ segue a regra:
+
+$$det(AB) = det(A) det(B)$$
+
+Logo em um caso onde temos o produto entre $C$ e $A$ com $C$ sendo uma matriz de permutação, temos:
+
+$$det(CA) = det(C) det(A)$$
+
+Como $det(C) = \pm1$, existem matrizes no formato de $C$ cuja determinante é $-1$, nesse caso teríamos:
+
+$$det(CA) = (-1) det(A)$$
+
+Logo a afirmação que $det(CA) = det(A)$ é falsa.
+
+\item
+Falso. Visto que C é inversível por não ser singular, podemos multiplicar os dois lados do sistema $CAx = Cb$ por $C^{-1}$ (sendo $C^{-1}$ a matriz inversa de $C$) obtendo:
+
+$$C^{-1}CAx = C^{-1}Cb$$
+
+E desenvolvendo utilizando $C^{-1}C = I$ e $AI = A$:
+
+$$Ax = b$$
+
+Assim concluindo que multiplicando cada lado do sistema por uma matriz não singular não altera o resultado já que o sistema pode ser reduzido ao sistema sem a matriz $C$.
+
+\end{enumerate}
+\end{exerc}
+
+\end{document}
+\grid
+\grid
