@@ -2,6 +2,8 @@
 #define ALUNO_H
 
 #include <string>
+#include <iostream>
+using namespace std;
 
 class Student{
 public:
@@ -23,6 +25,18 @@ public:
 
   bool apllied_for(int course){
     return this->first_option == course || this->second_option == course;
+  }
+
+  bool more_equal(Student other, int course){
+    if(this->grade == other.grade){
+      if(this->first_option == other.first_option){
+        return this->id < other.id;
+      }else{
+        return this->first_option == course;
+      }
+    }else{
+      return this->grade > other.grade;
+    }
   }
 
   bool operator>=(Student other) const{
