@@ -127,6 +127,5 @@ int main(){
       Student aluno = lista_espera[i].get(j);
       cout << aluno.name << " " << aluno.grade << endl;
     }
-    cout << endl;
   }
 }
