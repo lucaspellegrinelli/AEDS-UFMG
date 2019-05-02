@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "list.hpp"
 #include "pair.hpp"
 #include "student.hpp"
@@ -78,11 +79,8 @@ int main(){
   for(int curso = 0; curso < qtd_cursos; curso++){
     int n_conc = concorrencia_cursos[curso].size();
     int n_vagas = cursos[curso].second;
-    int min = n_conc < n_vagas ? n_conc : n_vagas;
 
-    int i_nao_aprovados = qtd_aprovado[curso];
-
-    for(int i = 0; i < n_conc && i_nao_aprovados < min && qtd_aprovado[curso] < n_vagas; i++){
+    for(int i = 0; i < n_conc && qtd_aprovado[curso] < n_vagas; i++){
       Student aluno = concorrencia_cursos[curso].get(n_conc - i - 1);
       if(esta_aprovado[aluno.id] == -1){
         if(aluno.second_option == curso){
@@ -90,8 +88,6 @@ int main(){
           esta_aprovado[aluno.id] = 1;
           qtd_aprovado[curso]++;
         }
-
-        i_nao_aprovados++;
       }
     }
   }
@@ -111,6 +107,7 @@ int main(){
     }
   }
 
+  cout << fixed << setprecision(2);
   for(int i = 0; i < qtd_cursos; i++){
     float nota_corte = 0;
     if(aprovados[i].size() >= cursos[i].second){
@@ -127,6 +124,6 @@ int main(){
       Student aluno = lista_espera[i].get(j);
       cout << aluno.name << " " << aluno.grade << endl;
     }
-    cout << endl;
+    if(i != qtd_cursos - 1) cout << endl;
   }
 }
