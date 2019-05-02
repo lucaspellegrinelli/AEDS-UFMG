@@ -1,11 +1,13 @@
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 #include "list.hpp"
 #include "pair.hpp"
 #include "student.hpp"
 
 using namespace std;
 
-int main(){
+int main(int argc, char *argv[]){
   int qtd_cursos;
   int qtd_alunos;
 
@@ -63,7 +65,7 @@ int main(){
         Student aluno = concorrencia_cursos[curso].get(n_conc - i - 1);
         if(esta_aprovado[aluno.id] == -1){
           if(aluno.first_option == curso){
-            aprovados[curso].insert_ordered(aluno);
+            aprovados[curso].insert_ordered_course(aluno, curso);
             esta_aprovado[aluno.id] = 0;
             qtd_aprovado[curso]++;
             mudou = true;
@@ -86,7 +88,7 @@ int main(){
       Student aluno = concorrencia_cursos[curso].get(n_conc - i - 1);
       if(esta_aprovado[aluno.id] == -1){
         if(aluno.second_option == curso){
-          aprovados[curso].insert_ordered(aluno);
+          aprovados[curso].insert_ordered_course(aluno, curso);
           esta_aprovado[aluno.id] = 1;
           qtd_aprovado[curso]++;
         }
@@ -102,15 +104,16 @@ int main(){
     for(int i = 0; i < n_conc; i++){
       Student aluno = concorrencia_cursos[curso].get(n_conc - i - 1);
       if(esta_aprovado[aluno.id] == -1){
-        lista_espera[curso].insert_ordered(aluno);
+        lista_espera[curso].insert_ordered_course(aluno, curso);
       }else if(esta_aprovado[aluno.id] == 1){
         if(aluno.second_option == curso){
-          lista_espera[curso].insert_ordered(aluno);
+          lista_espera[curso].insert_ordered_course(aluno, curso);
         }
       }
     }
   }
 
+  cout << fixed << setprecision(2);
   for(int i = 0; i < qtd_cursos; i++){
     float nota_corte = 0;
     if(aprovados[i].size() >= cursos[i].second){
@@ -120,12 +123,12 @@ int main(){
     cout << "Classificados" << endl;
     for(int j = aprovados[i].size() - 1; j >= 0; j--){
       Student aluno = aprovados[i].get(j);
-      cout << aluno.name << " " << aluno.grade << endl;
+      cout << aluno.name << " " << (double)aluno.grade << endl;
     }
     cout << "Lista de espera" << endl;
     for(int j = lista_espera[i].size() - 1; j >= 0; j--){
       Student aluno = lista_espera[i].get(j);
-      cout << aluno.name << " " << aluno.grade << endl;
+      cout << aluno.name << " " << (double)aluno.grade << endl;
     }
   }
 }
