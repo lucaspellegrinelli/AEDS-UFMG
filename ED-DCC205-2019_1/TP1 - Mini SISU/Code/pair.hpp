@@ -13,6 +13,14 @@ public:
     this->first = first;
     this->second = second;
   }
+
+  bool operator>=(Pair other) const{
+    if(this->first == other.first){
+      return this->second >= other.second;
+    }else{
+      return this->first >= other.first;
+    }
+  }
 };
 
 #endif

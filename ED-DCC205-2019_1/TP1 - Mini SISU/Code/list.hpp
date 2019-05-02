@@ -18,7 +18,6 @@ private:
   node_t<T> *first;
   node_t<T> *last;
   int length;
-  bool use_pivot = true;
   int pivot_pos;
   node_t<T> *pivot;
 
@@ -27,16 +26,6 @@ public:
     this->first = nullptr;
     this->last = nullptr;
     this->length = 0;
-    this->use_pivot = false;
-    this->pivot_pos = -1;
-    this->pivot = nullptr;
-  }
-
-  List(bool use_pivot){
-    this->first = nullptr;
-    this->last = nullptr;
-    this->length = 0;
-    this->use_pivot = use_pivot;
     this->pivot_pos = -1;
     this->pivot = nullptr;
   }
@@ -64,7 +53,7 @@ public:
     new_node->value = elem;
     new_node->prev = nullptr;
 
-    if(use_pivot) this->pivot_pos++;
+    this->pivot_pos++;
 
     if(this->length == 0){
       new_node->next = nullptr;
@@ -88,13 +77,13 @@ public:
       }else{
         node_t<T> *new_node = new node_t<T>();
         new_node->value = elem;
-        node_t<T> *curr_node = this->use_pivot ? this->move_pivot(pos) : this->get_node_at(pos);
+        node_t<T> *curr_node = this->move_pivot(pos);
         new_node->prev = curr_node->prev;
         new_node->prev->next = new_node;
         new_node->next = curr_node;
         new_node->next->prev = new_node;
 
-        if(use_pivot && pos <= this->pivot_pos) this->pivot_pos++;
+        if(pos <= this->pivot_pos) this->pivot_pos++;
 
         this->length++;
       }
@@ -103,13 +92,39 @@ public:
     }
   }
 
+  void insert_ordered(T elem){
+    if(this->length == 0){
+      this->insert_beginning(elem);
+    }else if(elem >= this->last->value){
+      this->insert_end(elem);
+    }else{
+      for(int i = 0; i < this->length; i++){
+        node_t<T> *curr_node = this->move_pivot(i);
+        if(curr_node->value >= elem){
+          this->insert(elem, i);
+          break;
+        }
+      }
+    }
+  }
+
   T get(int pos){
     if(pos >= 0 && pos < this->length){
-      node_t<T> *curr_node = this->use_pivot ? this->move_pivot(pos) : this->get_node_at(pos);
+      node_t<T> *curr_node = this->move_pivot(pos);
       return curr_node->value;
     }else{
       throw std::runtime_error("The get position (" + std::to_string(pos) + ") is outside bounds");
     }
+  }
+
+  bool has_value(T elem){
+    node_t<T> *curr_node = this->first;
+    while(curr_node != nullptr){
+      if(curr_node->value == elem)
+        return true;
+      curr_node = curr_node->next;
+    }
+    return false;
   }
 
   void remove_last(){
@@ -135,7 +150,7 @@ public:
       }else if(pos == this->length - 1){
         this->remove_last();
       }else{
-        node_t<T> *curr_node = this->use_pivot ? this->move_pivot(pos) : this->get_node_at(pos);
+        node_t<T> *curr_node = this->move_pivot(pos);
         curr_node->prev->next = curr_node->next;
         curr_node->next->prev = curr_node->prev;
         delete curr_node;
@@ -147,10 +162,26 @@ public:
     }
   }
 
-  node_t<T>* get_node_at(int pos){
-    node_t<T> *curr_node = this->first;
-    while(curr_node != nullptr && pos-- > 0) curr_node = curr_node->next;
-    return curr_node;
+  bool remove_item(T elem){
+    for(int i = 0; i < this->length; i++){
+      if(this->get(i) == elem){
+        this->remove(i);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void clear(){
+    node_t<T> *current_node = this->first;
+    node_t<T> *next_node;
+
+    while (current_node != 0) {
+      next_node = current_node->next;
+      delete current_node;
+      current_node = next_node;
+    }
   }
 
   node_t<T>* move_pivot(int pos){
@@ -188,13 +219,13 @@ public:
   }
 
   ~List(){
-    node_t<T> *node_prev = nullptr;
-    node_t<T> *node_next = this->first;
+    node_t<T> *current_node = this->first;
+    node_t<T> *next_node;
 
-    while (node_next != nullptr) {
-      node_prev = node_next;
-      node_next = node_next->next;
-      delete node_prev;
+    while (current_node != 0) {
+      next_node = current_node->next;
+      delete current_node;
+      current_node = next_node;
     }
   }
 };
