@@ -2,8 +2,6 @@
 #define ALUNO_H
 
 #include <string>
-#include <iostream>
-using namespace std;
 
 class Student{
 public:
@@ -45,10 +43,6 @@ public:
     }else{
       return this->id <= other.id;
     }
-  }
-
-  bool operator==(Student other) const{
-    return this->id == other.id;
   }
 };
 
