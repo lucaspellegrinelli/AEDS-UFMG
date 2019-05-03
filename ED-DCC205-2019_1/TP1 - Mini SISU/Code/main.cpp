@@ -64,7 +64,7 @@ int main(){
         Student aluno = concorrencia_cursos[curso].get(n_conc - i - 1);
         if(esta_aprovado[aluno.id] == -1){
           if(aluno.first_option == curso){
-            aprovados[curso].insert_ordered(aluno);
+            aprovados[curso].insert_ordered_course(aluno, curso);
             esta_aprovado[aluno.id] = 0;
             qtd_aprovado[curso]++;
             mudou = true;
@@ -84,7 +84,7 @@ int main(){
       Student aluno = concorrencia_cursos[curso].get(n_conc - i - 1);
       if(esta_aprovado[aluno.id] == -1){
         if(aluno.second_option == curso){
-          aprovados[curso].insert_ordered(aluno);
+          aprovados[curso].insert_ordered_course(aluno, curso);
           esta_aprovado[aluno.id] = 1;
           qtd_aprovado[curso]++;
         }
@@ -98,10 +98,10 @@ int main(){
     for(int i = 0; i < n_conc; i++){
       Student aluno = concorrencia_cursos[curso].get(n_conc - i - 1);
       if(esta_aprovado[aluno.id] == -1){
-        lista_espera[curso].insert_ordered(aluno);
+        lista_espera[curso].insert_ordered_course(aluno, curso);
       }else if(esta_aprovado[aluno.id] == 1){
         if(aluno.second_option == curso){
-          lista_espera[curso].insert_ordered(aluno);
+          lista_espera[curso].insert_ordered_course(aluno, curso);
         }
       }
     }

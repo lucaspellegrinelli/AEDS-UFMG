@@ -25,6 +25,18 @@ public:
     return this->first_option == course || this->second_option == course;
   }
 
+  bool more_equal(Student other, int course){
+    if(this->grade != other.grade){
+      return this->grade >= other.grade;
+    }else{
+      if(this->first_option == other.first_option){
+        return this->id <= other.id;
+      }else{
+        return this->first_option == course;
+      }
+    }
+  }
+
   bool operator>=(Student other) const{
     if(this->grade != other.grade){
       return this->grade >= other.grade;

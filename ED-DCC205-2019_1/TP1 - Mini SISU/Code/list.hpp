@@ -108,6 +108,26 @@ public:
     }
   }
 
+  void insert_ordered_course(T elem, int course){
+    if(this->length == 0){
+      this->insert_beginning(elem);
+    }else if(elem >= this->last->value){
+      this->insert_end(elem);
+    }else{
+      bool inserted = false;
+      for(int i = 0; i < this->length; i++){
+        node_t<T> *curr_node = this->move_pivot(i);
+        if(curr_node->value.more_equal(elem, course)){
+          this->insert(elem, i);
+          inserted = true;
+          break;
+        }
+      }
+
+      if(!inserted) this->insert_end(elem);
+    }
+  }
+
   T get(int pos){
     if(pos >= 0 && pos < this->length){
       node_t<T> *curr_node = this->move_pivot(pos);
