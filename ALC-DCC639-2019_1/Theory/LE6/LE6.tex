@@ -1,0 +1,394 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{listings}
+\usepackage{color}
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\topmargin -.5in
+\textheight 9in
+\oddsidemargin -.25in
+\evensidemargin -.25in
+\textwidth 7in
+
+\begin{document}
+
+\newtheoremstyle{break}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
+\theoremstyle{definition}
+\theoremstyle{break}
+\newtheorem{exerc}{Exercício}
+
+\author{Lucas Resende Pellegrinelli Machado (2018126673)}
+\title{Algebra Linear Computacional - Lista de Exercicios 6}
+\maketitle
+
+\medskip
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+Visto que o número de condição de uma matriz a ($k(A)$) é dado por
+
+$$k(A) = ||A^{-1}|| \text{ } ||A||$$
+
+\item
+Usando como norma a norma 1:
+$$k_1(A) = ||A^{-1}||_1 \text{ } ||A||_1$$
+
+Como a coluna cuja somas dos valores absolutos de seus itens na matriz $A$ é a maior é a coluna $A_{i, 1} = (3, 9, 1)^T$ a norma 1 da matriz é $||A||_1 = 13$.
+
+No caso da matriz $A^{-1}$ a coluna é $A^{-1}_{i, 3} = (-2, -3, 3)^T$ e a norma 1 é $||A^{-1}||_1 = 8$.
+
+Assim
+
+$$k(A) = 8 \times 13 = 104$$
+
+Logo a matriz é bem condicionada sob norma 1.
+
+\item
+Usando como norma a norma infinito:
+$$k_\infty(A) = ||A^{-1}||_\infty \text{ } ||A||_\infty$$
+
+Como a linha de A cuja a soma dos valores absolutos dos items é a maior é a linha $A_2 = (9, 1, 7)$, a norma infinito da matriz é $||A||_\infty = 17$;
+
+No caso da matriz $A^{-1}$, a linha é a $A^{-1}_2 = (-2, 1, -3)$ e sua norma infinito é $||A^{-1}||_\infty = 6$.
+
+Assim
+
+$$k_\infty(A) = 17 \times 6 = 102$$
+
+Logo a matriz também é bem condicionada sob norma infinito
+
+\end{enumerate}
+\end{exerc}
+
+\newpage
+
+\begin{exerc}
+\begin{enumerate}[a.]
+Calculando o valor de $f(x)$ para os valores da tabela:
+
+$$
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+	x & 0 & 1 & 2 & 3 & 4\\
+\hline
+	f(x) & 0.5 & 2.5 & 4.5 & 6.5 & 8.5\\
+\hline
+\end{tabular}
+$$
+
+E a tabela de diferenças entre a tabela dada pelo problema e a tabela criada a partir da função
+
+$$
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+	x & 0 & 1 & 2 & 3 & 4\\
+\hline
+	f(x) & 0.023 & 0.775 & -0.181 & -0.989 & -0.448\\
+\hline
+\end{tabular}
+$$
+
+\item
+Como o erro máximo $E_\infty$ é definido por
+$$E_\infty = \max_{i=1,...,n} |\hat{y}_i - y_i|$$
+
+Temos que o erro máximo da função é $E_\infty = 0.989$
+
+\item
+Como o erro médio $E_1$ é definido por
+$$E_1 = \frac{1}{N} \sum_{i=1,...,n} |\hat{y}_i - y_i|$$
+
+Temos que o erro médio da função é $E_1 = \frac{2.416}{5} = 0.4832$
+
+\item
+Como a raiz do erro quadrático médio $E_2$ é definido por
+$$E_1 = \sqrt{\frac{1}{N} \sum_{i=1,...,n} (\hat{y}_i - y_i)^2}$$
+
+Temos que a raiz do erro quadrático médio é $E_2 = \sqrt{\frac{1}{5}(0.000529 + 0.600625 + 0.032761 + 0.978121 + 0.200704)}$
+
+$ = \sqrt{\frac{1.81274}{5}} \approx 0.60212$
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+\item
+A função a ser derivada é $f(x) = \frac{1}{2\beta}(e^{\beta x} - e^{-\beta x} - 2)$, mas primeiro acharemos $D(f)$.
+
+$$D(f) = \sum_{k=1}^{n}(f(x_k) - y_k)^2 = \sum_{k=1}^{n}[\frac{1}{2\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k]^2$$
+
+$$\frac{dD}{d\beta} = \sum_{k=1}^{n}2[\frac{1}{2\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k] \cdot \frac{d}{d\beta}[\frac{1}{2\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k]$$
+
+Expandindo na parte
+
+$$\frac{d}{d\beta}[\frac{1}{2\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k]$$
+
+Renomeando as funções:
+
+$$u(\beta) = (e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k$$
+
+$$v(\beta) = 2\beta$$
+
+Calculando as respectivas derivadas:
+
+$$\frac{du}{d\beta} = x_k \text{ } e^{\beta x_k} + x_k \text{ } e^{-\beta x_k}$$
+
+$$\frac{dv}{d\beta} = 2$$
+
+Logo pela regra do quociente:
+
+$$\frac{d}{d\beta}[\frac{1}{2\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k] = \frac{u'v - uv'}{v^2} = \frac{(x_k \text{ } e^{\beta x_k} + x_k \text{ } e^{-\beta x_k})(2\beta) - ((e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k)(2)}{4\beta^2} = $$
+
+$$ = \frac{\beta x_k \text{ } e^{\beta x_k} + \beta x_k \text{ } e^{-\beta x_k} - e^{\beta x_k} + e^{-\beta x_k} + 2 + y_k}{2\beta^2} = \frac{x_k\beta}{2\beta^2}(e^{\beta x} + e^{-\beta x}) + \frac{1}{2\beta^2}(-e^{\beta x} + e^{-\beta x} + 2) = $$
+
+$$ = \frac{x_k}{2\beta}(e^{\beta x} + e^{-\beta x}) + \frac{1}{2\beta^2}(-1)(e^{\beta x} - e^{-\beta x} - 2)$$
+
+Voltando na equação original
+
+$$\frac{dD}{d\beta} = \sum_{k=1}^{n}2[\frac{1}{2\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k] \cdot \frac{d}{d\beta}[\frac{1}{2\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k] = $$
+
+$$\sum_{k=1}^{n}[\frac{1}{\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k] \cdot [\frac{x_k}{2\beta}(e^{\beta x} + e^{-\beta x}) + [\frac{1}{2\beta^2}(-1)(e^{\beta x} - e^{-\beta x} - 2)] = $$
+
+$$\sum_{k=1}^{n}[\frac{1}{\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k][\frac{x_k}{2\beta}(e^{\beta x} + e^{-\beta x})] + [\frac{1}{\beta}(e^{\beta x_k} - e^{-\beta x_k} - 2) - y_k][\frac{1}{2\beta^2}(-1)(e^{\beta x} - e^{-\beta x} - 2)] = $$
+
+$$\sum_{k=1}^{n}[\frac{x_k}{2\beta^2}(e^{\beta x_k} - e^{-\beta x_k} - 2)(e^{\beta x} + e^{-\beta x})] - [\frac{y_k x_k}{2\beta}(e^{\beta x} + e^{-\beta x})] - [\frac{1}{2\beta^3}(e^{\beta x_k} - e^{-\beta x_k} - 2)^2] - [\frac{y_k}{2\beta^2} (e^{\beta x} - e^{-\beta x} - 2)] = $$
+
+\newpage
+
+\begin{equation}
+\begin{split}
+ = \frac{1}{2\beta}\sum_{k=1}^{n}x(e^{\beta x_k} - e^{-\beta x_k} - 2)(e^{\beta x} + e^{-\beta x}) + \sum_{k=1}^{n}y_k x_k(e^{\beta x} + e^{-\beta x})] -\\ \frac{1}{2\beta^2}\sum_{k=1}^{n}(e^{\beta x_k} - e^{-\beta x_k} - 2)^2 - \frac{1}{\beta}\sum_{k=1}^{n}y_k (e^{\beta x} - e^{-\beta x} - 2)
+\end{split}
+\end{equation}
+
+Mas como queremos a derivada sendo igual a zero para minimizar essa função, temos que:
+
+\begin{equation}
+\begin{split}
+\frac{1}{2\beta}\sum_{k=1}^{n}x(e^{\beta x_k} - e^{-\beta x_k} - 2)(e^{\beta x} + e^{-\beta x}) + \sum_{k=1}^{n}y_k x_k(e^{\beta x} + e^{-\beta x})] -\\ \frac{1}{2\beta^2}\sum_{k=1}^{n}(e^{\beta x_k} - e^{-\beta x_k} - 2)^2 - \frac{1}{\beta}\sum_{k=1}^{n}y_k (e^{\beta x} - e^{-\beta x} - 2) = 0
+\end{split}
+\end{equation}
+
+Ou seja, reescrevendo passando as parcelas negativas para o outro lado:
+
+\begin{equation}
+\begin{split}
+\frac{1}{2\beta}\sum_{k=1}^{n}x(e^{\beta x_k} - e^{-\beta x_k} - 2)(e^{\beta x} + e^{-\beta x}) + \sum_{k=1}^{n}y_k x_k(e^{\beta x} + e^{-\beta x})] =\\ \frac{1}{2\beta^2}\sum_{k=1}^{n}(e^{\beta x_k} - e^{-\beta x_k} - 2)^2 + \frac{1}{\beta}\sum_{k=1}^{n}y_k (e^{\beta x} - e^{-\beta x} - 2)
+\end{split}
+\end{equation}
+
+\item
+A função a ser derivada é $f(x) = \beta x$, mas primeiro acharemos $D(f)$.
+
+$$D(f) = \sum_{k=1}^{n}(f(x_k) - y_k)^2 = \sum_{k=1}^{n}[\beta x_k - y_k]^2 = $$
+
+$$ = \beta^2 \sum_{k=1}^{n}x_k^2 - 2\beta \sum_{k=1}^{n}x_k y_k + \sum_{k=1}^{n} y_k^k$$
+
+Assim
+
+$$\frac{dD}{d\beta} = 2\beta \sum_{k=1}^{n}x_k^2 - 2 \sum_{k=1}^{n}x_k y_k$$
+
+E como quermos que isso seja igual a 0 para achar o mínimo
+
+$$2\beta \sum_{k=1}^{n}x_k^2 - 2 \sum_{k=1}^{n}x_k y_k = 0 \implies \beta = \frac{\sum_{k=1}^{n}x_k y_k}{\sum_{k=1}^{n}x_k^2}$$
+
+\end{enumerate}
+\end{exerc}
+
+\newpage
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+\item
+Resultado do código em Python:
+\begin{lstlisting}[language=Python]
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.array([2.0, 3.5, 4.0, 5.1, 7.0])
+y = np.array([2.2, 2.0, 3.0, 6.0, 5.0])
+
+plt.scatter(x, y)
+plt.show()
+\end{lstlisting}
+
+\item
+Usando o método dos quadrados mínimos temos
+
+$$D(f) = \sum_{k=1}^{n}(f(x_k) - y_k)^2$$
+
+e queremos minimizar a função $f(x_k) = \beta_0 + \beta_1 x_k$, logo:
+
+$$D(f) = \sum_{k=1}^{n}(\beta_0 + \beta_1 x - y_k)^2$$
+
+E assim temos que achar onde a derivada é nula tanto em relação a $\beta_0$ tanto em relação a $\beta_1$.
+
+$$\frac{dD}{d\beta_0} = 0 \implies \sum_{k=1}^{n} 2(\beta_0 + \beta_1 x - y) = 0 \implies \beta_0 \sum_{k=1}^{n} 1 + \beta_1 \sum_{k=1}^{n} x = \sum_{k=1}^{n} y$$
+
+$$\frac{dD}{d\beta_1} = 0 \implies \sum_{k=1}^{n} 2(\beta_0 + \beta_1 x - y) x = 0 \implies \beta_0 \sum_{k=1}^{n} x + \beta_1 \sum_{k=1}^{n} x^2 = \sum_{k=1}^{n} yx$$
+
+Com isso, podemos fazer um sistema linear da forma
+
+$$
+\begin{bmatrix}
+	n & \sum x_i\\
+	\sum x_i & \sum x_i^2\\
+\end{bmatrix}
+\begin{bmatrix}
+	\beta_0\\
+	\beta_1\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	\sum y_i\\
+	\sum x_i y_i\\
+\end{bmatrix}
+$$
+
+Com os vetores $x$ e $y$ dados no enunciado temos que:
+
+$$n = 5, \sum x_i = 21.6, \sum x_i^2 = 107.26, \sum y_i = 18.2, \sum x_i y_i = 89$$
+
+E assim temos:
+
+$$
+\begin{bmatrix}
+	5 & 21.6\\
+	21.6 & 107.26\\
+\end{bmatrix}
+\begin{bmatrix}
+	\beta_0\\
+	\beta_1\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	18.2\\
+	89\\
+\end{bmatrix}
+$$
+
+Resultando no sistema:
+
+$$
+\begin{cases}
+5\beta_0 + 21.6\beta_1 = 18.2\\
+21.6\beta_0 + 107.26\beta_1 = 89
+\end{cases}
+\implies
+\beta_0 \approx 0.426326, \beta_1 \approx 0.743906 
+$$
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}[a.]
+
+Usando o método dos quadrados mínimos temos
+
+$$D(f) = \sum_{k=1}^{n}(f(x_k) - y_k)^2$$
+
+e queremos minimizar a função $f(x_k) = \beta_1 x + \beta_2 \ln{x} + \epsilon$, logo:
+
+$$D(f) = \sum_{k=1}^{n}(\beta_1 x + \beta_2 \ln{x} + \epsilon - y_k)^2$$
+
+E assim temos que achar onde a derivada é nula tanto em relação a $\beta_1$ tanto em relação a $\beta_2$.
+
+$$\frac{dD}{d\beta_1} = 0 \implies \sum_{k=1}^{n} 2(\beta_1 x + \beta_2 \ln{x} + \epsilon - y) x = 0 \implies \beta_1 \sum_{k=1}^{n} x^2 + \beta_2 \sum_{k=1}^{n} x\ln{x} + \epsilon \sum_{k=1}^{n} x = \sum_{k=1}^{n} yx$$
+
+$$\frac{dD}{d\beta_2} = 0 \implies \sum_{k=1}^{n} 2(\beta_1 x + \beta_2 \ln{x} + \epsilon - y) \ln{x} = 0 \implies \beta_1 \sum_{k=1}^{n} x \ln{x} + \beta_2 \sum_{k=1}^{n} (\ln{x})^2 + \epsilon \sum_{k=1}^{n} \ln{x} = \sum_{k=1}^{n} y \ln{x}$$
+
+Com isso, podemos fazer um sistema linear da forma (ignoramos $\epsilon$ por representar um valor muito pequeno)
+
+$$
+\begin{bmatrix}
+	\sum x_i^2 & \sum x_i \ln{x_i}\\
+	\sum x_i \ln{x_i} & \sum (\ln{x_i})^2\\
+\end{bmatrix}
+\begin{bmatrix}
+	\beta_0\\
+	\beta_1\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	\sum x_i y_i\\
+	\sum \ln{x_i} y_i\\
+\end{bmatrix}
+$$
+
+Com os vetores $x$ e $y$ dados no enunciado temos que:
+
+$$\sum x_i^2 = 91, \sum x_i \ln{x_i} \approx 29.025055, \sum (\ln{x_i})^2 \approx 9.409906, \sum x_i y_i = 2946.283, \sum \ln{x_i} y_i \approx 955.643202$$
+
+Resultando no sistema:
+
+$$
+\begin{cases}
+91\beta_1 + 29.025055\beta_2 = 2946.283\\
+29.025055\beta_1 + 9.409906\beta_2 = 955.643202
+\end{cases}
+\implies
+\beta_0 \approx -0.964094, \beta_1 \approx 104.531 
+$$
+
+\end{enumerate}
+\end{exerc}
+
+\begin{exerc}
+\begin{enumerate}[a.]
+\
+A regressão que possuí menor desvio é a de $p = 7$ visto que aproxima melhor os pontos da curva criada. Porém o valor $p = 3$ é mais adequado visto que ele proporciona, ao contrário do valor $p = 7$, uma representação de como os dados tendem a mudar com a variação da metragem dos imóveis ao invés de simplesmente um polinômio que acompanha os pequenos desvios da "curva ideal" e cria uma representação totalmente não intuitiva do processo.
+
+
+\end{enumerate}
+\end{exerc}
+
+\end{document}
+\grid
+\grid
