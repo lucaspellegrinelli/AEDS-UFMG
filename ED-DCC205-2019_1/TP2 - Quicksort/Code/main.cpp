@@ -1,16 +1,19 @@
 #include <iostream>
+#include "quicksort.hpp"
 
 using namespace std;
 
 int main(){
-  int arr[] = {10, 7, 8, 9, 1, 5};
-  int n = sizeof(arr)/sizeof(arr[0]);
-  quick_sort(arr, 0, n - 1);
+  Quicksort qs = new Quicksort();
 
-  for(int i = 0; i < n; i++){
-    cout << arr[i] << " ";
+  int size = 5;
+  int arr[size] = {4, 7, 2, 5, 8};
+
+  qs.sort(arr, 0, size - 1, "QPE");
+
+  for(int i = 0; i < size; i++){
+    cout << arr[i] << endl;
   }
-  cout << endl;
   
   return 0;
 }

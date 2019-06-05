@@ -1,3 +1,6 @@
+#ifndef QUICKSORT_REQUEST
+#define QUICKSORT_REQUEST
+
 #include <string.h>
 
 class QuicksortRequest{
@@ -24,3 +27,5 @@ private:
 	std::string variation;
 	std::string arr_type;
 };
+
+#endif

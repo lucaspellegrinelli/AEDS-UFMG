@@ -1,3 +1,8 @@
+#ifndef SORT
+#define SORT
+
+#include <string	>
+
 class Sort{
 public:
 	Sort(int operation_cost){
@@ -5,7 +10,7 @@ public:
 		this->operation_cost = operation_cost;
 	}
 
-	virtual void sort(int[] arr, int left, int right) = 0;
+	virtual void sort(int arr[], int left, int right, std::string variation) = 0;
 
 	int get_operation_count(){
 		return this->operation_count;
@@ -20,7 +25,10 @@ private:
 	int operation_count;
 	int operation_cost;
 
+protected:
 	void add_operation(){
 		this->operation_count += operation_cost;
 	}
 };
+
+#endif

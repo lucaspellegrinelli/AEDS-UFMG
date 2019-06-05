@@ -1,3 +1,6 @@
+#ifndef PARTITION_FUNCTION
+#define PARTITION_FUNCTION
+
 class PartitionFunction{
 public:
 	PartitionFunction(){}
@@ -10,7 +13,7 @@ public:
 	virtual int operator() (int arr[], int left, int right){
 		return (left + right) / 2;
 	}
-}
+};
 
 class Median: public PartitionFunction{
 public:
@@ -33,7 +36,7 @@ public:
 			else return b;
 		} 
 	}
-}
+};
 
 class FirstElement: public PartitionFunction{
 public:
@@ -41,4 +44,6 @@ public:
 	virtual int operator() (int arr[], int left, int right){
 		return left;
 	}
-}
+};
+
+#endif
