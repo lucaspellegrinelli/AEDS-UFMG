@@ -9,7 +9,7 @@
 #include <string>
 
 //#define MAX_RAND_N 9223372036854775806
-#define MAX_RAND_N 3
+#define MAX_RAND_N 10
 #define NUMBER_OF_TESTS 20
 
 class SortRequest{
@@ -30,21 +30,17 @@ public:
 		long long *times = new long long[NUMBER_OF_TESTS];
 
 		for(int i = 0; i < NUMBER_OF_TESTS; i++){
-			std::cout << 0 << std::endl;
 			qs->reset_comparasion_count();
-			std::cout << 1 << std::endl;
 			qs->reset_move_count();
-			std::cout << 2 << std::endl;
+
 			arrs[i] = generate_array(this->arr_type, this->arr_size);
-			std::cout << 3 << std::endl;
 			long long *arr_copy = copy_array(arrs[i], this->arr_size);
-			std::cout << 4 << std::endl;
+
 			output_array(arr_copy, this->arr_size);
 			times[i] = time_sort(qs, arr_copy, this->arr_size);
 			output_array(arr_copy, this->arr_size);
-			std::cout << 5 << std::endl;
+
 			comparisions[i] = qs->get_comparation_count();
-			std::cout << 6 << std::endl;
 			moves[i] = qs->get_move_count();
 		}
 
@@ -83,13 +79,9 @@ private:
 	}
 
 	long long time_sort(Quicksort *qs, long long *arr, int size){
-		std::cout << 41 << std::endl;
 		auto begin = std::chrono::high_resolution_clock::now();
-		std::cout << 42 << std::endl;
 		qs->sort(arr, 0, size - 1);
-		std::cout << 43 << std::endl;
 		auto end = std::chrono::high_resolution_clock::now();
-		std::cout << 44 << std::endl;
 		auto dur = end - begin;
 		auto dur_in_ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
 		return dur_in_ms;

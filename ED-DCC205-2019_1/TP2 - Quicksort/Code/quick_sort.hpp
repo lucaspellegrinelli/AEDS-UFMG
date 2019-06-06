@@ -51,9 +51,9 @@ private:
 	std::string variation;
 
 	void swap(long long& a, long long &b){
-		long long temp = a;
+		long long t = a;
 		a = b;
-		b = temp;
+		b = t;
 
 		this->add_move(2);
 	}
@@ -91,7 +91,6 @@ private:
 				change_sort->get_new_sort()->sort(arr, left, right);
 			}else{
 				int p = partitionate_array(arr, left, right, partition);
-				//std::cout << p << " " << left << " " << right << std::endl;
 				recursive_sort(arr, left, p - 1, partition, change_sort);
 				recursive_sort(arr, p + 1, right, partition, change_sort);
 			}
