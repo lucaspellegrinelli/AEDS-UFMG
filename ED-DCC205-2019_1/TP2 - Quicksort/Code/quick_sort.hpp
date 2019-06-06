@@ -67,15 +67,15 @@ private:
 		while(i <= j){
 			while(arr[i] < pivot){
 				i++;
-				this->add_comparision(1);
+				this->add_comparision(1); // Teste do while
 			}
-			this->add_comparision(1);
+			this->add_comparision(1); // Teste que deu false do while
 
 			while(arr[j] > pivot){
 				j--;
-				this->add_comparision(1);
+				this->add_comparision(1); // Teste do while
 			}
-			this->add_comparision(1);
+			this->add_comparision(1); // Teste que deu false do while
 
 			if(i <= j) swap(arr[i++], arr[j--]);
 			this->add_comparision(2); // Um para o if e outro para o loop
@@ -86,16 +86,14 @@ private:
 	}
 
 	void recursive_sort(long long *arr, int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
-		this->add_comparision(1);
-		if(left < right){
-			this->add_comparision(1);
-			if((*change_sort)(left, right)){
-				change_sort->get_new_sort()->sort(arr, left, right);
-			}else{
-				int *p = partitionate_array(arr, left, right, partition);
-				if(p[1] > left) recursive_sort(arr, left, p[1], partition, change_sort);
-				if(p[0] < right) recursive_sort(arr, p[0], right, partition, change_sort);
-			}
+		this->add_comparision(1); // If embaixo
+		if((*change_sort)(left, right)){
+			change_sort->get_new_sort()->sort(arr, left, right);
+		}else{
+			int *p = partitionate_array(arr, left, right, partition);
+			if(p[1] > left) recursive_sort(arr, left, p[1], partition, change_sort);
+			if(p[0] < right) recursive_sort(arr, p[0], right, partition, change_sort);
+			this->add_comparision(2); // Dois ifs em cima
 		}
 	}
 
@@ -107,26 +105,26 @@ private:
 		stack[++top] = right;
 
 		while(top >= 0){
-			this->add_comparision(1);
+			this->add_comparision(1); // If do while
 			right = stack[top--];
 			left = stack[top--];
 
 			int *p = partitionate_array(arr, left, right, partition);
 
-			this->add_comparision(1);
+			this->add_comparision(1); // If embaixo
 			if (p[1] > left) {
 				stack[++top] = left;
 				stack[++top] = p[1];
 			}
 
-			this->add_comparision(1);
+			this->add_comparision(1); // If embaixo
 			if (p[0] < right) {
 				stack[++top] = p[0];
 				stack[++top] = right;
 			}
 		}
 
-		this->add_comparision(1);
+		this->add_comparision(1); // Teste do while que deu false
 	}
 };
 
