@@ -8,8 +8,7 @@
 #include <chrono>
 #include <string>
 
-//#define MAX_RAND_N 9223372036854775806
-#define MAX_RAND_N 10
+#define MAX_RAND_N 9223372036854775806
 #define NUMBER_OF_TESTS 20
 
 class SortRequest{
@@ -25,19 +24,19 @@ public:
 		Quicksort *qs;
 
 		if(this->variation == "QC"){
-			qs = new Quicksort(Quicksort::MIDDLE_ELEMENT_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+			qs = new Quicksort(Quicksort::MIDDLE_ELEMENT_PARTITION, 0.0, false);
 		}else if(this->variation == "QM3"){
-			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, 0.0, false);
 		}else if(this->variation == "QPE"){
-			qs = new Quicksort(Quicksort::FIRST_ELEMENT_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+			qs = new Quicksort(Quicksort::FIRST_ELEMENT_PARTITION, 0.0, false);
 		}else if(this->variation == "QT1"){
-			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, 0.01, false);
 		}else if(this->variation == "QT5"){
-			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, 0.05, false);
 		}else if(this->variation == "QT10"){
-			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, 0.1, false);
 		}else if(this->variation == "QNR"){
-			qs = new Quicksort(Quicksort::MIDDLE_ELEMENT_PARTITION, Quicksort::NO_CHANGE_SORT, true);
+			qs = new Quicksort(Quicksort::MIDDLE_ELEMENT_PARTITION, 0.0, true);
 		}
 
 		long long **arrs = new long long*[NUMBER_OF_TESTS];

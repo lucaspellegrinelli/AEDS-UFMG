@@ -8,25 +8,33 @@
 #include <string>
 
 #define Partition(name) int (*name)(long long*, int, int)
-#define ChangeSort(name) bool (*name)(int, int)
 
 class Quicksort : public Sort{
 public:
 	Quicksort() : Sort(){
 		this->partition = Quicksort::MIDDLE_ELEMENT_PARTITION;
-		this->change_sort = Quicksort::NO_CHANGE_SORT;
 		this->iterative = false;
+		this->change_sort_perc = 0.0;
+		this->change_sort_limit = 0;
 	}
 
-	Quicksort(Partition(partition), ChangeSort(change_sort), bool iterative) : Sort(){
+	Quicksort(Partition(partition), double change_sort_perc, bool iterative) : Sort(){
 		this->partition = partition;
-		this->change_sort = change_sort;
 		this->iterative = iterative;
+		this->change_sort_perc = change_sort_perc;
+		this->change_sort_limit = 0;
 	}
 
 	void sort(long long *arr, int left, int right) override {
-		if(this->iterative)	iterative_sort(arr, left, right);
-		else recursive_sort(arr, left, right);
+		this->change_sort_limit = (right - left + 1) * change_sort_perc;
+
+		if(this->iterative){
+			iterative_sort(arr, left, right);
+		}else {
+			recursive_sort(arr, left, right);
+		}
+
+		this->change_sort_limit = 0;
 	}
 
 	/* -------------------- PARTITIONS -------------------- */
@@ -39,25 +47,34 @@ public:
 	};
 
 	static int MEDIAN_OF_3_PARTITION(long long *arr, int left, int right){
-		int a = left, b = (left + right) / 2, c = right;
-		if(arr[a - b] * arr[b - c] > 0) return b;
-		if(arr[a - b] * arr[a - c] > 0) return c;
-		return a;
-	};
+		int a_index = left;
+		int b_index = (left + right) / 2;
+		int c_index = right;
 
-	/* -------------------- CHANGE SORTS -------------------- */
-	static bool NO_CHANGE_SORT(int left, int right){
-		return false;
+		long long a = arr[a_index];
+		long long b = arr[b_index];
+		long long c = arr[c_index];
+		
+		if(a > b){
+			if(b > c) return b_index;
+			else if(a > c) return c_index;
+			else return a_index;
+		}else {
+			if(a > c)	return a_index;
+			else if(b > c)	return c_index;
+			else return b_index;
+		}
 	};
 
 private:
 	Partition(partition);
-	ChangeSort(change_sort);
 	bool iterative;
+	double change_sort_perc;
+	int change_sort_limit;
 
 	void recursive_sort(long long *arr, int left, int right){
 		this->add_comparision(1); // If embaixo
-		if(this->change_sort(left, right)){
+		if((right - left + 1) <= this->change_sort_limit){
 			InsertionSort insertion = InsertionSort();
 			insertion.sort(arr, left, right);
 		}else{
