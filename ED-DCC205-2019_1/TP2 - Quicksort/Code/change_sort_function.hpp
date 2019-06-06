@@ -26,7 +26,7 @@ public:
 	~ChangeSortFunction(){
 		delete this->new_sort;
 	}
-	
+
 private:
 	int limit;
 	Sort *new_sort;

@@ -5,11 +5,11 @@
 
 class InsertionSort : public Sort{
 public:
-	InsertionSort() : Sort(1){ }
+	InsertionSort() : Sort(){ }
 
-	void sort(int arr[], int left, int right) override{
+	void sort(long long *arr, int left, int right) override{
 		for (int i = left + 1; i < right; i++){
-			int key = arr[i];
+			long long key = arr[i];
 			int j = i - 1;
 
 			while (j >= left && arr[j] > key){

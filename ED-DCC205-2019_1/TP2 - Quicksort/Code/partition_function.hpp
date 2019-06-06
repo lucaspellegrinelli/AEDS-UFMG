@@ -6,13 +6,13 @@
 class PartitionFunction{
 public:
 	PartitionFunction(){}
-	virtual int operator() (int arr[], int left, int right) = 0;
+	virtual int operator() (long long *arr, int left, int right) = 0;
 };
 
 class Classic: public PartitionFunction{
 public:
 	Classic(){}
-	virtual int operator() (int arr[], int left, int right){
+	virtual int operator() (long long *arr, int left, int right){
 		return (left + right) / 2;
 	}
 };
@@ -20,7 +20,7 @@ public:
 class Median: public PartitionFunction{
 public:
 	Median(){}
-	virtual int operator() (int arr[], int left, int right){
+	virtual int operator() (long long *arr, int left, int right){
 		int a_index = left;
 		int a = arr[a_index];
 		int b_index = right;
@@ -43,7 +43,7 @@ public:
 class FirstElement: public PartitionFunction{
 public:
 	FirstElement(){}
-	virtual int operator() (int arr[], int left, int right){
+	virtual int operator() (long long *arr, int left, int right){
 		return left;
 	}
 };

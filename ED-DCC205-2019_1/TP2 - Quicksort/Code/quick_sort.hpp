@@ -11,22 +11,19 @@
 
 class Quicksort : public Sort{
 public:
-	Quicksort(std::string variation) : Sort(2){
+	Quicksort(std::string variation) : Sort(){
 		this->variation = variation;
 	}
 
-	void sort(int arr[], int left, int right) override {
+	void sort(long long *arr, int left, int right) override {
 		if(variation == "QNR"){
 			PartitionFunction *partition = new Classic();
 			ChangeSortFunction *change_sort = new NoChangeFunction();
-
 			iterative_sort(arr, left, right, partition, change_sort);
 		}else{
 			PartitionFunction *partition;
 			ChangeSortFunction *change_sort;
-
 			Sort *insertion = new InsertionSort();
-
 			if(this->variation == "QC"){
 				partition = new Classic();
 				change_sort = new NoChangeFunction();
@@ -50,44 +47,58 @@ public:
 			recursive_sort(arr, left, right, partition, change_sort);
 		}
 	}
-
-	~Quicksort(){}
 private:
 	std::string variation;
 
-	void swap(int& a, int &b){
-		int temp = a;
+	void swap(long long& a, long long &b){
+		long long temp = a;
 		a = b;
 		b = temp;
 
-		this->add_operation();
+		this->add_move(2);
 	}
 
-	int partitionate_array(int arr[], int left, int right, PartitionFunction*& partition){
-    int pivot = arr[(*partition)(arr, left, right)];
+	int partitionate_array(long long *arr, int left, int right, PartitionFunction*& partition){
+    long long pivot = arr[(*partition)(arr, left, right)];
 
 		while (left <= right){
-			while (arr[left] < pivot) left++;
-			while (arr[right] > pivot) right--;
+			while (arr[left] < pivot){
+				left++;
+				this->add_comparision(1);
+			}
+			this->add_comparision(1);
+
+			while (arr[right] > pivot){
+				right--;
+				this->add_comparision(1);
+			}
+			this->add_comparision(1);
+
 			if(left <= right) swap(arr[left++], arr[right++]);
+			this->add_comparision(2); // Uma pra esse if e uma pro while
 		}
+
+		this->add_comparision(1);
 
 		return right;
 	}
 
-	void recursive_sort(int arr[], int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
+	void recursive_sort(long long *arr, int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
+		this->add_comparision(1);
 		if(left < right){
+			this->add_comparision(1);
 			if((*change_sort)(left, right)){
 				change_sort->get_new_sort()->sort(arr, left, right);
 			}else{
 				int p = partitionate_array(arr, left, right, partition);
+				//std::cout << p << " " << left << " " << right << std::endl;
 				recursive_sort(arr, left, p - 1, partition, change_sort);
 				recursive_sort(arr, p + 1, right, partition, change_sort);
 			}
 		}
 	}
 
-	void iterative_sort(int arr[], int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
+	void iterative_sort(long long *arr, int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
 		int stack[right - left + 1];
 		int top = -1;
 
@@ -95,21 +106,26 @@ private:
 		stack[++top] = right;
 
 		while(top >= 0){
+			this->add_comparision(1);
 			right = stack[top--];
 			left = stack[top--];
 
 			int p = partitionate_array(arr, left, right, partition);
 
+			this->add_comparision(1);
 			if (p - 1 > left) {
 				stack[++top] = left;
 				stack[++top] = p - 1;
 			}
 
+			this->add_comparision(1);
 			if (p + 1 < right) {
 				stack[++top] = p + 1;
 				stack[++top] = right;
 			}
 		}
+
+		this->add_comparision(1);
 	}
 };
 
