@@ -3,74 +3,103 @@
 
 #include "sort.hpp"
 #include "insertion_sort.hpp"
-// #include "partition_function.hpp"
-// #include "change_sort_function.hpp"
 
 #include <iostream>
 #include <string>
 
+#define Partition(name) int (*name)(long long*, int, int)
+#define ChangeSort(name) bool (*name)(int, int)
+
 class Quicksort : public Sort{
 public:
-	Quicksort(std::string variation) : Sort(){
-		this->variation = variation;
+	Quicksort() : Sort(){
+		this->partition = Quicksort::MIDDLE_ELEMENT_PARTITION;
+		this->change_sort = Quicksort::NO_CHANGE_SORT;
+		this->iterative = false;
+	}
+
+	Quicksort(Partition(partition), ChangeSort(change_sort), bool iterative) : Sort(){
+		this->partition = partition;
+		this->change_sort = change_sort;
+		this->iterative = iterative;
 	}
 
 	void sort(long long *arr, int left, int right) override {
-		// if(variation == "QNR"){
-		// 	auto partition = new Classic();
-		// 	ChangeSortFunction *change_sort = new NoChangeFunction();
-		// 	iterative_sort(arr, left, right, partition, change_sort);
-		// }else{
-		// 	PartitionFunction *partition;
-		// 	ChangeSortFunction *change_sort;
-		// 	Sort *insertion = new InsertionSort();
-		// 	if(this->variation == "QC"){
-		// 		partition = new Classic();
-		// 		change_sort = new NoChangeFunction();
-		// 	}else if(variation == "QM3"){
-		// 		partition = new Median();
-		// 		change_sort = new NoChangeFunction();
-		// 	}else if(variation == "QPE"){
-		// 		partition = new FirstElement();
-		// 		change_sort = new NoChangeFunction();
-		// 	}else if(variation == "QT1"){
-		// 		partition = new Median();
-		// 		change_sort = new ChangeSortFunction(insertion, 0.01, right - left + 1);
-		// 	}else if(variation == "QT5"){
-		// 		partition = new Median();
-		// 		change_sort = new ChangeSortFunction(insertion, 0.05, right - left + 1);
-		// 	}else if(variation == "QT10"){
-		// 		partition = new Median();
-		// 		change_sort = new ChangeSortFunction(insertion, 0.1, right - left + 1);
-		// 	}
-		//
-		// 	recursive_sort(arr, left, right, partition, change_sort);
-		// }
-
-		auto partition = [](long long *arr, int left, int right){
-			return (left + right) / 2;
-		};
-
-		auto change_sort = [](int left, int right){
-			return false;
-		};
-
-		recursive_sort(arr, left, right, partition, change_sort);
+		if(this->iterative)	iterative_sort(arr, left, right);
+		else recursive_sort(arr, left, right);
 	}
+
+	/* -------------------- PARTITIONS -------------------- */
+	static int FIRST_ELEMENT_PARTITION(long long *arr, int left, int right){
+		return left;
+	};
+
+	static int MIDDLE_ELEMENT_PARTITION(long long *arr, int left, int right){
+		return (left + right) / 2;
+	};
+
+	static int MEDIAN_OF_3_PARTITION(long long *arr, int left, int right){
+		int a = left, b = (left + right) / 2, c = right;
+		if(arr[a - b] * arr[b - c] > 0) return b;
+		if(arr[a - b] * arr[a - c] > 0) return c;
+		return a;
+	};
+
+	/* -------------------- CHANGE SORTS -------------------- */
+	static bool NO_CHANGE_SORT(int left, int right){
+		return false;
+	};
+
 private:
-	std::string variation;
+	Partition(partition);
+	ChangeSort(change_sort);
+	bool iterative;
 
-	void swap(long long& a, long long &b){
-		long long t = a;
-		a = b;
-		b = t;
-
-		this->add_move(2);
+	void recursive_sort(long long *arr, int left, int right){
+		this->add_comparision(1); // If embaixo
+		if(this->change_sort(left, right)){
+			InsertionSort insertion = InsertionSort();
+			insertion.sort(arr, left, right);
+		}else{
+			int *p = partitionate_array(arr, left, right);
+			if(p[1] > left) recursive_sort(arr, left, p[1]);
+			if(p[0] < right) recursive_sort(arr, p[0], right);
+			this->add_comparision(2); // Dois ifs em cima
+		}
 	}
 
-	template<typename PartitionFunction>
-	int* partitionate_array(long long *arr, int left, int right, PartitionFunction &partition){
-    long long pivot = arr[partition(arr, left, right)];
+	void iterative_sort(long long *arr, int left, int right){
+		int stack[right - left + 1];
+		int top = -1;
+
+		stack[++top] = left;
+		stack[++top] = right;
+
+		while(top >= 0){
+			this->add_comparision(1); // If do while
+			right = stack[top--];
+			left = stack[top--];
+
+			int *p = partitionate_array(arr, left, right);
+
+			this->add_comparision(1); // If embaixo
+			if (p[1] > left) {
+				stack[++top] = left;
+				stack[++top] = p[1];
+			}
+
+			this->add_comparision(1); // If embaixo
+			if (p[0] < right) {
+				stack[++top] = p[0];
+				stack[++top] = right;
+			}
+		}
+
+		this->add_comparision(1); // Teste do while que deu false
+	}
+
+	int* partitionate_array(long long *arr, int left, int right){
+    long long pivot = arr[this->partition(arr, left, right)];
 
 		int i = left;
 		int j = right;
@@ -96,49 +125,12 @@ private:
 		return new int[2]{i, j};
 	}
 
-	template<typename PartitionFunction, typename ChangeSortFunction>
-	void recursive_sort(long long *arr, int left, int right, PartitionFunction &partition, ChangeSortFunction &change_sort){
-		this->add_comparision(1); // If embaixo
-		if(change_sort(left, right)){
-			InsertionSort insertion = InsertionSort();
-			insertion.sort(arr, left, right);
-		}else{
-			int *p = partitionate_array(arr, left, right, partition);
-			if(p[1] > left) recursive_sort(arr, left, p[1], partition, change_sort);
-			if(p[0] < right) recursive_sort(arr, p[0], right, partition, change_sort);
-			this->add_comparision(2); // Dois ifs em cima
-		}
-	}
+	void swap(long long& a, long long &b){
+		long long t = a;
+		a = b;
+		b = t;
 
-	template<typename PartitionFunction, typename ChangeSortFunction>
-	void iterative_sort(long long *arr, int left, int right, PartitionFunction &partition, ChangeSortFunction &change_sort){
-		int stack[right - left + 1];
-		int top = -1;
-
-		stack[++top] = left;
-		stack[++top] = right;
-
-		while(top >= 0){
-			this->add_comparision(1); // If do while
-			right = stack[top--];
-			left = stack[top--];
-
-			int *p = partitionate_array(arr, left, right, partition);
-
-			this->add_comparision(1); // If embaixo
-			if (p[1] > left) {
-				stack[++top] = left;
-				stack[++top] = p[1];
-			}
-
-			this->add_comparision(1); // If embaixo
-			if (p[0] < right) {
-				stack[++top] = p[0];
-				stack[++top] = right;
-			}
-		}
-
-		this->add_comparision(1); // Teste do while que deu false
+		this->add_move(2);
 	}
 };
 

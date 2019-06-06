@@ -8,7 +8,8 @@
 #include <chrono>
 #include <string>
 
-#define MAX_RAND_N 9223372036854775806
+//#define MAX_RAND_N 9223372036854775806
+#define MAX_RAND_N 10
 #define NUMBER_OF_TESTS 20
 
 class SortRequest{
@@ -21,7 +22,23 @@ public:
 	}
 
 	void run(){
-		Quicksort *qs = new Quicksort(this->variation);
+		Quicksort *qs;
+
+		if(this->variation == "QC"){
+			qs = new Quicksort(Quicksort::MIDDLE_ELEMENT_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+		}else if(this->variation == "QM3"){
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+		}else if(this->variation == "QPE"){
+			qs = new Quicksort(Quicksort::FIRST_ELEMENT_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+		}else if(this->variation == "QT1"){
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+		}else if(this->variation == "QT5"){
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+		}else if(this->variation == "QT10"){
+			qs = new Quicksort(Quicksort::MEDIAN_OF_3_PARTITION, Quicksort::NO_CHANGE_SORT, false);
+		}else if(this->variation == "QNR"){
+			qs = new Quicksort(Quicksort::MIDDLE_ELEMENT_PARTITION, Quicksort::NO_CHANGE_SORT, true);
+		}
 
 		long long **arrs = new long long*[NUMBER_OF_TESTS];
 		long long *comparisions = new long long[NUMBER_OF_TESTS];
@@ -69,7 +86,7 @@ private:
 	}
 
 	long long get_median(long long *arr, int size){
-		Quicksort *qs = new Quicksort("QM3");
+		Quicksort *qs = new Quicksort();
 		qs->sort(arr, 0, size - 1);
 
 		if(size % 2 == 0){
