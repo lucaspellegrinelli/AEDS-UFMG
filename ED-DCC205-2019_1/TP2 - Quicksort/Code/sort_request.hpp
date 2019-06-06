@@ -8,8 +8,7 @@
 #include <chrono>
 #include <string>
 
-//#define MAX_RAND_N 9223372036854775806
-#define MAX_RAND_N 10
+#define MAX_RAND_N 9223372036854775806
 #define NUMBER_OF_TESTS 20
 
 class SortRequest{
@@ -47,6 +46,12 @@ public:
 		long long med_times = get_median(times, NUMBER_OF_TESTS);
 
 		output_sort_info(avg_comp, avg_moves, med_times);
+
+		if(this->print_arr){
+			for(int i = 0; i < NUMBER_OF_TESTS; i++){
+				output_array(arrs[i], this->arr_size);
+			}
+		}
 	}
 private:
 	std::string variation;

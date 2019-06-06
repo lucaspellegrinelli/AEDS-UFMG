@@ -82,7 +82,7 @@ private:
 		}
 		this->add_comparision(1); // Teste que deu false do while
 
-		return new int[2]{i, j};;
+		return new int[2]{i, j};
 	}
 
 	void recursive_sort(long long *arr, int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
