@@ -36,15 +36,11 @@ public:
 			arrs[i] = generate_array(this->arr_type, this->arr_size);
 			long long *arr_copy = copy_array(arrs[i], this->arr_size);
 
-			output_array(arr_copy, this->arr_size);
 			times[i] = time_sort(qs, arr_copy, this->arr_size);
-			output_array(arr_copy, this->arr_size);
 
 			comparisions[i] = qs->get_comparation_count();
 			moves[i] = qs->get_move_count();
 		}
-
-		std::cout << 7 << std::endl;
 
 		long long avg_comp = get_average(comparisions, NUMBER_OF_TESTS);
 		long long avg_moves = get_average(moves, NUMBER_OF_TESTS);

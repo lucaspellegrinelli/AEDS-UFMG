@@ -65,15 +65,24 @@ private:
 		int j = right;
 
 		while(i <= j){
-			while(arr[i] < pivot) i++;
-			while(arr[j] > pivot) j--;
-			if(i <= j) swap(arr[i++], arr[j--]);
-		}
+			while(arr[i] < pivot){
+				i++;
+				this->add_comparision(1);
+			}
+			this->add_comparision(1);
 
-		int *r = new int[2];
-		r[0] = i;
-		r[1] = j;
-		return r;
+			while(arr[j] > pivot){
+				j--;
+				this->add_comparision(1);
+			}
+			this->add_comparision(1);
+
+			if(i <= j) swap(arr[i++], arr[j--]);
+			this->add_comparision(2); // Um para o if e outro para o loop
+		}
+		this->add_comparision(1); // Teste que deu false do while
+
+		return new int[2]{i, j};;
 	}
 
 	void recursive_sort(long long *arr, int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
