@@ -74,7 +74,7 @@ private:
 			}
 			this->add_comparision(1);
 
-			if(left <= right) swap(arr[left++], arr[right++]);
+			if(left <= right) swap(arr[left++], arr[right--]);
 			this->add_comparision(2); // Uma pra esse if e uma pro while
 		}
 
