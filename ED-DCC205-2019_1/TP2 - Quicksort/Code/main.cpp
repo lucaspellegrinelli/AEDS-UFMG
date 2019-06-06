@@ -1,19 +1,14 @@
 #include <iostream>
-#include "quicksort.hpp"
+#include <stdlib.h>
+#include <time.h>
+
+#include "sort_request.hpp"
 
 using namespace std;
 
-int main(){
-  Quicksort qs = new Quicksort();
+int main(int argc, char *argv[]){
+  SortRequest sr = SortRequest(argv[1], argv[2], argv[3], argc > 4);
+  sr.run();
 
-  int size = 5;
-  int arr[size] = {4, 7, 2, 5, 8};
-
-  qs.sort(arr, 0, size - 1, "QPE");
-
-  for(int i = 0; i < size; i++){
-    cout << arr[i] << endl;
-  }
-  
   return 0;
 }

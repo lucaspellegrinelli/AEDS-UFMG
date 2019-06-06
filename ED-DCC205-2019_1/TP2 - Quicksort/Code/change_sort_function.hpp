@@ -5,7 +5,10 @@
 
 class ChangeSortFunction{
 public:
-	ChangeSortFunction(){ }
+	ChangeSortFunction(){
+		this->new_sort = nullptr;
+		this->limit = 0;
+	}
 
 	ChangeSortFunction(Sort *new_sort, double percent, int original_size){
 		this->new_sort = new_sort;
@@ -23,6 +26,7 @@ public:
 	~ChangeSortFunction(){
 		delete this->new_sort;
 	}
+	
 private:
 	int limit;
 	Sort *new_sort;

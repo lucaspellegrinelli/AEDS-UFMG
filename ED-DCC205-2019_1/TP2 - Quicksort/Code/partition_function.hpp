@@ -1,6 +1,8 @@
 #ifndef PARTITION_FUNCTION
 #define PARTITION_FUNCTION
 
+#include <iostream>
+
 class PartitionFunction{
 public:
 	PartitionFunction(){}
@@ -20,21 +22,21 @@ public:
 	Median(){}
 	virtual int operator() (int arr[], int left, int right){
 		int a_index = left;
-		int a = arr[a];
-		int b_index = right - 1;
-		int b = arr[b];
+		int a = arr[a_index];
+		int b_index = right;
+		int b = arr[b_index];
 		int c_index = (left + right) / 2;
-		int c = arr[c];
+		int c = arr[c_index];
 
 		if(a > b){
 			if(b > c) return b_index;
 			else if(a > c) return c_index;
-			else return a;
+			else return a_index;
 		}else{
 			if (a > c) return a_index;
 			else if (b > c)	return c_index;
-			else return b;
-		} 
+			else return b_index;
+		}
 	}
 };
 
