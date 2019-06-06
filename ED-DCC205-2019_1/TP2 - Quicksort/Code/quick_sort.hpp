@@ -77,6 +77,10 @@ private:
 		if((right - left + 1) <= this->change_sort_limit){
 			InsertionSort insertion = InsertionSort();
 			insertion.sort(arr, left, right);
+
+			// Adicionando as comparações/movimentos do outro sort
+			this->add_comparision(insertion.get_comparation_count());
+			this->add_move(insertion.get_move_count());
 		}else{
 			int *p = partitionate_array(arr, left, right);
 			if(p[1] > left) recursive_sort(arr, left, p[1]);
@@ -135,7 +139,7 @@ private:
 			this->add_comparision(1); // Teste que deu false do while
 
 			if(i <= j) swap(arr[i++], arr[j--]);
-			this->add_comparision(2); // Um para o if e outro para o loop
+			this->add_comparision(2); // Um para o if e outro para o while
 		}
 		this->add_comparision(1); // Teste que deu false do while
 
@@ -147,7 +151,7 @@ private:
 		a = b;
 		b = t;
 
-		this->add_move(2);
+		this->add_move(2); // As duas movimentações de valores
 	}
 };
 
