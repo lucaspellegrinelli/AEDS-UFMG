@@ -100,7 +100,7 @@ private:
 		qs->sort(arr, 0, size - 1);
 		auto end = std::chrono::high_resolution_clock::now();
 		auto dur = end - begin;
-		auto dur_in_ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+		auto dur_in_ms = std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
 		return dur_in_ms;
 	}
 
