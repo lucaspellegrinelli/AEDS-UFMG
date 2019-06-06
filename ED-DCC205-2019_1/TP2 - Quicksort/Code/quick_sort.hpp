@@ -58,29 +58,22 @@ private:
 		this->add_move(2);
 	}
 
-	int partitionate_array(long long *arr, int left, int right, PartitionFunction*& partition){
+	int* partitionate_array(long long *arr, int left, int right, PartitionFunction*& partition){
     long long pivot = arr[(*partition)(arr, left, right)];
 
-		while (left <= right){
-			while (arr[left] < pivot){
-				left++;
-				this->add_comparision(1);
-			}
-			this->add_comparision(1);
+		int i = left;
+		int j = right;
 
-			while (arr[right] > pivot){
-				right--;
-				this->add_comparision(1);
-			}
-			this->add_comparision(1);
-
-			if(left <= right) swap(arr[left++], arr[right--]);
-			this->add_comparision(2); // Uma pra esse if e uma pro while
+		while(i <= j){
+			while(arr[i] < pivot) i++;
+			while(arr[j] > pivot) j--;
+			if(i <= j) swap(arr[i++], arr[j--]);
 		}
 
-		this->add_comparision(1);
-
-		return right;
+		int *r = new int[2];
+		r[0] = i;
+		r[1] = j;
+		return r;
 	}
 
 	void recursive_sort(long long *arr, int left, int right, PartitionFunction*& partition, ChangeSortFunction*& change_sort){
@@ -90,9 +83,9 @@ private:
 			if((*change_sort)(left, right)){
 				change_sort->get_new_sort()->sort(arr, left, right);
 			}else{
-				int p = partitionate_array(arr, left, right, partition);
-				recursive_sort(arr, left, p - 1, partition, change_sort);
-				recursive_sort(arr, p + 1, right, partition, change_sort);
+				int *p = partitionate_array(arr, left, right, partition);
+				if(p[1] > left) recursive_sort(arr, left, p[1], partition, change_sort);
+				if(p[0] < right) recursive_sort(arr, p[0], right, partition, change_sort);
 			}
 		}
 	}
@@ -109,17 +102,17 @@ private:
 			right = stack[top--];
 			left = stack[top--];
 
-			int p = partitionate_array(arr, left, right, partition);
+			int *p = partitionate_array(arr, left, right, partition);
 
 			this->add_comparision(1);
-			if (p - 1 > left) {
+			if (p[1] > left) {
 				stack[++top] = left;
-				stack[++top] = p - 1;
+				stack[++top] = p[1];
 			}
 
 			this->add_comparision(1);
-			if (p + 1 < right) {
-				stack[++top] = p + 1;
+			if (p[0] < right) {
+				stack[++top] = p[0];
 				stack[++top] = right;
 			}
 		}
