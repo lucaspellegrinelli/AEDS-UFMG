@@ -333,7 +333,7 @@ private:
 		b = t;
 
 		// Adiciona o número de mudanças de posição feitas.
-		this->add_move(3); // As duas movimentações de valores
+		this->add_move(1);
 	}
 };
 
