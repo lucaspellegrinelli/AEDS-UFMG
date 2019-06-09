@@ -51,7 +51,7 @@ public:
 		para então calcular a média/mediana e mostrar na saída padrão.
 	*/
 	void run(){
-		Quicksort *qs;
+		Quicksort *qs = new Quicksort();
 
 		// Para cada tipo de variação de Quicksort, crie a instância adequada.
 		if(this->variation == "QC"){
