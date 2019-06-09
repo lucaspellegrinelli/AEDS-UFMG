@@ -42,14 +42,14 @@ public:
 	/*
 		Retorna o número atual de comparações feitas pelo algoritmo
 	*/
-	int get_comparation_count(){
+	long long get_comparation_count(){
 		return this->comparasion_count;
 	}
 
 	/*
 		Retorna o número atual de movimentações feitas pelo algoritmo
 	*/
-	int get_move_count(){
+	long long get_move_count(){
 		return this->move_count;
 	}
 
@@ -70,8 +70,8 @@ public:
 	/* Destrutor vazio */
 	virtual ~Sort(){}
 private:
-	int comparasion_count;
-	int move_count;
+	long long comparasion_count;
+	long long move_count;
 	int operation_cost;
 
 protected:
