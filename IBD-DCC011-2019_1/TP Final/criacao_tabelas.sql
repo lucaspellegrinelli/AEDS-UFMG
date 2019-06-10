@@ -54,3 +54,20 @@ CREATE TABLE UsoAtaque (
   FOREIGN KEY (id_pokemon) REFERENCES Pokemon(id_pokemon),
   FOREIGN KEY (id_ataque) REFERENCES Ataque(id_ataque)
 );
+
+CREATE TABLE Habilidade (
+  id_habilidade INT NOT NULL,
+  nome VARCHAR(50),
+  descricao VARCHAR(300),
+  PRIMARY KEY (id_habilidade)
+);
+
+CREATE TABLE UsoHabilidade (
+  id_pokemon INT NOT NULL,
+  id_habilidade INT NOT NULL,
+  ano INT NOT NULL,
+  mes INT NOT NULL,
+  percentagem FLOAT NOT NULL,
+  FOREIGN KEY (id_pokemon) REFERENCES Pokemon(id_pokemon),
+  FOREIGN KEY (id_habilidade) REFERENCES Habilidade(id_habilidade)
+)
