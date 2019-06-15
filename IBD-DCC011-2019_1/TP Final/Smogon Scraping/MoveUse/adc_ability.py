@@ -71,7 +71,7 @@ with open('ou-1825.txt') as smogon:
         pokemon_id = pokemons[name.split("-")[0].lower().replace("-", "")]
         used = float(str(match.groups()[1]).split("+")[1].split("%")[0]) / 100
 
-        com = 'INSERT INTO AliadosComuns (id_pokemon, id_aliado, ano, mes, porcentagem) VALUES  VALUES ("' + str(pokemon_id) + '", "' + str(teammate_id) + '", "' + str(ano) + '", "' + str(mes) + '", "' + str(used) + '");\n'
+        com = 'INSERT INTO AliadosComuns (id_pokemon, id_aliado, ano, mes, porcentagem) VALUES ("' + str(pokemon_id) + '", "' + str(teammate_id) + '", "' + str(ano) + '", "' + str(mes) + '", "' + str(used) + '");\n'
         # t2.write(com)
         i += 1
 

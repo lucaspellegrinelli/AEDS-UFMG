@@ -25,6 +25,7 @@ ordenação	chamado de Quick Sort.
 Mais informações sobre o algoritmo olhando a documentação do trabalho ou
 seguindo o link https://www.geeksforgeeks.org/quick-sort/
 */
+template <class T>
 class Quicksort : public Sort{
 public:
 
