@@ -51,8 +51,22 @@ for line in all_evolutions:
       id_from = get_id(line[i])
       id_to = get_id(line[j])
 
-
       degree = j - i
+
+      if id_to == 292:
+        degree -= 1
+
+      if id_to == 199:
+        degree -= 1
+
+      if id_to == 478:
+        degree -= 1
+
+      if id_to == 368:
+        degree -= 1
+
+      if id_to == 414:
+        degree -= 1
 
       if id_from == 133: #Eevee
         degree = 1
@@ -78,7 +92,7 @@ for line in all_evolutions:
       if degree < 1:
         continue
 
-      print(line[i], "evolves into", line[j], "degree", j - i)
+      print(line[i], "evolves into", line[j], "degree", degree)
       comm = 'INSERT INTO Evolucao (id_de, id_para, grau) VALUES ("' + str(id_from) + '", "' + str(id_to) + '", "' + str(degree) + '");\n'
       t.write(comm)
 
