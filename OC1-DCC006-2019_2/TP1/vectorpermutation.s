@@ -5,22 +5,22 @@ mul x7, x5, x6 # O tamanho dos vetores na memória
 addi x28, sp, 0 # Salva a posição inicial do stack
 
 
-sw x9, 0(x28) # Salva o valor de x10 pois é um "saved register"
+sw x9, 0(x28) # Salva o valor de x9 pois é um "saved register"
 sub x28, x28, x6 # Incrementa uma posição de memória no contador
 
 sw x10, 0(x28) # Salva o valor de x10 pois é um "saved register"
 sub x28, x28, x6 # Incrementa uma posição de memória no contador
 
-sw x18, 0(x28) # Salva o valor de x10 pois é um "saved register"
+sw x18, 0(x28) # Salva o valor de x18 pois é um "saved register"
 sub x28, x28, x6 # Incrementa uma posição de memória no contador
 
-sw x19, 0(x28) # Salva o valor de x10 pois é um "saved register"
+sw x19, 0(x28) # Salva o valor de x19 pois é um "saved register"
 sub x28, x28, x6 # Incrementa uma posição de memória no contador
 
-sw x20, 0(x28) # Salva o valor de x10 pois é um "saved register"
+sw x20, 0(x28) # Salva o valor de x20 pois é um "saved register"
 sub x28, x28, x6 # Incrementa uma posição de memória no contador
 
-sw x21, 0(x28) # Salva o valor de x10 pois é um "saved register"
+sw x21, 0(x28) # Salva o valor de x21 pois é um "saved register"
 sub x28, x28, x6 # Incrementa uma posição de memória no contador
 
 
@@ -39,19 +39,19 @@ add x28, x28, x6 # Decrementa uma posição de memória no contador
 lw x21, 0(x28) # Pega da memória o valor antigo de x21  pois é um "saved register"
 
 add x28, x28, x6 # Decrementa uma posição de memória no contador
-lw x20, 0(x28) # Pega da memória o valor antigo de x21  pois é um "saved register"
+lw x20, 0(x28) # Pega da memória o valor antigo de x20  pois é um "saved register"
 
 add x28, x28, x6 # Decrementa uma posição de memória no contador
-lw x19, 0(x28) # Pega da memória o valor antigo de x21  pois é um "saved register"
+lw x19, 0(x28) # Pega da memória o valor antigo de x19  pois é um "saved register"
 
 add x28, x28, x6 # Decrementa uma posição de memória no contador
-lw x18, 0(x28) # Pega da memória o valor antigo de x21  pois é um "saved register"
+lw x18, 0(x28) # Pega da memória o valor antigo de x18  pois é um "saved register"
 
 add x28, x28, x6 # Decrementa uma posição de memória no contador
-lw x10, 0(x28) # Pega da memória o valor antigo de x21  pois é um "saved register"
+lw x10, 0(x28) # Pega da memória o valor antigo de x10  pois é um "saved register"
 
 add x28, x28, x6 # Decrementa uma posição de memória no contador
-lw x9, 0(x28) # Pega da memória o valor antigo de x21  pois é um "saved register"
+lw x9, 0(x28) # Pega da memória o valor antigo de x9  pois é um "saved register"
 
 
 addi a0, x0, 10 # Fala pro ecall ser o de fim de programa (no registrador a0 = 10)
