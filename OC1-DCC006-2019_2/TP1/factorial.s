@@ -13,8 +13,8 @@ fact:
   add x7, x0, x5 # Cria a variavel de resposta que já começa igual ao input
   jal x0, factloop # Chama a função que vai loopar as multiplicaçoes
 
-factloop:
-  mul x7, x7, x6 # Multiplica o valor atual por n-1
-  addi x6, x6, -1 # Decrementa o n
-  bne x6, x0, factloop # Se n != 0, tem que continuar o loop
-  jalr x0, 0(x1) # Se n == 0, retorna o valor
+  factloop:
+    mul x7, x7, x6 # Multiplica o valor atual por n-1
+    addi x6, x6, -1 # Decrementa o n
+    bne x6, x0, factloop # Se n != 0, tem que continuar o loop
+    jalr x0, 0(x1) # Se n == 0, retorna o valor
