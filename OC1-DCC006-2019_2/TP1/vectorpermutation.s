@@ -53,7 +53,7 @@ add x24, x0, x21 # Fim do vetor a ser ordenado (primeiro)
 
 jal x1, bubblesort-caller
 
-jal x1, compare-order
+jal x1, compare-arrays
 
 addi a1, x10, 0 # Coloca o resultado (x10) no registrador de output (a1)
 addi a0, x0, 1 # Fala pro ecall ser o de output no console (no registrador a0)
@@ -98,26 +98,26 @@ bubblesort-caller:
       bne x28, x0, bubblesort-caller # Se alguma troca foi feita, roda denovo
       jalr x0, 0(x1) # Caso contrário, retorne
 
-  compare-order:
+  compare-arrays:
     add x30, x18, x0 # Endereço da posição atual do primeiro vetor
     add x31, x20, x0 # Endereço da posição atual do segundo vetor
 
-    compare-order-loop:
+    compare-arrays-loop:
       lw x25, 0(x30) # Lê o valor do primeiro vetor na posição atual
       lw x26, 0(x31) # Lê o valor do segundo vetor na posição atual
 
-      bne x25, x26, compare-order-fail # Se os elementos forem diferentes, dê erro
-      beq x30, x19, compare-order-loop-end # Caso chegue no final do vetor, saia
+      bne x25, x26, compare-arrays-fail # Se os elementos forem diferentes, dê erro
+      beq x30, x19, compare-arrays-loop-end # Caso chegue no final do vetor, saia
 
       sub x30, x30, x6 # Vai para a proxima posição do primeiro vetor
       sub x31, x31, x6 # Vai para a proxima posição do segundo vetor
 
-      beq x0, x0, compare-order-loop # Continue o loop
+      beq x0, x0, compare-arrays-loop # Continue o loop
 
-    compare-order-fail:
+    compare-arrays-fail:
       addi x10, x0, 0 # Coloca no x10 o valor de retorno "falso = 0"
       jalr x0, 0(x1)
 
-    compare-order-loop-end:
+    compare-arrays-loop-end:
       addi x10, x0, 1 # Coloca no x10 o valor de retorno "verdadeiro = 1"
       jalr x0, 0(x1)
