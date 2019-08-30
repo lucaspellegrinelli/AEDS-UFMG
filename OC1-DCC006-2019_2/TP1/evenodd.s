@@ -1,4 +1,9 @@
-addi x5, x0, 11 # Número a ser testado colocado em x5
+.data
+  input:.word 3 # Coloca na memória o valor 3
+
+.text
+  lw x5, input # Lê da memória
+
 jal x1, parity # Chama a função e coloca em x7 o resutado
 
 addi a1, x7, 0 # Coloca o resultado (x7) no registrador de output (a1)
