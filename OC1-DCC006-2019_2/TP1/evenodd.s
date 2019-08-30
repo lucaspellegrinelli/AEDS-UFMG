@@ -4,9 +4,9 @@
 .text
   lw x5, input # Lê da memória
 
-jal x1, parity # Chama a função e coloca em x7 o resutado
+jal x1, parity # Chama a função e coloca em x10 o resutado
 
-addi a1, x7, 0 # Coloca o resultado (x7) no registrador de output (a1)
+addi a1, x10, 0 # Coloca o resultado (x10) no registrador de output (a1)
 addi a0, x0, 1 # Fala pro ecall ser o de output no console (no registrador a0)
 ecall # Printa a resposta
 
@@ -15,5 +15,5 @@ ecall # Termina o programa
 
 parity:
   addi x6, x0, 2 # Cria um registrador (x6) com o valor 2
-  rem x7, x5, x6 # Calcula x5 (input) mod x6 (valor 2) e guarda em x6
+  rem x10, x5, x6 # Calcula x5 (input) mod x6 (valor 2) e guarda em x6
   jalr x0, 0(x1) # Retorna
