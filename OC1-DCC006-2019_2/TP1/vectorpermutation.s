@@ -74,27 +74,25 @@ bubblesort-caller:
   bubblesort-loop:
     beq x24, x29, bubblesort-end-loop # Se chegou no final, sai do loop
     blt x26, x25 bubblesort-invert # Se os elementos estiverem trocados, troque-os
-
-    sub x29, x29, x6 # Avança uma posição no vetor
-    sub x30, x30, x6 # Avança uma posição no vetor
-    lw x25, 0(x29) # Lê os novos valores
-    lw x26, 0(x30) # Lê os novos valores
-
-    beq x0, x0, bubblesort-loop # Vá para a próxima iteração
+    
+    beq x0, x0, bubblesort-step # Dê um passo na iteração
 
     bubblesort-invert:
       add x31, x26, x0 # Variável temporária para a troca com o valor da segunda pos
       sw x25, 0(x30) # Coloca o valor da primeira posição na segunda posição
       sw x31, 0(x29) # Coloca o valor da segunda posição (na temp) na primeira posição
 
+      addi x28, x0, 1 # Marca que alguma troca foi feita no loop
+
+      beq x0, x0, bubblesort-step # Dê um passo na iteração
+
+    bubblesort-step:
       sub x29, x29, x6 # Avança uma posição no vetor
       sub x30, x30, x6 # Avança uma posição no vetor
       lw x25, 0(x29) # Lê os novos valores
       lw x26, 0(x30) # Lê os novos valores
 
-      addi x28, x0, 1 # Marca que alguma troca foi feita no loop
-
-      beq x0, x0, bubblesort-loop # Continue o loop
+      beq x0, x0, bubblesort-loop # Vá para a próxima iteração
 
     bubblesort-end-loop:
       bne x28, x0, bubblesort-caller # Se alguma troca foi feita, roda denovo
