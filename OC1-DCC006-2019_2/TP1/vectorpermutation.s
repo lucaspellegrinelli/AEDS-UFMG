@@ -1,12 +1,14 @@
 .data
-  vetsize:.word 4
-  wordsize:.word 4
+  vetsize:.word 4 # Tamanho dos vetores
+  wordsize:.word 4 # Tamanho da palavra em bytes
 
+  # Valores do primeiro vetor
   vet00:.word 4
   vet01:.word 3
   vet02:.word 2
   vet03:.word 1
 
+  # Valores do segundo vetor
   vet10:.word 2
   vet11:.word 1
   vet12:.word 4
@@ -48,8 +50,8 @@ add x24, x0, x19 # Fim do vetor a ser ordenado (primeiro)
 
 jal x1, bubblesort-caller
 
-add x23, x0, x20 # Inicio do vetor a ser ordenado (primeiro)
-add x24, x0, x21 # Fim do vetor a ser ordenado (primeiro)
+add x23, x0, x20 # Inicio do vetor a ser ordenado (segundo)
+add x24, x0, x21 # Fim do vetor a ser ordenado (segundo)
 
 jal x1, bubblesort-caller
 
