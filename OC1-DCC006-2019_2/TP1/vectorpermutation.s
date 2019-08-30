@@ -1,7 +1,10 @@
 .data
+  vetsize:.word 4
+  wordsize:.word 4
+
   vet00:.word 4
   vet01:.word 3
-  vet02:.word 5
+  vet02:.word 2
   vet03:.word 1
 
   vet10:.word 2
@@ -27,8 +30,9 @@
   lw x29, vet13
   sw x29, -28(sp)
 
-addi x5, x0, 4 # Tamanho dos vetores
-addi x6, x0, 4 # Tamanho da palavra (em bytes)
+  lw x5, vetsize # Tamanho dos vetores
+  lw x6, wordsize # Tamanho da palavra em bytes
+
 mul x7, x5, x6 # Tamanho do vetor no stack
 
 sub x18, sp, x0 # Inicio do primeiro vetor
@@ -67,14 +71,14 @@ bubblesort-caller:
 
   bubblesort-loop:
     beq x24, x29, bubblesort-end-loop # Se chegou no final, sai do loop
-    blt x26, x25 bubblesort-invert
+    blt x26, x25 bubblesort-invert # Se os elementos estiverem trocados, troque-os
 
     sub x29, x29, x6 # Avança uma posição no vetor
     sub x30, x30, x6 # Avança uma posição no vetor
     lw x25, 0(x29) # Lê os novos valores
     lw x26, 0(x30) # Lê os novos valores
 
-    beq x0, x0, bubblesort-loop
+    beq x0, x0, bubblesort-loop # Vá para a próxima iteração
 
     bubblesort-invert:
       add x31, x26, x0 # Variável temporária para a troca com o valor da segunda pos
@@ -88,7 +92,7 @@ bubblesort-caller:
 
       addi x28, x0, 1 # Marca que alguma troca foi feita no loop
 
-      beq x0, x0, bubblesort-loop
+      beq x0, x0, bubblesort-loop # Continue o loop
 
     bubblesort-end-loop:
       bne x28, x0, bubblesort-caller # Se alguma troca foi feita, roda denovo
@@ -102,13 +106,13 @@ bubblesort-caller:
       lw x25, 0(x30) # Lê o valor do primeiro vetor na posição atual
       lw x26, 0(x31) # Lê o valor do segundo vetor na posição atual
 
-      bne x25, x26, compare-order-fail
-      beq x30, x19, compare-order-loop-end
+      bne x25, x26, compare-order-fail # Se os elementos forem diferentes, dê erro
+      beq x30, x19, compare-order-loop-end # Caso chegue no final do vetor, saia
 
       sub x30, x30, x6 # Vai para a proxima posição do primeiro vetor
       sub x31, x31, x6 # Vai para a proxima posição do segundo vetor
 
-      beq x0, x0, compare-order-loop
+      beq x0, x0, compare-order-loop # Continue o loop
 
     compare-order-fail:
       addi x10, x0, 0 # Coloca no x10 o valor de retorno "falso = 0"
