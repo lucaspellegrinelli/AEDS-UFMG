@@ -24,7 +24,7 @@
   add x19, x18, x7 # Fim do segundo vetor
   sub x19, x19, x6 # Fim do segundo vetor
 
-  la x20, array2
+  la x20, array2 # Inicio do segundo vetor
   add x21, x20, x7 # Fim do segundo vetor
   sub x21, x21, x6 # Fim do segundo vetor
 
