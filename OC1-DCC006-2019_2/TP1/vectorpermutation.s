@@ -2,17 +2,8 @@
   array_size:.word 4 # Tamanho dos vetores
   word_size:.word 4 # Tamanho da palavra em bytes
 
-  array1:
-    .word 4
-    .word 3
-    .word 2
-    .word 1
-
-  array2:
-    .word 2
-    .word 1
-    .word 4
-    .word 3
+  array1:.word 4, 3, 2, 1
+  array2:.word 2, 1, 4, 3
 
 .text
   lw x5, array_size # Tamanho dos vetores
@@ -56,11 +47,11 @@ bubblesort-caller:
 
   bubblesort-loop:
     beq x24, x29, bubblesort-end-loop # Se chegou no final, sai do loop
-    blt x26, x25 bubblesort-invert # Se os elementos estiverem trocados, troque-os
+    blt x26, x25 bubblesort-swap # Se os elementos estiverem trocados, troque-os
 
     beq x0, x0, bubblesort-step # Dê um passo na iteração
 
-    bubblesort-invert:
+    bubblesort-swap:
       add x31, x26, x0 # Variável temporária para a troca com o valor da segunda pos
       sw x25, 0(x30) # Coloca o valor da primeira posição na segunda posição
       sw x31, 0(x29) # Coloca o valor da segunda posição (na temp) na primeira posição
