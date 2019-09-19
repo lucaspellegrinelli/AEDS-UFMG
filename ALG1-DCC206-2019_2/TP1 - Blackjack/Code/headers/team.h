@@ -9,7 +9,9 @@ private:
 
 public:
 	Team(){ };
-	Team(std::vector<int> members_age, std::map<int, std::vector<int>> relations);
+
+	void add_member(int age);
+	void add_relation(int from, int to);
 
 	void print_members();
 	void print_relations();

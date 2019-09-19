@@ -1,8 +1,16 @@
 #include "team.h"
 
-Team::Team(std::vector<int> members_age, std::map<int, std::vector<int>> relations){
-	this->members_age = members_age;
-	this->relations = relations;
+void Team::add_member(int age){
+	this->members_age.push_back(age);
+}
+
+void Team::add_relation(int from, int to){
+	if(this->relations.find(from - 1) == this->relations.end()){
+		std::vector<int> r;
+		this->relations.insert(std::make_pair(from - 1, r));
+	}
+
+	this->relations[from - 1].push_back(to - 1);
 }
 
 void Team::print_relations(){
