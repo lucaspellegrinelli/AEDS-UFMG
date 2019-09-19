@@ -10,14 +10,12 @@ int main(){
 
 	Team t;
 
-	std::vector<int> ages;
 	for(int i = 0; i < n; i++){
 		int age;
 		std::cin >> age;
 		t.add_member(age);
 	}
 
-	std::map<int, std::vector<int>> relations;
 	for(int i = 0; i < m; i++){
 		int from, to;
 		std::cin >> from >> to;
