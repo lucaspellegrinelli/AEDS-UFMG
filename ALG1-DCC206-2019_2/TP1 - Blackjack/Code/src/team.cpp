@@ -104,7 +104,7 @@ void Team::get_meeting_order_util(int v, bool *visited, std::vector<int> &order)
 		}
 	}
 
-	order.push_back(v);
+	order.insert(order.begin(), v);
 }
 
 bool Team::swap(int a, int b){
