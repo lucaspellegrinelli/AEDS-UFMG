@@ -39,10 +39,14 @@ int main(){
 			int a;
 			std::cin >> a;
 			int comm = t.commander(a);
-
-			std::cout << "C " << comm << std::endl;
+			std::cout << "C " << (comm == Inf ? "*" : std::to_string(comm)) << std::endl;
 		}else{
-			t.meeting();
+			std::vector<int> order = t.meeting();
+			std::cout << "M ";
+			for(int i : order){
+				std::cout << i << " ";
+			}
+			std::cout << std::endl;
 		}
 	}
 }

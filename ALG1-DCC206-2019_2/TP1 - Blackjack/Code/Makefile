@@ -1,11 +1,14 @@
 CC := g++
-CFLAGS := -g -Wall -std=c++11 -O3 -I headers/
+CFLAGS := -g -Wall -std=c++11 -O3
 
 # Nome do executável
 TARGET := main
 
-# Caminho para os .cpp/.hpp
+# Caminho para os .cpp/
 SRCDIR := src
+
+# Caminho para os .h
+HDIR := headers
 
 # Caminho onde serão criados os .o
 OBJDIR := obj
@@ -21,7 +24,7 @@ $(TARGET): $(OBJS)
 # Cria os arquivos .o necessários para a compilação
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) -c $^ -o $@
+	@$(CC) $(CFLAGS) -c $^ -o $@ -I $(HDIR)
 
 # Definição do procedimento de exclusão dos arquivos/pastas geradas pelo makefile
 .PHONY: clean
