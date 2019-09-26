@@ -1,13 +1,17 @@
 #include "team.h"
 
+// Adiciona um novo membro com uma idade especificada
 void Team::add_member(int age){
 	this->members_age.push_back(age);
 }
 
+// Retorna a idade do membro de índice especificado
 int Team::get_member_age(int member){
 	return this->members_age[member - 1];
 }
 
+// Adiciona no mapa de relação uma nova relação entre dois membros identificados
+// pelo seus índices
 void Team::add_relation(int from, int to){
 	if(this->relations.find(from) == this->relations.end()){
 		std::vector<int> r;
@@ -19,15 +23,19 @@ void Team::add_relation(int from, int to){
 	this->inv_relations[to].push_back(from);
 }
 
+// Remove a relação entre dois membros do mapa de relações
 void Team::remove_relation(int from, int to){
 	this->relations[from].erase(std::remove(this->relations[from].begin(), this->relations[from].end(), to), this->relations[from].end());
 	this->inv_relations[to].erase(std::remove(this->inv_relations[to].begin(), this->inv_relations[to].end(), from), this->inv_relations[to].end());
 }
 
+// Testa se existe uma relaçao entre dois membros (direçao importa)
 bool Team::check_relation(int from, int to){
 	return std::find(this->relations[from].begin(), this->relations[from].end(), to) != this->relations[from].end();
 }
 
+// Método geral que testa se o grafo tem ou não ciclos. Chama o método de DFS
+// "has_cycle_util"
 bool Team::has_cycle(){
 	bool *stack = new bool[this->members_age.size() + 1];
 	bool *visited = new bool[this->members_age.size() + 1];
@@ -42,6 +50,8 @@ bool Team::has_cycle(){
 	return false;
 }
 
+// Método que testa se existe um ciclo no grafo utilizando do algoritmo de
+// DFS
 bool Team::has_cycle_util(int v, bool *visited, bool *stack){
 	if(!visited[v]){
 		stack[v] = true;
@@ -58,12 +68,16 @@ bool Team::has_cycle_util(int v, bool *visited, bool *stack){
 	return false;
 }
 
+// Método geral que retorna qual o vértice "pai" de um vértice específico
+// tem menor idade chamando o DFS do método "get_youngest_child_util"
 int Team::get_youngest_child(int v){
 	bool *visited = new bool[this->members_age.size() + 1];
 	for(size_t i = 0; i <= this->members_age.size(); i++, visited[i] = false);
 	return this->get_youngest_child_util(v, visited);
 }
 
+// Método que retorna o vértice pai que corresponde ao membro de menor idade
+// que comanda o vértice atual utilizando o algoritmo do DFS
 int Team::get_youngest_child_util(int v, bool *visited){
 	if(!visited[v]){
 		visited[v] = true;
@@ -71,6 +85,8 @@ int Team::get_youngest_child_util(int v, bool *visited){
 		int youngest_age = Inf;
 		for(int i : this->inv_relations[v]){
 			if(!visited[i]){
+				// Testa se a menor idade atual é maior que a idade do vértice atual e
+				// de seus filhos (que no grafo nao invertido são os seus pais)
 				youngest_age = std::min(youngest_age, this->get_member_age(i));
 				youngest_age = std::min(youngest_age, this->get_youngest_child_util(i, visited));
 			}
@@ -82,6 +98,8 @@ int Team::get_youngest_child_util(int v, bool *visited){
 	return Inf;
 }
 
+// Método geral que retorna uma ordem de fala dos membros da equipe chamando
+// o método de ordenação topológica "get_meeting_order_util"
 std::vector<int> Team::get_meeting_order(){
 	bool *visited = new bool[this->members_age.size() + 1];
 	for(size_t i = 0; i <= this->members_age.size(); i++, visited[i] = false);
@@ -96,6 +114,8 @@ std::vector<int> Team::get_meeting_order(){
 	return order;
 }
 
+// Modifica o vetor "order" para que ele contenha uma ordenação topológica do
+// grafo atual por meio do algoritmo de DFS.
 void Team::get_meeting_order_util(int v, bool *visited, std::vector<int> &order){
 	visited[v] = true;
 	for(int i : this->relations[v]){
@@ -107,6 +127,9 @@ void Team::get_meeting_order_util(int v, bool *visited, std::vector<int> &order)
 	order.insert(order.begin(), v);
 }
 
+// Função de SWAP: Modifica a orientaçao de uma aresta entre dois vértices,
+// caso isso resulte em um ciclo, retorne falso e reverta a modificação feita.
+//Caso contrário retorne verdadeiro
 bool Team::swap(int a, int b){
 	if(this->check_relation(a, b)){
 		this->remove_relation(a, b);
@@ -133,37 +156,14 @@ bool Team::swap(int a, int b){
 	return true;
 }
 
+// Função COMMANDER: Retorna o resultado do DFS que acha o vértice pai que tem
+// a menor idade
 int Team::commander(int a){
 	return this->get_youngest_child(a);
 }
 
+// Função MEETING: Retorna uma das possíveis ordenações topológicas do grafo
+// que corresponde a uma ordem de fala dos membros
 std::vector<int> Team::meeting(){
 	return this->get_meeting_order();
-}
-
-void Team::print_members(){
-	for(int i : this->members_age){
-		std::cout << i << " ";
-	}
-	std::cout << std::endl;
-}
-
-void Team::print_relations(){
-	for(auto it = this->relations.begin(); it != this->relations.end(); it++){
-		std::cout << "[" << it->first << "] ";
-		for(int i : it->second){
-			std::cout << i << " ";
-		}
-		std::cout << std::endl;
-	}
-}
-
-void Team::print_inv_relations(){
-	for(auto it = this->inv_relations.begin(); it != this->inv_relations.end(); it++){
-		std::cout << "[" << it->first << "] ";
-		for(int i : it->second){
-			std::cout << i << " ";
-		}
-		std::cout << std::endl;
-	}
 }
