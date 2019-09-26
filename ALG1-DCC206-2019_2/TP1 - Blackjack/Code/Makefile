@@ -2,7 +2,7 @@ CC := g++
 CFLAGS := -g -Wall -std=c++11 -O3
 
 # Nome do executável
-TARGET := main
+TARGET := tp1
 
 # Caminho para os .cpp/
 SRCDIR := src
