@@ -3,8 +3,13 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <map>
+
+#define MAX_SIZE 1000
 
 std::pair<int, int> resolver_guloso(int N, std::vector<std::pair<int, int>> ilhas);
+
+std::map<std::pair<int, int>, std::pair<int, int>> resultados_parciais;
 std::pair<int, int> resolver_dinamico(int N, std::vector<std::pair<int, int>> ilhas, int i);
 
 int main(int argc, char *argv[]){
@@ -56,21 +61,33 @@ std::pair<int, int> resolver_dinamico(int N, std::vector<std::pair<int, int>> il
 	// Caso base
 	if(i == 0 || N == 0) return std::make_pair(0, 0);
 
-    // Se o preço de ir para a ilha é maior que o dinheiro que temos
-	if(ilhas[i - 1].first > N){
-		// Ignore pois não podemos colocar essa ilha
-		return resolver_dinamico(N, ilhas, i - 1);
-	}else{
-		// Chama para as outras ilhas diminuindo a capacidade
-		std::pair<int, int> adicionar = resolver_dinamico(N - ilhas[i - 1].first, ilhas, i - 1);
-		// Adiciona a pontuação e o dia a mais
-		adicionar.first += ilhas[i - 1].second;
-		adicionar.second++;
+  std::pair<int, int> Ni_pair = std::make_pair(N, i);
+  
+  // Se já fizemos os cáculos com esse N e esse i, retorne o resultado obtido
+  if(resultados_parciais.find(Ni_pair) != resultados_parciais.end()){
+    return resultados_parciais[Ni_pair];
+  }else{
+      // Se o preço de ir para a ilha é maior que o dinheiro que temos
+	  if(ilhas[i - 1].first > N){
+		  // Ignore pois não podemos colocar essa ilha
+		  return resolver_dinamico(N, ilhas, i - 1);
+	  }else{
+		  // Chama para as outras ilhas diminuindo a capacidade
+		  std::pair<int, int> adicionar = resolver_dinamico(N - ilhas[i - 1].first, ilhas, i - 1);
+		  // Adiciona a pontuação e o dia a mais
+		  adicionar.first += ilhas[i - 1].second;
+		  adicionar.second++;
 
-		// Chama paraa s outras ilhas mantendo a capacidade e não alterando a pontuação nem a quantidade de dias
-		std::pair<int, int> ignorar = resolver_dinamico(N, ilhas, i - 1);
+		  // Chama paraa s outras ilhas mantendo a capacidade e não alterando a pontuação nem a quantidade de dias
+		  std::pair<int, int> ignorar = resolver_dinamico(N, ilhas, i - 1);
 
-		// Vê qual das opções da uma pontuação melhor e retorne-a
-		return adicionar.first > ignorar.first ? adicionar : ignorar;
-	}
+      // Vê qual das opções da uma pontuação melhor
+      std::pair<int, int> resultado = adicionar.first > ignorar.first ? adicionar : ignorar;
+
+      // Salve a melhor opção
+      resultados_parciais.insert(std::make_pair(Ni_pair, resultado));
+		  
+		  return resultado;
+	  }
+  }
 }
