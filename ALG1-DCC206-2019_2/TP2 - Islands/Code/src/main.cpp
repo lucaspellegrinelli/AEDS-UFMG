@@ -26,8 +26,8 @@ int main(int argc, char *argv[]){
 		ilhas.push_back(std::make_pair(c, p));
 	}
 
-	std::pair<int, int> sol_1 = resolver_dinamico(N, ilhas, ilhas.size());
-	std::pair<int, int> sol_2 = resolver_guloso(N, ilhas);
+	std::pair<int, int> sol_1 = resolver_guloso(N, ilhas);
+	std::pair<int, int> sol_2 = resolver_dinamico(N, ilhas, ilhas.size());
 	std::cout << sol_1.first << " " << sol_1.second << std::endl;
 	std::cout << sol_2.first << " " << sol_2.second << std::endl;
 }
@@ -56,7 +56,8 @@ std::pair<int, int> resolver_dinamico(int N, std::vector<std::pair<int, int>> il
 	// Caso base
 	if(i == 0 || N == 0) return std::make_pair(0, 0);
 
-	if(ilhas[i].first > N){
+    // Se o preço de ir para a ilha é maior que o dinheiro que temos
+	if(ilhas[i - 1].first > N){
 		// Ignore pois não podemos colocar essa ilha
 		return resolver_dinamico(N, ilhas, i - 1);
 	}else{
@@ -66,10 +67,10 @@ std::pair<int, int> resolver_dinamico(int N, std::vector<std::pair<int, int>> il
 		adicionar.first += ilhas[i - 1].second;
 		adicionar.second++;
 
-		// Chama para a s outras ilhas mantendo a capacidade e não alterando a pontuação nem a quantidade de dias
+		// Chama paraa s outras ilhas mantendo a capacidade e não alterando a pontuação nem a quantidade de dias
 		std::pair<int, int> ignorar = resolver_dinamico(N, ilhas, i - 1);
 
 		// Vê qual das opções da uma pontuação melhor e retorne-a
-		return adicionar.second > ignorar.second ? adicionar : ignorar;
+		return adicionar.first > ignorar.first ? adicionar : ignorar;
 	}
 }
