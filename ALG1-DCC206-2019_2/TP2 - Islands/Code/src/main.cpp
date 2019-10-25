@@ -44,7 +44,9 @@ std::pair<int, int> resolver_guloso(int N, std::vector<std::pair<int, int>> ilha
     int custo_atual = 0;
     int dias = 0;
     int pontuacao = 0;
+    // Passa pelas ilhas em ordem de "custo benefício"
     for(size_t i = 0; i < ilhas.size() && custo_atual < N; i++){
+        // Enquanto podemos adicionar a ilha atual, adicione mais um dia nessa ilha
         while(custo_atual + ilhas[i].first <= N){
             custo_atual += ilhas[i].first;
             pontuacao += ilhas[i].second;
