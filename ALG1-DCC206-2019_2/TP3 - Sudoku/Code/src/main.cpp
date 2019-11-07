@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 int main(int argc, char *argv[]){
   if(argc < 2) return 0;
@@ -167,11 +168,27 @@ int main(int argc, char *argv[]){
     // Se não o caso passado (caso óbvio, onde os outros valores da tabela
     // deixam algum nó com apenas uma opção) falhar...
     if(!changed_something){
-      // Passe por cada um dos nós...
+      // Junta os nós que ainda não foram definidos
+      int n_unresolved = N * N - known_nodes_count;
+      int unresolved_nodes[n_unresolved];
+      int unresolved_nodes_size = 0;
       for(int node = 0; node < N * N; node++){
-        // Se ele ainda não foi definido e existe alguma opção de número que
-        // ele não está restrito, defina-o para o menor número possível
-        if(node_values[node] == 0 && how_many_can_be[node] > 0){
+        if(node_values[node] == 0){
+          unresolved_nodes[unresolved_nodes_size++] = node;
+        }
+      }
+
+      // Ordene-os em função do número de opções de número que eles tem em ordem
+      // decrescente (para diminuir a chance do erro ao chutar o valor)
+      std::sort(unresolved_nodes, unresolved_nodes + n_unresolved, [&how_many_can_be](const int &a, const int &b){
+          return how_many_can_be[a] > how_many_can_be[b];
+      });
+
+      // Passe por cada um dos nós não definidos...
+      for(int node : unresolved_nodes){
+        // Se existe alguma opção de número que ele não está restrito,
+        // defina-o para o menor número possível
+        if(how_many_can_be[node] > 0){
           node_values[node] = min_can_be[node];
           known_nodes[known_nodes_count++] = node;
           changed_something = true;
