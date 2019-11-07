@@ -109,7 +109,7 @@ bool Sudoku::solve_depth(int depth){
 
       if(min_options_node == -1){
         depth--;
-        continue;
+        return false;
       }
 
       // Para cada uma das possibilidades dele, checa se conseguimos resolver
@@ -127,7 +127,7 @@ bool Sudoku::solve_depth(int depth){
         }
       }
 
-      depth--;
+      return false;
     }
   }
 
