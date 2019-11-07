@@ -107,11 +107,8 @@ bool Sudoku::solve_depth(int depth){
         }
       }
 
-      if(min_options_node == -1){
-        depth--;
-        return false;
-      }
-
+      if(min_options_node == -1) return false;
+      
       // Para cada uma das possibilidades dele, checa se conseguimos resolver
       // o Sudoku
       for(int i = 0; i < N && branch_count <= MAX_BRANCH_COUNT; i++){
