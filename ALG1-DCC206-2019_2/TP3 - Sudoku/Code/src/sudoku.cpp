@@ -33,6 +33,7 @@ bool Sudoku::solve(){
     
     // Caso ache a resposta, faça essa instância ser a resposta e retorne
     if(copy->solve_depth(depth)){
+      std::cout << branch_count << std::endl;
       this->replace_with(copy);
       return true;
     }

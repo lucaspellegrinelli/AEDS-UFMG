@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#define MAX_BRANCH_COUNT 10000
+#define MAX_BRANCH_COUNT 1000
 
 class Sudoku{
 public:
