@@ -46,7 +46,9 @@ int main(int argc, char *argv[]){
     node_adjs_size[i] = 0;
 
     // Iniciliza a lista de números que o nó pode ser
-    for(int j = 0; j < N; can_be[i][j++] = value == 0 ? true : j == value - 1);
+    for(int j = 0; j < N; j++){
+      can_be[i][j] = value == 0 ? true : j == value - 1;
+    }
   }
 
   // Define a coluna inicial de cada bloco
@@ -124,12 +126,9 @@ int main(int argc, char *argv[]){
     }
   }
 
-  // Repita enquanto exista algo para ser feito
-  bool changed_something = false;
+  // Repita enquanto exista algum nó não definido
   int known_node_i = 0;
-  do{
-    changed_something = false;
-
+  while(known_nodes_count < N * N){
     // Passe pelos novos valores da lista de nós que eu já conheço o valor
     for(; known_node_i < known_nodes_count; known_node_i++){
       int node = known_nodes[known_node_i];
@@ -160,30 +159,24 @@ int main(int argc, char *argv[]){
 
         // Se só existe uma opção restante para um nó e ele não tem um valor
         // definido ainda, defina-o para o último valor restante
-        if(how_many_can_be[adj_node] == 1 && node_values[adj_node] == 0){
+        if(node_values[adj_node] == 0 && how_many_can_be[adj_node] == 1){
           node_values[adj_node] = min_can_be[adj_node];
           known_nodes[known_nodes_count++] = adj_node;
-          changed_something = true;
         }
       }
     }
 
-    // Se não o caso passado (caso óbvio, onde os outros valores da tabela
-    // deixam algum nó com apenas uma opção) falhar...
-    if(!changed_something){
-      // Passe por cada um dos nós não definidos...
-      for(int node = 0; node < N * N; node++){
-        // Se existe alguma opção de número que ele não está restrito,
-        // defina-o para o menor número possível
-        if(how_many_can_be[node] > 0){
-          node_values[node] = min_can_be[node];
-          known_nodes[known_nodes_count++] = node;
-          changed_something = true;
-          break;
-        }
+    // Passe por cada um dos nós não definidos...
+    for(int node = 0; node < N * N; node++){
+      // Se existe alguma opção de número que ele não está restrito,
+      // defina-o para o menor número possível
+      if(node_values[node] == 0 && how_many_can_be[node] > 0){
+        node_values[node] = min_can_be[node];
+        known_nodes[known_nodes_count++] = node;
+        break;
       }
     }
-  }while(changed_something);
+  }
 
   // Checa se todos os nós tem um valor que eles poderiam ter
   bool answer_correct = true;
