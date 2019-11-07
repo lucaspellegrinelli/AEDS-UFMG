@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
   int known_nodes_count = 0; // Tamanho da lista de nós já descobertos
 
   int node_values[N * N]; // Valor de cada nó
-  int node_adjs[N * N][I * J - 1 + N - 1 + N - 1]; // Lista de adjacência de cada nó
+  int node_adjs[N * N][N * N]; // Lista de adjacência de cada nó
   int node_adjs_size[N * N]; // Tamanho da lista de adjacência de cada nó
 
   bool can_be[N * N][N]; // Indica quais números cada nó pode ser
