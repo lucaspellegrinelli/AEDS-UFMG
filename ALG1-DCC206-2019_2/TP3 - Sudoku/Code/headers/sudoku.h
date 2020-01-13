@@ -27,14 +27,14 @@ public:
   Sudoku();
   Sudoku(int N, int I, int J);
   ~Sudoku();
-  
+
   void set_edge_value(int edge, int value);
 
   bool solve();
 
   Sudoku * copy();
   void replace_with(Sudoku *other);
-  
+
   void create_initial_edges();
 
 protected:
