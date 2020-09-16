@@ -5,8 +5,9 @@ class Trie:
     self.root = Node(interval=[0, 0])
     self.text = text
 
-  # Retorna o maior prefixo comum entre duas strings 'a' e 'b'
-  def intercection(self, a_word, a, b_word, b):
+  # Retorna o tamanho do maior prefixo comum entre duas strings
+  # definidas por dois intervalos em duas strings
+  def common_prefix_size(self, a_word, a, b_word, b):
     interval = min(a[1] - a[0], b[1] - b[0])
     for i in range(interval):
       if a_word[a[0] + i] != b_word[b[0] + i]:
@@ -32,14 +33,14 @@ class Trie:
     r = len(word)
 
     while len(curr.child) > 0:
-      has_home = False
+      has_prefix = False
       for i, node in enumerate(curr.child):
-        i_size = self.intercection(word, [l, r], word, node.interval)
+        pref_size = self.common_prefix_size(word, [l, r], word, node.interval)
 
-        if i_size > 0:
-          label_pref = [node.interval[0], node.interval[0] + i_size]
-          label_suf = [node.interval[0] + i_size, node.interval[1]]
-          l += i_size
+        if pref_size > 0:
+          label_pref = [node.interval[0], node.interval[0] + pref_size]
+          label_suf = [node.interval[0] + pref_size, node.interval[1]]
+          l += pref_size
           
           if label_suf[1] > label_suf[0]:
             new_prefix_child = [Node(interval=label_suf, child=node.child, is_end=node.is_end)]
@@ -48,10 +49,10 @@ class Trie:
 
           curr.child[i] = Node(interval=label_pref, child=new_prefix_child, is_end=r == l)
           curr = curr.child[i]
-          has_home = True
+          has_prefix = True
           break
 
-      if not has_home: break
+      if not has_prefix: break
 
     if r != l:
       curr.child.append(Node(interval=[l, r], is_end=True))
@@ -86,11 +87,11 @@ class Trie:
     while len(curr.child) > 0 and r != l:
       has_prefix = False
       for node in curr.child:
-        i_size = self.intercection(word, [l, r], self.text, node.interval)
+        pref_size = self.common_prefix_size(word, [l, r], self.text, node.interval)
 
-        if i_size > 0:
+        if pref_size > 0:
           curr = node
-          l += i_size
+          l += pref_size
           has_prefix = True
           break
       
