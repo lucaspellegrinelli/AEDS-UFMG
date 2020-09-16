@@ -1,58 +1,96 @@
 from node import Node
 
 class Trie:
-  def __init__(self):
-    self.root = Node()
+  def __init__(self, text):
+    self.root = Node(interval=[0, 0])
+    self.text = text
 
-  def intercection(self, a, b):
-    out = ""
-    for x, y in zip(a, b):
-      if x == y: out += x
-      else: break
-    return out
+  # Retorna o maior prefixo comum entre duas strings 'a' e 'b'
+  def intercection(self, a_word, a, b_word, b):
+    interval = min(a[1] - a[0], b[1] - b[0])
+    for i in range(interval):
+      if a_word[a[0] + i] != b_word[b[0] + i]:
+        return i
+    return interval
 
-  def insert_all_prefixes(self, word):
-    for i in range(len(word)):
-      self.insert(word[i:])
+  # Loop ingênuo de para popular a trie de sufixos, adicionando
+  # todos os possíveis sufixos na trie.
+  def build_sufixes(self):
+    for i in range(len(self.text)):
+      self.insert(self.text, i)
 
-  def insert(self, word):
+  # Método principal de inserção de uma palavra na trie. O algoritmo
+  # aqui envolve descer pelas ramificações da árvore que possuem um
+  # prefixo igual ao da nova palavra. Caso o algoritmo encontre um nó
+  # cuja 'label' seja sufixo da palavra, um novo nó deve ser criado
+  # separando o prefixo do sufixo. Caso em um galho não existam nós
+  # passíveis de admitir a nova palavra, um novo nó é criado naquele
+  # nível.
+  def insert(self, word, start):
     curr = self.root
-    
+    l = start
+    r = len(word)
+
     while len(curr.child) > 0:
       has_home = False
       for i, node in enumerate(curr.child):
-        interc = self.intercection(word, node.label)
+        i_size = self.intercection(word, [l, r], word, node.interval)
 
-        if len(interc) > 0:
-          label_remainder = node.label[len(interc):]
-          word = word[len(interc):]
+        if i_size > 0:
+          label_pref = [node.interval[0], node.interval[0] + i_size]
+          label_suf = [node.interval[0] + i_size, node.interval[1]]
+          l += i_size
           
-          if len(label_remainder) > 0:
-            new_prefix_child = [Node(label=label_remainder, child=node.child, is_end=node.is_end)]
+          if label_suf[1] > label_suf[0]:
+            new_prefix_child = [Node(interval=label_suf, child=node.child, is_end=node.is_end)]
           else:
             new_prefix_child = node.child
 
-          curr.child[i] = Node(label=interc, child=new_prefix_child, is_end=len(word) == 0)
+          curr.child[i] = Node(interval=label_pref, child=new_prefix_child, is_end=r == l)
           curr = curr.child[i]
           has_home = True
           break
 
       if not has_home: break
 
-    if len(word) > 0:
-      curr.child.append(Node(label=word, is_end=True))
+    if r != l:
+      curr.child.append(Node(interval=[l, r], is_end=True))
 
+  # Para encontrar a maior substring que se repete no texto de entrada
+  # basta checar qual o nó mais prodfundo que possui nós filhos.
+  def get_longest_repeating(self):
+    def utility_dfs(node, ans):
+      new_pref, new_pos = ans
+      for n in node.child:
+        if len(n.child) == 0: continue
+        suf = self.text[n.interval[0] : n.interval[1]]
+        leaf_pref, leaf_pos = utility_dfs(n, (ans[0] + suf, n.interval[1]))
+        if len(leaf_pref) > len(new_pref):
+          new_pref = leaf_pref
+          new_pos = leaf_pos
+  
+      return new_pref, new_pos
+
+    pref, pos = utility_dfs(self.root, ("", -1))
+    return pref, pos - len(pref)
+
+  # Para contar o número de ocorrências de um certo padrão a partir
+  # de um árvore de sufixos basta encontrar onde a palavra estaria
+  # caso fossemos procura-la na árvore e contar o número de nós
+  # filhos e adicionar 1 caso ela seja um nó final para algum sufixo.
   def count_occurences(self, word):
     curr = self.root
+    l = 0
+    r = len(word)
 
-    while len(curr.child) > 0 and len(word) > 0:
+    while len(curr.child) > 0 and r != l:
       has_prefix = False
       for node in curr.child:
-        interc = self.intercection(word, node.label)
+        i_size = self.intercection(word, [l, r], self.text, node.interval)
 
-        if len(interc) > 0:
+        if i_size > 0:
           curr = node
-          word = word[len(interc):]
+          l += i_size
           has_prefix = True
           break
       
@@ -60,23 +98,11 @@ class Trie:
 
     return len(curr.child) + (1 if curr.is_end else 0)
 
-  def get_longest_repeating(self):
-    def utility_dfs(node, ans):
-      new_ans = ans
-      for n in node.child:
-        if len(n.child) == 0: continue
-        leaf_ans = utility_dfs(n, ans + n.label)
-        if len(leaf_ans) > len(new_ans):
-          new_ans = leaf_ans
-  
-      return new_ans
-
-    return utility_dfs(self.root, "")
-
+  # Métodos de visualização da árvore
   def print_branch(self, root, aggr=""):
-    curr_str = aggr + root.label + " -> "
+    curr_str = aggr + self.text[root.interval[0] : root.interval[1]] + " -> "
     for node in root.child:
-      print(curr_str + node.label)
+      print(curr_str + self.text[node.interval[0] : node.interval[1]])
       self.print_branch(root=node, aggr=curr_str)
 
   def __repr__(self):
