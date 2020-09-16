@@ -3,7 +3,6 @@ from node import Node
 class Trie:
   def __init__(self):
     self.root = Node()
-    self.node_count = 0
 
   def intercection(self, a, b):
     out = ""
@@ -43,7 +42,7 @@ class Trie:
     if len(word) > 0:
       curr.child.append(Node(label=word, is_end=True))
 
-  def search_word(self, word):
+  def count_occurences(self, word):
     curr = self.root
 
     while len(curr.child) > 0 and len(word) > 0:
@@ -59,9 +58,8 @@ class Trie:
       
       if not has_prefix: return False
 
-    return len(word) == 0 and curr.is_end
+    return len(curr.child) + (1 if curr.is_end else 0)
 
-  # O(n + m)
   def get_longest_repeating(self):
     def utility_dfs(node, ans):
       new_ans = ans
