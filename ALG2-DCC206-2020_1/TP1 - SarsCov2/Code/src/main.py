@@ -1,11 +1,10 @@
 from trie import Trie
+from fasta_util import FastaUtil
+
+_, content = FastaUtil.load_fasta("../data/sarscov2.fasta")
+print(content)
 
 t = Trie()
-t.insert("this")
-t.insert("thereafter")
-t.insert("therein")
-t.insert("facebook")
-t.insert("face")
-t.insert("there")
+t.insert_all_prefixes(content)
 
-print(t)
+print("\n\nRepeating:", t.get_longest_repeating())
