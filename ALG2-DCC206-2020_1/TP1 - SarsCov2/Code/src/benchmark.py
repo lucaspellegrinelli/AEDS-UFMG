@@ -1,4 +1,4 @@
-from trie import Trie
+from suffix_tree import SuffixTree
 
 import time
 import os
@@ -14,13 +14,11 @@ def benchmark_it(f, arg=None):
   time_end = time.time()
   return out, time_end - time_start, mem_end - mem_start
 
-s = process.memory_info().rss
-
-# Creating Trie datatype and loading FASTA
-t = Trie()
+# Creating Suffix Tree datatype and loading FASTA
+t = SuffixTree()
 t.load_fasta("../data/sarscov2.fasta")
 
-# Inserting the sufixes to the trie
+# Inserting the sufixes to the tree
 _, s_time, s_mem = benchmark_it(t.build_sufixes)
 
 # Get longest repeating word
