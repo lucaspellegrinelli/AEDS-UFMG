@@ -1,5 +1,4 @@
 from trie import Trie
-from fasta_util import FastaUtil
 
 import time
 import os
@@ -7,7 +6,7 @@ import psutil
 
 process = psutil.Process(os.getpid())
 
-def timeit(f, arg=None):
+def benchmark_it(f, arg=None):
   time_start = time.time()
   mem_start = process.memory_info().rss
   out = f() if arg is None else f(arg)
@@ -17,20 +16,18 @@ def timeit(f, arg=None):
 
 s = process.memory_info().rss
 
-# Loading fasta file
-_, content = FastaUtil.load_fasta("../data/sarscov2.fasta")
-
-# Creating Trie datatype
-t = Trie(content)
+# Creating Trie datatype and loading FASTA
+t = Trie()
+t.load_fasta("../data/sarscov2.fasta")
 
 # Inserting the sufixes to the trie
-_, s_time, s_mem = timeit(t.build_sufixes)
+_, s_time, s_mem = benchmark_it(t.build_sufixes)
 
 # Get longest repeating word
-(lr_str, lr_pos), lr_time, lr_mem = timeit(t.get_longest_repeating)
+(lr_str, lr_pos), lr_time, lr_mem = benchmark_it(t.get_longest_repeating)
 
 # Get number of occurences of longest repeating word
-rc_val, rc_time, rc_mem = timeit(t.count_occurences, lr_str)
+rc_val, rc_time, rc_mem = benchmark_it(t.count_occurences, lr_str)
 
 # Prints
 print(" > Processamento de sufixos")

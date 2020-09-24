@@ -1,12 +1,26 @@
-from node import Node
+# Classe que representa um dos nós de uma àrvore de sufixos
+]class Node:
+  def __init__(self, interval, child=[], is_end=False):
+    self.interval = interval
+    self.child = child[:]
+    self.is_end = is_end
 
+# Classe que representa a arvore de sufixos
 class Trie:
-  def __init__(self, text):
+  def __init__(self, text=""):
     self.root = Node(interval=[0, 0])
     self.text = text
 
-  # Retorna o tamanho do maior prefixo comum entre duas strings
-  # definidas por dois intervalos em duas strings
+  # Popula a variavel "self.text" com o conteudo de um arquivo do tipo FASTA
+  def load_fasta(self, path):
+    with open(path) as fasta:
+      lines = fasta.readlines()
+      meta = lines[0]
+      content = ("".join(lines[1:])).replace("\n", "")
+      self.text = content
+
+  # Retorna o tamanho do maior prefixo comum entre duas strings definidas por dois
+  # intervalos em duas strings
   def common_prefix_size(self, a_word, a, b_word, b):
     interval = min(a[1] - a[0], b[1] - b[0])
     for i in range(interval):
@@ -14,23 +28,20 @@ class Trie:
         return i
     return interval
 
-  # Loop ingênuo de para popular a trie de sufixos, adicionando
-  # todos os possíveis sufixos na trie.
+  # Loop ingênuo de para popular a trie de sufixos, adicionando todos os possíveis
+  # sufixos na trie.
   def build_sufixes(self):
     for i in range(len(self.text)):
       self.insert(self.text, i)
 
-  # Método principal de inserção de uma palavra na trie. O algoritmo
-  # aqui envolve descer pelas ramificações da árvore que possuem um
-  # prefixo igual ao da nova palavra. Caso o algoritmo encontre um nó
-  # cuja 'label' seja sufixo da palavra, um novo nó deve ser criado
-  # separando o prefixo do sufixo. Caso em um galho não existam nós
-  # passíveis de admitir a nova palavra, um novo nó é criado naquele
-  # nível.
+  # Método principal de inserção de uma palavra na trie. O algoritmo aqui envolve
+  # descer pelas ramificações da árvore que possuem um prefixo igual ao da nova
+  # palavra. Caso o algoritmo encontre um nó cuja 'label' seja sufixo da palavra,
+  # um novo nó deve ser criado separando o prefixo do sufixo. Caso em um galho não
+  # existam nós passíveis de admitir a nova palavra, um novo nó é criado naquele nível.
   def insert(self, word, start):
     curr = self.root
-    l = start
-    r = len(word)
+    l, r = start, len(word)
 
     while len(curr.child) > 0:
       has_prefix = False
@@ -48,6 +59,7 @@ class Trie:
             new_prefix_child = node.child
 
           curr.child[i] = Node(interval=label_pref, child=new_prefix_child, is_end=r == l)
+          
           curr = curr.child[i]
           has_prefix = True
           break
@@ -57,8 +69,8 @@ class Trie:
     if r != l:
       curr.child.append(Node(interval=[l, r], is_end=True))
 
-  # Para encontrar a maior substring que se repete no texto de entrada
-  # basta checar qual o nó mais prodfundo que possui nós filhos.
+  # Para encontrar a maior substring que se repete no texto de entrada basta checar
+  # qual o nó mais prodfundo que possui nós filhos.
   def get_longest_repeating(self):
     def utility_dfs(node, ans):
       new_pref, new_pos = ans
@@ -75,14 +87,13 @@ class Trie:
     pref, pos = utility_dfs(self.root, ("", -1))
     return pref, pos - len(pref)
 
-  # Para contar o número de ocorrências de um certo padrão a partir
-  # de um árvore de sufixos basta encontrar onde a palavra estaria
-  # caso fossemos procura-la na árvore e contar o número de nós
-  # filhos e adicionar 1 caso ela seja um nó final para algum sufixo.
+  # Para contar o número de ocorrências de um certo padrão a partir de um árvore de
+  # sufixos basta encontrar onde a palavra estaria caso fossemos procura-la na árvore
+  # e contar o número de nós filhos e adicionar 1 caso ela seja um nó final para algum
+  # sufixo.
   def count_occurences(self, word):
     curr = self.root
-    l = 0
-    r = len(word)
+    l, r = 0, len(word)
 
     while len(curr.child) > 0 and r != l:
       has_prefix = False
