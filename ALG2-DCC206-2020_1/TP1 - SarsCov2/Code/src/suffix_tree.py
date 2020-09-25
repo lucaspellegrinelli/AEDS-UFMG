@@ -39,7 +39,7 @@ class SuffixTree:
   # palavra. Caso o algoritmo encontre um nó cuja 'label' seja sufixo da palavra,
   # um novo nó deve ser criado separando o prefixo do sufixo. Caso em um galho não
   # existam nós passíveis de admitir a nova palavra, um novo nó é criado naquele nível.
-  def insert(self, word, start):
+  def insert(self, word, start=0):
     curr = self.root
     l, r = start, len(word)
 
@@ -54,13 +54,11 @@ class SuffixTree:
           l += pref_size
           
           if label_suf[1] > label_suf[0]:
-            new_prefix_child = [Node(interval=label_suf, child=node.child, is_end=node.is_end)]
+            prefix_child = [Node(interval=label_suf, child=node.child, is_end=node.is_end)]
           else:
-            new_prefix_child = node.child
+            prefix_child = node.child
 
-          curr.child[i] = Node(interval=label_pref, child=new_prefix_child, is_end=r == l)
-          
-          curr = curr.child[i]
+          curr.child[i] = curr = Node(interval=label_pref, child=prefix_child, is_end=r == l)
           has_prefix = True
           break
 
