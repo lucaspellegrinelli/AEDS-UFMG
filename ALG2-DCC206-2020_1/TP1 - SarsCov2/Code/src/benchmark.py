@@ -3,9 +3,10 @@ from suffix_tree import SuffixTree
 import time
 import os
 import psutil
-
 process = psutil.Process(os.getpid())
 
+# Função que retorna estatísticas de tempo de execução e consumo
+# de memória de uma outra função
 def benchmark_it(f, arg=None):
   time_start = time.time()
   mem_start = process.memory_info().rss
@@ -14,20 +15,20 @@ def benchmark_it(f, arg=None):
   time_end = time.time()
   return out, time_end - time_start, mem_end - mem_start
 
-# Creating Suffix Tree datatype and loading FASTA
+# Criando a estrutura de dados e populando-a com o arquivo FASTA
 t = SuffixTree()
 t.load_fasta("../data/sarscov2.fasta")
 
-# Inserting the sufixes to the tree
+# Inserindo os sufixos na arvore
 _, s_time, s_mem = benchmark_it(t.build_sufixes)
 
-# Get longest repeating word
+# Encontrando a maior palavra que se repete
 (lr_str, lr_pos), lr_time, lr_mem = benchmark_it(t.get_longest_repeating)
 
-# Get number of occurences of longest repeating word
+# Descobrindo a quantidade de vezes que a palavra se repete no arquivo
 rc_val, rc_time, rc_mem = benchmark_it(t.count_occurences, lr_str)
 
-# Prints
+# Impressão dos resultados
 print(" > Processamento de sufixos")
 print("   > Tempo de execução:", round(s_time, 3), "segundos")
 print("   > Memória usada:", round(s_mem / 1024, 3), "KB")
