@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from sklearn.tree import DecisionTreeClassifier
 
 class BoostingClassifier:
   def __init__(self, iterations):
@@ -11,6 +12,7 @@ class BoostingClassifier:
   def fit(self, x, y):
     self.x_classes = len(np.unique(x))
     x = self.process_input(x)
+    y = self.process_output(y)
 
     h, a = self.create_weak_classifiers(x, y)
     self.classifiers = h
@@ -22,52 +24,36 @@ class BoostingClassifier:
     alphas = np.zeros((self.iterations))
     h = [None for _ in range(self.iterations)]
 
-    col_availability = np.ones((x.shape[1]))
     for t in range(self.iterations):
-      h[t] = self.decide_stump(x, y, col_availability)
-      col_availability[h[t][0]] = 0
-      htx = self.get_stump_classification(x, h[t])
-      error = np.sum(weights * (y != htx))
+      d_stump = DecisionTreeClassifier(max_depth=1, max_leaf_nodes=2)
+      d_stump.fit(x, y, sample_weight=weights)
+
+      h[t] = d_stump
+      htx = d_stump.predict(x)
+
+      error = np.sum(weights[(y != htx)])
       alphas[t] = 0.5 * math.log((1 - error) / error)
       weights = weights * math.e ** (-alphas[t] * htx * y)
       weights /= weights.sum()
     
     return h, alphas
 
-  def get_stump_classification(self, x, stump):
-    classifications = np.zeros((len(x)))
-    for i, x_val in enumerate(x):
-      classifications[i] = 1 if (x_val[stump[0]] == stump[1]) == stump[2] else -1
-    return classifications
-
-  def decide_stump(self, x, y, col_availability=None):
-    best_stump = (-1, -1, False, len(x) + 1)
-
-    for col in range(x.shape[1]):
-      if col_availability is not None and col_availability[col] == 0: continue
-      for stump_test in range(self.x_classes):
-        missclassifications = np.zeros((2))
-        for c_val, target in zip(x.transpose()[col], y):
-          missclassifications[(c_val == stump_test) == (target == -1)] += 1
-        
-        for i, mc in enumerate(missclassifications):
-          if mc < best_stump[3]:
-            best_stump = (col, stump_test, i == 0, mc)
-        
-    return best_stump
-
   def predict(self, x):
     x = self.process_input(x)
 
     weak_pred = np.zeros((len(x)))
     for i in range(self.iterations):
-      hx = self.get_stump_classification(x, self.classifiers[i])
+      hx = self.classifiers[i].predict(x)
       weak_pred += self.alphas[i] * hx
 
-    weak_pred = weak_pred > 0
-    weak_pred = np.where(weak_pred == True, 1, weak_pred)
-    weak_pred = np.where(weak_pred == False, 0, weak_pred)
+    weak_pred = np.sign(weak_pred)
+    weak_pred[weak_pred == -1] = 0
     return weak_pred
+
+  def process_output(self, y):
+    ny = y.copy()
+    ny[ny == 0] = -1
+    return ny
 
   def process_input(self, x):
     nx = np.empty((x.shape[0], x.shape[1] + self.x_classes))
