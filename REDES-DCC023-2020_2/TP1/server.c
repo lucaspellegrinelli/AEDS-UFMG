@@ -23,11 +23,11 @@ void usage(int argc, char **argv){
 }
 
 void * client_thread(void *data){
-  int user_tags[MAX_USER_TAGS];
-  for(int i = 0; i < MAX_USER_TAGS; i++) user_tags[i] = -1;
-
   // Pega as informações do struct
   struct client_data_t *client_data = (struct client_data_t *)data;
+
+  // 
+  usertags_add(&user_tags, client_data->sock);
 
   // Converte o storage do cliente
   struct sockaddr *client_addr = (struct sockaddr *)(&client_data->storage);
@@ -51,10 +51,15 @@ void * client_thread(void *data){
       break;
     }
 
-    if(msg_buff[0] == '+'){ // Se é um pedido de acrescentar uma tag
+    struct intlist * tag_ids = NULL;
+    int tag_count = get_all_tags_in_msg(msg_buff, &tag_ids);
+
+    if(tag_count > 0){ // Se é uma mensagem com tags
+
+    }else if(msg_buff[0] == '+'){ // Se é um pedido de acrescentar uma tag
       char tag_str[strlen(msg_buff) + 1];
       memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
-      int sub_status = add_tag_to_user(user_tags, tag_str);
+      int sub_status = add_tag_to_user(client_data->sock, tag_str);
 
       if(sub_status == 0){ // Se ele não era inscrito
         sprintf(out_buff, "subscribed %s", msg_buff);
@@ -66,7 +71,7 @@ void * client_thread(void *data){
     }else if(msg_buff[0] == '-'){ // Se é um pedido de retirar uma tag
       char tag_str[strlen(msg_buff) + 1];
       memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
-      int sub_status = remove_tag_to_user(user_tags, tag_str);
+      int sub_status = remove_tag_to_user(client_data->sock, tag_str);
 
       if(sub_status == 0){ // Se ele não era inscrito
         sprintf(out_buff, "not subscribed %s", msg_buff);
@@ -91,6 +96,7 @@ void * client_thread(void *data){
   
   // Fecha a conexão com o cliente atual
   close(client_data->sock);
+  usertags_remove(&user_tags, client_data->sock);
 
   // Fecha a thread
   pthread_exit(EXIT_SUCCESS);
