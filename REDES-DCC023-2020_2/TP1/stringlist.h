@@ -13,6 +13,7 @@ struct stringlist {
 void stringlist_add(struct stringlist** ref, char* value);
 void stringlist_remove_ith(struct stringlist** ref, int i);
 int stringlist_ith(struct stringlist* node, int i, char* out);
+int stringlist_ith_size(struct stringlist* node, int i);
 int stringlist_find(struct stringlist* node, char* value);
 int stringlist_size(struct stringlist* node);
 void stringlist_free(struct stringlist** node);

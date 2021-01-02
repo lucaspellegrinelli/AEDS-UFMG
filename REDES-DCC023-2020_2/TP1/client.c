@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -12,9 +13,66 @@
 
 #define BUFF_SIZE 1024
 
+struct client_data_t {
+  int sock;
+};
+
 void usage(int argc, char **argv){
   printf("Usage: %s <Server IP> <Server Port>\n", argv[0]);
   exit(EXIT_FAILURE);
+}
+
+// void * send_thread(void *data){
+//   // Pega as informações do struct
+//   struct client_data_t *client_data = (struct client_data_t *)data;
+
+//   while(1){
+//     // Cria um buffer para armazenar as mensagens
+//     char data_buff[BUFF_SIZE];
+//     memset(data_buff, 0, BUFF_SIZE);
+
+//     printf("Loop send\n");
+
+//     // Pede para o usuário qual a mensagem à ser mandada
+//     printf("mensagem > ");
+//     fgets(data_buff, BUFF_SIZE - 1, stdin);
+
+//     // Manda a mensagem para o servidor
+//     size_t msg_size = send(client_data->sock, data_buff, strlen(data_buff) + 1, 0);
+
+//     printf("Sent message\n");
+
+//     // Caso o número de dados enviados não seja igual ao número
+//     // de caracteres na mensagem, deu ruim
+//     printf("Listen msg size %d %d", msg_size, strlen(data_buff) + 1);
+//     if(msg_size != strlen(data_buff) + 1){
+//       close(client_data->sock);
+//       pthread_exit(EXIT_SUCCESS);
+//       log_exit("send");
+//     }
+//   }
+// }
+
+void * listen_thread(void *data){
+  // Pega as informações do struct
+  struct client_data_t *client_data = (struct client_data_t *)data;
+
+  while(1){
+    // Cria um buffer para armazenar as mensagens
+    char data_buff[BUFF_SIZE];
+    memset(data_buff, 0, BUFF_SIZE);
+
+    // Recebe a mensagem do servidor e coloca no buffer
+    size_t msg_size = recv(client_data->sock, data_buff, BUFF_SIZE, 0);
+
+    printf(" < %s\n", data_buff);
+
+    // Caso nada tenha sido recebido, a conexão acabou
+    if(msg_size == 0){
+      close(client_data->sock);
+      pthread_exit(EXIT_SUCCESS);
+    }
+  }
 }
 
 int main(int argc, char **argv){
@@ -56,13 +114,23 @@ int main(int argc, char **argv){
   addr_to_str(serv_addr, addr_str, BUFF_SIZE);
   printf("Connected to %s\n", addr_str);
 
+  // Cria o struct onde vamos armazenar os dados do cliente
+  struct client_data_t *thread_data = malloc(sizeof(*thread_data));
+  thread_data->sock = sock;
+
+  // Cria uma nova thread fazendo o handling do cliente atual
+  pthread_t listen_thread_id;
+  pthread_create(&listen_thread_id, NULL, listen_thread, thread_data);
+
+
+
   while(1){
     // Cria um buffer para armazenar as mensagens
     char data_buff[BUFF_SIZE];
     memset(data_buff, 0, BUFF_SIZE);
-    
+
     // Pede para o usuário qual a mensagem à ser mandada
-    printf("mensagem > ");
+    // printf(" > ");
     fgets(data_buff, BUFF_SIZE - 1, stdin);
 
     // Manda a mensagem para o servidor
@@ -71,28 +139,13 @@ int main(int argc, char **argv){
     // Caso o número de dados enviados não seja igual ao número
     // de caracteres na mensagem, deu ruim
     if(msg_size != strlen(data_buff) + 1){
+      close(sock);
       log_exit("send");
     }
-
-    // Reseta o conteudo do buffer de mensagem para agora receber
-    // os valores do servidor
-    memset(data_buff, 0, BUFF_SIZE);
-
-    // Recebe a mensagem do servidor e coloca no buffer
-    msg_size = recv(sock, data_buff, BUFF_SIZE, 0);
-
-    // Caso nada tenha sido recebido, a conexão acabou
-    if(msg_size == 0){
-      break;
-    }
-
-    // Mostra estatísticas da conexão
-    // printf("Recieved %lu bytes\n", msg_size);
-    puts(data_buff);
   }
 
-  // Fecha o socket
-  close(sock);
+  // pthread_t send_thread_id;
+  // pthread_create(&send_thread_id, NULL, send_thread, thread_data);
 
   exit(EXIT_SUCCESS);
 }

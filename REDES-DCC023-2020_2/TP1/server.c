@@ -26,7 +26,7 @@ void * client_thread(void *data){
   // Pega as informações do struct
   struct client_data_t *client_data = (struct client_data_t *)data;
 
-  // 
+  //
   usertags_add(&user_tags, client_data->sock);
 
   // Converte o storage do cliente
@@ -55,10 +55,31 @@ void * client_thread(void *data){
     int tag_count = get_all_tags_in_msg(msg_buff, &tag_ids);
 
     if(tag_count > 0){ // Se é uma mensagem com tags
+      printf("Found %d tags in message:", tag_count);
+      for(int i = 0; i < intlist_size(tag_ids); i++){
+        printf(" %d", intlist_ith(tag_ids, i));
+      }
+      printf("\n");
 
+      struct intlist * subbed_users = NULL;
+      get_all_users_sub(&tag_ids, &subbed_users);
+
+      printf("There's %d subbed users\n", intlist_size(subbed_users));
+      for(int i = 0; i < intlist_size(subbed_users); i++){
+        int target_user = intlist_ith(subbed_users, i);
+        sprintf(out_buff, "[msg] %s", msg_buff);
+        msg_size = send(target_user, out_buff, strlen(out_buff) + 1, 0);
+      }
     }else if(msg_buff[0] == '+'){ // Se é um pedido de acrescentar uma tag
       char tag_str[strlen(msg_buff) + 1];
       memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
+
+      for(int i = 0; i < strlen(tag_str); i++){
+        if(tag_str[i] == '\n') tag_str[i] = '\0';
+      }
+
+      printf("A tag encontrada é '%s'\n", tag_str);
+
       int sub_status = add_tag_to_user(client_data->sock, tag_str);
 
       if(sub_status == 0){ // Se ele não era inscrito
@@ -71,6 +92,13 @@ void * client_thread(void *data){
     }else if(msg_buff[0] == '-'){ // Se é um pedido de retirar uma tag
       char tag_str[strlen(msg_buff) + 1];
       memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
+
+      for(int i = 0; i < strlen(tag_str); i++){
+        if(tag_str[i] == '\n') tag_str[i] = '\0';
+      }
+
+      printf("A tag encontrada é '%s'\n", tag_str);
+
       int sub_status = remove_tag_to_user(client_data->sock, tag_str);
 
       if(sub_status == 0){ // Se ele não era inscrito
@@ -90,6 +118,7 @@ void * client_thread(void *data){
     // Caso o número de dados enviados não seja igual ao número
     // de caracteres na mensagem, deu ruim
     if(msg_size != strlen(out_buff) + 1){
+      printf("Message Size: %ld   Buffer size: %ld\n", msg_size, strlen(out_buff) + 1);
       log_exit("send");
     }
   }

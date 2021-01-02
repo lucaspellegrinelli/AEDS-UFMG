@@ -4,7 +4,8 @@ void stringlist_add(struct stringlist** ref, char* value) {
   struct stringlist* new_node = (struct stringlist*)malloc(sizeof(struct stringlist));
   struct stringlist* last = *ref;
 
-  new_node->value = value;
+  new_node->value = (char *)malloc(sizeof(char) * strlen(value));
+  memcpy(new_node->value, value, strlen(value));
   new_node->next = NULL;
 
   if (*ref == NULL) {
@@ -42,8 +43,10 @@ void stringlist_remove_ith(struct stringlist** ref, int i) {
 
 int stringlist_ith(struct stringlist* node, int i, char* out){
   int count = 0;
-  while(node != NULL && node->next != NULL && count++ < i){
+
+  while(node != NULL && node->next != NULL && count < i){
     node = node->next;
+    count++;
   }
 
   if(node == NULL){
@@ -54,9 +57,25 @@ int stringlist_ith(struct stringlist* node, int i, char* out){
   return 0;
 }
 
+int stringlist_ith_size(struct stringlist* node, int i){
+  int count = 0;
+
+  while(node != NULL && node->next != NULL && count < i){
+    node = node->next;
+    count++;
+  }
+
+  if(node == NULL){
+    return -1;
+  }
+
+  return strlen(node->value) + 1;
+}
+
 int stringlist_find(struct stringlist* node, char* value){
   int count = 0;
-  while(node != NULL && node->next != NULL && strcmp(node->value, value) != 0){
+
+  while(node != NULL && strcmp(node->value, value) != 0){
     node = node->next;
     count++;
   }

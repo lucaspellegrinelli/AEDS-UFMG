@@ -4,7 +4,7 @@ all:
 	gcc -Wall -c stringlist.c
 	gcc -Wall -c usertags.c
 	gcc -Wall -c tag.c
-	gcc -Wall client.c common.o intlist.o stringlist.o usertags.o -o client
+	gcc -Wall -pthread client.c common.o intlist.o stringlist.o usertags.o -o client
 	gcc -Wall -pthread server.c common.o intlist.o stringlist.o usertags.o tag.o -o server
 
 test:

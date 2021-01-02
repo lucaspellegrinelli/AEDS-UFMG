@@ -7,34 +7,6 @@
 #include <string.h>
 
 int main(int argc, char **argv){
-  // struct intlist* head = NULL;
-
-  // intlist_add(&head, 0);
-  // intlist_add(&head, 1);
-  // intlist_add(&head, 2);
-
-  // intlist_remove_ith(&head, 1);
-
-  // for(int i = 0; i < intlist_size(head); i++){
-	// 	printf("%d\n", intlist_ith(head, i));
-	// }
-
-  // struct stringlist* head = NULL;
-
-  // stringlist_add(&head, "oi");
-  // stringlist_add(&head, "tudo");
-  // stringlist_add(&head, "bom");
-  // stringlist_add(&head, "xau");
-
-  // stringlist_remove_ith(&head, 1);
-
-  // for(int i = 0; i < stringlist_size(head); i++){
-  //   char out[50];
-  //   memset(out, '\0', 50);
-  //   stringlist_ith(head, i, out);
-	// 	printf("%s\n", out);
-	// }
-
   struct usertags* head = NULL;
 
   usertags_add(&head, 0);

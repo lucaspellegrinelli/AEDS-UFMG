@@ -1,22 +1,22 @@
 #include "usertags.h"
 
 void usertags_add(struct usertags** ref, int user) {
-  struct usertags* new_node = (struct usertags*)malloc(sizeof(struct usertags));
   struct usertags* last = *ref;
 
-  new_node->user = user;
-  new_node->value = NULL;
-  new_node->next = NULL;
-
   if (*ref == NULL) {
-    *ref = new_node;
+    *ref = (struct usertags*) malloc(sizeof(struct usertags));
+    (*ref)->user = user;
+    (*ref)->value = NULL;
+    (*ref)->next = NULL;
     return;
   }
 
-  while (last->next != NULL)
-    last = last->next;
+  while (last->next != NULL) last = last->next;
 
-  last->next = new_node;
+  last->next = (struct usertags*) malloc(sizeof(struct usertags));
+  last->next->user = user;
+  last->next->value = NULL;
+  last->next->next = NULL;
   return;
 }
 
@@ -71,6 +71,28 @@ struct intlist ** usertags_get(struct usertags* node, int user){
 
   if(node == NULL) return NULL;
   return &node->value;
+}
+
+struct intlist ** usertags_get_ith(struct usertags* node, int i){
+  int count = 0;
+  while(node != NULL && node->next != NULL && count != i){
+    node = node->next;
+    count++;
+  }
+
+  if(node == NULL) return NULL;
+  return &node->value;
+}
+
+int usertags_get_ith_key(struct usertags* node, int i){
+  int count = 0;
+  while(node != NULL && node->next != NULL && count != i){
+    node = node->next;
+    count++;
+  }
+
+  if(node == NULL) return -1;
+  return node->user;
 }
 
 int usertags_size(struct usertags* node){
