@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 
+#define BUFF_SIZE 512
+
 void log_exit(const char *msg);
 int addr_parse(const char *addr_str, const char *port_str,
                struct sockaddr_storage *storage);

@@ -138,6 +138,7 @@ int server_sockaddr_init(const char *version_str, const char *port_str, struct s
     addrv6->sin6_family = AF_INET6;
     addrv6->sin6_port = port;
     addrv6->sin6_addr = in6addr_any; // Qualquer endereço disponível
+    return 0;
   }else{
     return -1;
   }

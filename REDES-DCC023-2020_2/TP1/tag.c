@@ -43,18 +43,18 @@ int get_all_tags_in_msg(char *msg, struct intlist ** tag_ids){
   int tag_count = 0;
 
   // printf("First of all, here are all the tags:\n");
-  for(int i = 0; i < stringlist_size(all_tags); i++){
-    int str_size = stringlist_ith_size(all_tags, i);
-    char t[str_size];
-    stringlist_ith(all_tags, i, t);
-    t[str_size - 1] = '\0';
+  // for(int i = 0; i < stringlist_size(all_tags); i++){
+  //   int str_size = stringlist_ith_size(all_tags, i);
+  //   char t[str_size];
+  //   stringlist_ith(all_tags, i, t);
+  //   t[str_size - 1] = '\0';
 
-    // printf(" > %s [", t);
-    // for(int j = 0; j < str_size; j++){
-    //   printf("%d ", t[j]);
-    // }
-    // printf("]\n");
-  }
+  //   printf(" > %s [", t);
+  //   for(int j = 0; j < str_size; j++){
+  //     printf("%d ", t[j]);
+  //   }
+  //   printf("]\n");
+  // }
 
   // printf("Secondly, here are the tags found in the message:\n");
   for(int i = 0; i < strlen(msg); i++){
@@ -62,7 +62,7 @@ int get_all_tags_in_msg(char *msg, struct intlist ** tag_ids){
       for(int j = i + 1; j < strlen(msg); j++){
         if(msg[j + 1] == ' ' || j == strlen(msg) - 1){
           // Se depois de #texto tiver um espaço ou fim do texto, entao é uma tag valida
-          int s = j - i;
+          int s = j - i + 1;
           char tag_str[s];
           memcpy(tag_str, msg + i + 1, s);
           tag_str[s - 1] = '\0';
@@ -92,16 +92,16 @@ int get_all_tags_in_msg(char *msg, struct intlist ** tag_ids){
 int get_all_users_sub(struct intlist ** tag_ids, struct intlist ** subbed_users){
   int count = 0;
 
-  printf("Listing all users:\n");
+  // printf("Listing all users:\n");
   for(int i = 0; i < usertags_size(user_tags); i++){
     struct intlist ** user_tag = usertags_get_ith(user_tags, i);
     int user_id = usertags_get_ith_key(user_tags, i);
 
-    printf(" > User #%d:", user_id);
-    for(int j = 0; j < intlist_size(*user_tag); j++){
-      printf(" %d", intlist_ith(*user_tag, j));
-    }
-    printf("\n");
+    // printf(" > User #%d:", user_id);
+    // for(int j = 0; j < intlist_size(*user_tag); j++){
+    //   printf(" %d", intlist_ith(*user_tag, j));
+    // }
+    // printf("\n");
 
     for(int x = 0; x < intlist_size(*user_tag); x++){
       for(int y = 0; y < intlist_size(*tag_ids); y++){

@@ -1,11 +1,12 @@
 #include "usertags.h"
 
-void usertags_add(struct usertags** ref, int user) {
+void usertags_add(struct usertags** ref, int user, pthread_t thread_id) {
   struct usertags* last = *ref;
 
   if (*ref == NULL) {
     *ref = (struct usertags*) malloc(sizeof(struct usertags));
     (*ref)->user = user;
+    (*ref)->thread_id = thread_id;
     (*ref)->value = NULL;
     (*ref)->next = NULL;
     return;
@@ -15,6 +16,7 @@ void usertags_add(struct usertags** ref, int user) {
 
   last->next = (struct usertags*) malloc(sizeof(struct usertags));
   last->next->user = user;
+  last->next->thread_id = thread_id;
   last->next->value = NULL;
   last->next->next = NULL;
   return;
@@ -48,6 +50,7 @@ void usertags_remove_ith(struct usertags** ref, int i) {
   if (temp != NULL && count == i) {
     *ref = temp->next;
     intlist_free(&temp->value);
+    
     free(temp);
     return;
   }
@@ -93,6 +96,17 @@ int usertags_get_ith_key(struct usertags* node, int i){
 
   if(node == NULL) return -1;
   return node->user;
+}
+
+pthread_t usertags_get_ith_thread(struct usertags* node, int i){
+  int count = 0;
+  while(node != NULL && node->next != NULL && count != i){
+    node = node->next;
+    count++;
+  }
+
+  if(node == NULL) return -1;
+  return node->thread_id;
 }
 
 int usertags_size(struct usertags* node){

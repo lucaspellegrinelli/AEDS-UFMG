@@ -11,8 +11,6 @@
 
 #include <arpa/inet.h>
 
-#define BUFF_SIZE 1024
-
 struct client_data_t {
   int sock;
 };
@@ -21,37 +19,6 @@ void usage(int argc, char **argv){
   printf("Usage: %s <Server IP> <Server Port>\n", argv[0]);
   exit(EXIT_FAILURE);
 }
-
-// void * send_thread(void *data){
-//   // Pega as informações do struct
-//   struct client_data_t *client_data = (struct client_data_t *)data;
-
-//   while(1){
-//     // Cria um buffer para armazenar as mensagens
-//     char data_buff[BUFF_SIZE];
-//     memset(data_buff, 0, BUFF_SIZE);
-
-//     printf("Loop send\n");
-
-//     // Pede para o usuário qual a mensagem à ser mandada
-//     printf("mensagem > ");
-//     fgets(data_buff, BUFF_SIZE - 1, stdin);
-
-//     // Manda a mensagem para o servidor
-//     size_t msg_size = send(client_data->sock, data_buff, strlen(data_buff) + 1, 0);
-
-//     printf("Sent message\n");
-
-//     // Caso o número de dados enviados não seja igual ao número
-//     // de caracteres na mensagem, deu ruim
-//     printf("Listen msg size %d %d", msg_size, strlen(data_buff) + 1);
-//     if(msg_size != strlen(data_buff) + 1){
-//       close(client_data->sock);
-//       pthread_exit(EXIT_SUCCESS);
-//       log_exit("send");
-//     }
-//   }
-// }
 
 void * listen_thread(void *data){
   // Pega as informações do struct
@@ -63,14 +30,30 @@ void * listen_thread(void *data){
     memset(data_buff, 0, BUFF_SIZE);
 
     // Recebe a mensagem do servidor e coloca no buffer
-    size_t msg_size = recv(client_data->sock, data_buff, BUFF_SIZE, 0);
+    size_t total_size = 0;
 
-    printf(" < %s\n", data_buff);
+    while(1){
+      size_t msg_size = recv(client_data->sock, data_buff, BUFF_SIZE, 0);
+      total_size += msg_size;
+      if(data_buff[strlen(data_buff) - 1] == '\n' || msg_size == 0) break;
+    }
 
     // Caso nada tenha sido recebido, a conexão acabou
-    if(msg_size == 0){
+    if(total_size == 0){
       close(client_data->sock);
       pthread_exit(EXIT_SUCCESS);
+    }
+
+    int curr_msg_i = 0;
+    char curr_msg[BUFF_SIZE];
+    for(size_t i = 0; i < total_size; i++){
+      if(data_buff[i] == '\n'){
+        curr_msg[curr_msg_i] = '\0';
+        curr_msg_i = 0;
+        printf(" < %s\n", curr_msg);
+      }else{
+        curr_msg[curr_msg_i++] = data_buff[i];
+      }
     }
   }
 }
@@ -121,8 +104,6 @@ int main(int argc, char **argv){
   // Cria uma nova thread fazendo o handling do cliente atual
   pthread_t listen_thread_id;
   pthread_create(&listen_thread_id, NULL, listen_thread, thread_data);
-
-
 
   while(1){
     // Cria um buffer para armazenar as mensagens

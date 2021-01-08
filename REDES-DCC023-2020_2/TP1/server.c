@@ -6,11 +6,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <signal.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
-
-#define BUFF_SIZE 1024
 
 struct client_data_t {
   int sock;
@@ -22,12 +21,101 @@ void usage(int argc, char **argv){
   exit(EXIT_FAILURE);
 }
 
+int process_user_msg(char *msg_buff, char *client_addr_str, int csock){
+  int msg_size = strlen(msg_buff);
+
+  int is_message_valid = 1;
+  for(int i = 0; i < msg_size; i++){
+    if(msg_buff[i] < 0 || msg_buff[i] > 127){
+      is_message_valid = 0;
+      break;
+    }
+  }
+
+  if(is_message_valid == 0) return 1;
+  if(msg_size == 0) return 2;
+  if(msg_size > 500) return 3;
+
+  if(strcmp(msg_buff, "##kill\n") == 0){
+    for(int i = 0; i < usertags_size(user_tags); i++){
+      pthread_t user_thread = usertags_get_ith_thread(user_tags, i);
+      if(user_thread != pthread_self()){
+        pthread_kill(user_thread, 0);
+      }
+    }
+
+    pthread_kill(pthread_self(), 0);
+    return 4;
+  }
+
+  char out_buff[BUFF_SIZE];
+  memset(out_buff, 0, BUFF_SIZE);
+
+  struct intlist * tag_ids = NULL;
+  int tag_count = get_all_tags_in_msg(msg_buff, &tag_ids);
+
+  if(tag_count > 0){ // Se é uma mensagem com tags
+    struct intlist * subbed_users = NULL;
+    get_all_users_sub(&tag_ids, &subbed_users);
+
+    // printf("There's %d subbed users\n", intlist_size(subbed_users));
+    for(int i = 0; i < intlist_size(subbed_users); i++){
+      int target_user = intlist_ith(subbed_users, i);
+      sprintf(out_buff, "[msg] %s\n", msg_buff);
+      msg_size = send(target_user, out_buff, strlen(out_buff) + 1, 0);
+    }
+  }else if(msg_buff[0] == '+'){ // Se é um pedido de acrescentar uma tag
+    char tag_str[strlen(msg_buff) + 1];
+    memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
+
+    for(int i = 0; i < strlen(tag_str); i++){
+      if(tag_str[i] == '\n') tag_str[i] = '\0';
+    }
+
+    int sub_status = add_tag_to_user(csock, tag_str);
+
+    if(sub_status == 0){ // Se ele não era inscrito
+      sprintf(out_buff, "subscribed %s\n", msg_buff);
+      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+    }else{ // Se ele já é inscrito
+      sprintf(out_buff, "already subscribed %s\n", msg_buff);
+      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+    }
+  }else if(msg_buff[0] == '-'){ // Se é um pedido de retirar uma tag
+    char tag_str[strlen(msg_buff) + 1];
+    memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
+
+    for(int i = 0; i < strlen(tag_str); i++){
+      if(tag_str[i] == '\n') tag_str[i] = '\0';
+    }
+
+    // printf("A tag encontrada é '%s'\n", tag_str);
+
+    int sub_status = remove_tag_to_user(csock, tag_str);
+
+    if(sub_status == 0){ // Se ele não era inscrito
+      sprintf(out_buff, "not subscribed %s\n", msg_buff);
+      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+    }else{ // Se ele já é inscrito
+      sprintf(out_buff, "unsubscribed %s\n", msg_buff);
+      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+    }
+  }else{ // Se nao e nenhuma requisição de tag
+    // sprintf(out_buff, "Servidor diz: Mensagem recebida");
+    // msg_size = send(client_data->sock, out_buff, strlen(out_buff) + 1, 0);
+  }
+
+  // printf("[msg] %s, %d bytes: %s\n", client_addr_str, (int)msg_size, msg_buff);
+  printf("[msg] %s\n", msg_buff);
+  return 0;
+}
+
 void * client_thread(void *data){
   // Pega as informações do struct
   struct client_data_t *client_data = (struct client_data_t *)data;
 
   //
-  usertags_add(&user_tags, client_data->sock);
+  usertags_add(&user_tags, client_data->sock, pthread_self());
 
   // Converte o storage do cliente
   struct sockaddr *client_addr = (struct sockaddr *)(&client_data->storage);
@@ -41,85 +129,47 @@ void * client_thread(void *data){
     // Recebe a mensagem que o cliente mandou
     char msg_buff[BUFF_SIZE];
     memset(msg_buff, 0, BUFF_SIZE);
-    size_t msg_size = recv(client_data->sock, msg_buff, BUFF_SIZE, 0);
 
-    char out_buff[BUFF_SIZE];
-    memset(out_buff, 0, BUFF_SIZE);
+    int total_size = 0;
 
-    if(msg_size == 0){
-      printf("[log] Closed connection with %s\n", client_addr_str);
+    while(1){
+      int msg_size = recv(client_data->sock, msg_buff + total_size, BUFF_SIZE - total_size, 0);
+      total_size += msg_size;
+      if(msg_buff[strlen(msg_buff) - 1] == '\n' || msg_size == 0) break;
+    }
+
+    if(total_size == 0){
+      printf("[log] Connection with %s has been closed on the client side\n", client_addr_str);
       break;
     }
 
-    struct intlist * tag_ids = NULL;
-    int tag_count = get_all_tags_in_msg(msg_buff, &tag_ids);
+    int error = 0;
+    int curr_msg_i = 0;
+    char curr_msg[BUFF_SIZE];
+    for(size_t i = 0; i < strlen(msg_buff); i++){
+      if(msg_buff[i] == '\n'){
+        curr_msg[curr_msg_i] = '\0';
+        curr_msg_i = 0;
 
-    if(tag_count > 0){ // Se é uma mensagem com tags
-      printf("Found %d tags in message:", tag_count);
-      for(int i = 0; i < intlist_size(tag_ids); i++){
-        printf(" %d", intlist_ith(tag_ids, i));
+        // Fim de uma mensagem
+        error = process_user_msg(curr_msg, client_addr_str, client_data->sock);
+      }else{
+        curr_msg[curr_msg_i++] = msg_buff[i];
       }
-      printf("\n");
-
-      struct intlist * subbed_users = NULL;
-      get_all_users_sub(&tag_ids, &subbed_users);
-
-      printf("There's %d subbed users\n", intlist_size(subbed_users));
-      for(int i = 0; i < intlist_size(subbed_users); i++){
-        int target_user = intlist_ith(subbed_users, i);
-        sprintf(out_buff, "[msg] %s", msg_buff);
-        msg_size = send(target_user, out_buff, strlen(out_buff) + 1, 0);
-      }
-    }else if(msg_buff[0] == '+'){ // Se é um pedido de acrescentar uma tag
-      char tag_str[strlen(msg_buff) + 1];
-      memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
-
-      for(int i = 0; i < strlen(tag_str); i++){
-        if(tag_str[i] == '\n') tag_str[i] = '\0';
-      }
-
-      printf("A tag encontrada é '%s'\n", tag_str);
-
-      int sub_status = add_tag_to_user(client_data->sock, tag_str);
-
-      if(sub_status == 0){ // Se ele não era inscrito
-        sprintf(out_buff, "subscribed %s", msg_buff);
-        msg_size = send(client_data->sock, out_buff, strlen(out_buff) + 1, 0);
-      }else{ // Se ele já é inscrito
-        sprintf(out_buff, "already subscribed %s", msg_buff);
-        msg_size = send(client_data->sock, out_buff, strlen(out_buff) + 1, 0);
-      }
-    }else if(msg_buff[0] == '-'){ // Se é um pedido de retirar uma tag
-      char tag_str[strlen(msg_buff) + 1];
-      memcpy(tag_str, msg_buff + 1, strlen(msg_buff));
-
-      for(int i = 0; i < strlen(tag_str); i++){
-        if(tag_str[i] == '\n') tag_str[i] = '\0';
-      }
-
-      printf("A tag encontrada é '%s'\n", tag_str);
-
-      int sub_status = remove_tag_to_user(client_data->sock, tag_str);
-
-      if(sub_status == 0){ // Se ele não era inscrito
-        sprintf(out_buff, "not subscribed %s", msg_buff);
-        msg_size = send(client_data->sock, out_buff, strlen(out_buff) + 1, 0);
-      }else{ // Se ele já é inscrito
-        sprintf(out_buff, "unsubscribed %s", msg_buff);
-        msg_size = send(client_data->sock, out_buff, strlen(out_buff) + 1, 0);
-      }
-    }else{ // Se nao e nenhuma requisição de tag
-      sprintf(out_buff, "Servidor diz: Mensagem recebida");
-      msg_size = send(client_data->sock, out_buff, strlen(out_buff) + 1, 0);
     }
 
-    printf("[msg] %s, %d bytes: %s", client_addr_str, (int)msg_size, msg_buff);
-
-    // Caso o número de dados enviados não seja igual ao número
-    // de caracteres na mensagem, deu ruim
-    if(msg_size != strlen(out_buff) + 1){
-      printf("Message Size: %ld   Buffer size: %ld\n", msg_size, strlen(out_buff) + 1);
-      log_exit("send");
+    if(error == 1){
+      printf("[log] Disconnected %s due to invalid character\n", client_addr_str);
+      break;
+    }else if(error == 2){
+      printf("[log] Closed connection with %s due to null message\n", client_addr_str);
+      break;
+    }else if(error == 3){
+      printf("[log] Closed connection with %s due to message being too big\n", client_addr_str);
+      break;
+    }else if(error == 4){
+      printf("Triggered end of execution\n");
+      break;
     }
   }
   
