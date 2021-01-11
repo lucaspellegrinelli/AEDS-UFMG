@@ -50,7 +50,7 @@ void * listen_thread(void *data){
       if(data_buff[i] == '\n'){
         curr_msg[curr_msg_i] = '\0';
         curr_msg_i = 0;
-        printf(" < %s\n", curr_msg);
+        printf("%s\n", curr_msg);
       }else{
         curr_msg[curr_msg_i++] = data_buff[i];
       }

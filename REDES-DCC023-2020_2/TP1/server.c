@@ -36,7 +36,9 @@ int process_user_msg(char *msg_buff, char *client_addr_str, int csock){
   if(msg_size == 0) return 2;
   if(msg_size > 500) return 3;
 
-  if(strcmp(msg_buff, "##kill\n") == 0){
+  printf("msg: '%s'\n", msg_buff);
+
+  if(strcmp(msg_buff, "##kill") == 0){
     for(int i = 0; i < usertags_size(user_tags); i++){
       pthread_t user_thread = usertags_get_ith_thread(user_tags, i);
       if(user_thread != pthread_self()){
@@ -76,10 +78,10 @@ int process_user_msg(char *msg_buff, char *client_addr_str, int csock){
 
     if(sub_status == 0){ // Se ele não era inscrito
       sprintf(out_buff, "subscribed %s\n", msg_buff);
-      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+      msg_size = send(csock, out_buff, strlen(out_buff), 0);
     }else{ // Se ele já é inscrito
       sprintf(out_buff, "already subscribed %s\n", msg_buff);
-      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+      msg_size = send(csock, out_buff, strlen(out_buff), 0);
     }
   }else if(msg_buff[0] == '-'){ // Se é um pedido de retirar uma tag
     char tag_str[strlen(msg_buff) + 1];
@@ -95,10 +97,10 @@ int process_user_msg(char *msg_buff, char *client_addr_str, int csock){
 
     if(sub_status == 0){ // Se ele não era inscrito
       sprintf(out_buff, "not subscribed %s\n", msg_buff);
-      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+      msg_size = send(csock, out_buff, strlen(out_buff), 0);
     }else{ // Se ele já é inscrito
       sprintf(out_buff, "unsubscribed %s\n", msg_buff);
-      msg_size = send(csock, out_buff, strlen(out_buff) + 1, 0);
+      msg_size = send(csock, out_buff, strlen(out_buff), 0);
     }
   }else{ // Se nao e nenhuma requisição de tag
     // sprintf(out_buff, "Servidor diz: Mensagem recebida");
@@ -169,6 +171,8 @@ void * client_thread(void *data){
       break;
     }else if(error == 4){
       printf("Triggered end of execution\n");
+      pthread_exit(EXIT_SUCCESS);
+      exit(EXIT_SUCCESS);
       break;
     }
   }
