@@ -1,0 +1,16 @@
+$ python benchmark.py
+
+> Processamento de sufixos
+  > Tempo de execução: 1.016 segundos
+  > Memória usada: 18468.0 KB
+
+> Procura da maior string repetida
+  > Tempo de execução: 0.028 segundos
+  > Memória usada: 24.0 KB
+  > Resultado: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  > Posição: 29870
+
+> Contagem de ocorrências
+  > Tempo de execução: 0.00011 segundos
+  > Memória usada: 0.0 KB
+  > Resultado: 2
