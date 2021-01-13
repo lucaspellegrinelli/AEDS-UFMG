@@ -1,0 +1,12 @@
+In https://www.rcsb.org/ search and download the .pdb files from the proteins:
+ - 3l2j
+ - 4k5y
+ - 4rwg
+ - 4z9g
+ - 5vew
+ - 5vex
+ - 5xez
+ - 5xf1
+ - 6kjv
+ - 6kk1
+ - 6kk7

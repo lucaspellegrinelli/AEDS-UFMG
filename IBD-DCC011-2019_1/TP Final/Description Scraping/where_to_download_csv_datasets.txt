@@ -1,0 +1,9 @@
+From https://github.com/veekun/pokedex/tree/master/pokedex/data/csv download:
+
+ - ability_flavor_text.csv
+ - ability_names.csv
+ - move_flavor_text.csv
+ - moves.csv
+ - pokemon.csv
+ - pokemon_species_flavor_text.csv
+ - pokemon_types.csv

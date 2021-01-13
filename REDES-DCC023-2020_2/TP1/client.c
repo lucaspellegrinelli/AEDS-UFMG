@@ -50,7 +50,13 @@ void * listen_thread(void *data){
       if(data_buff[i] == '\n'){
         curr_msg[curr_msg_i] = '\0';
         curr_msg_i = 0;
-        printf("%s\n", curr_msg);
+
+        if(strcmp("##kill", curr_msg) == 0){
+          close(client_data->sock);
+          exit(EXIT_SUCCESS);
+        }else{
+          printf("%s\n", curr_msg);
+        }
       }else{
         curr_msg[curr_msg_i++] = data_buff[i];
       }
