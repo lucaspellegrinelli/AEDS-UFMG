@@ -47,29 +47,30 @@ vertex_list create_euler_tour(int start, graph_adj_list adj_list){
   path.push_back(start);
 
   std::stack<int> stack;
-	int current_v = start;
-	path.push_back(start);
-	while(!stack.empty() || adj_list[current_v].size() > 0){
-		if(adj_list[current_v].empty()){
-			path.push_back(current_v);
-			current_v = stack.top();
-			stack.pop();
-		}
-		else{
-			stack.push(current_v);
-			int next_v = adj_list[current_v].back();
-			adj_list[current_v].pop_back();
+  int current_v = start;
+  path.push_back(start);
+  while(!stack.empty() || adj_list[current_v].size() > 0){
+    if(adj_list[current_v].empty()){
+      path.push_back(current_v);
+      current_v = stack.top();
+      stack.pop();
+    }
+    else{
+      stack.push(current_v);
+      int next_v = adj_list[current_v].back();
+      adj_list[current_v].pop_back();
 
-			for(size_t i = 0; i < adj_list[next_v].size(); i++){
-				if(adj_list[next_v][i] == current_v){
-					adj_list[next_v].erase(adj_list[next_v].begin()+i);
-				}
-			}
+      for(size_t i = 0; i < adj_list[next_v].size(); i++){
+        if(adj_list[next_v][i] == current_v){
+          adj_list[next_v].erase(adj_list[next_v].begin()+i);
+        }
+      }
 
-			current_v = next_v;
-		}
-	}
-	path.push_back(current_v);
+      current_v = next_v;
+    }
+  }
+  
+  path.push_back(current_v);
 
   std::vector<bool> visited(path.size(), false);
   vertex_list tour;
