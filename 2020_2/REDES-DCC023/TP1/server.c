@@ -21,12 +21,19 @@ void usage(int argc, char **argv){
   exit(EXIT_FAILURE);
 }
 
+int is_valid(char c){
+  return (c >= '0' && c <= '9')
+    || (c >= 'A' && c <= 'Z')
+    || (c >= 'a' && c <= 'z')
+    || strchr(" ,.?!:;+-*/=@#$%()[]{}", c) != NULL;
+}
+
 int process_user_msg(char *msg_buff, char *client_addr_str, int csock){
   int msg_size = strlen(msg_buff);
 
   int is_message_valid = 1;
   for(int i = 0; i < msg_size; i++){
-    if(msg_buff[i] < 0 || msg_buff[i] > 127){
+    if(is_valid(msg_buff[i]) == 0){
       is_message_valid = 0;
       break;
     }
@@ -40,11 +47,11 @@ int process_user_msg(char *msg_buff, char *client_addr_str, int csock){
   memset(out_buff, 0, BUFF_SIZE);
 
   if(strcmp(msg_buff, "##kill") == 0){
-    for(int i = 0; i < usertags_size(user_tags); i++){
-      int user_sock = usertags_get_ith_key(user_tags, i);
-      sprintf(out_buff, "##kill\n");
-      send(user_sock, out_buff, strlen(out_buff), 0);
-    }
+    // for(int i = 0; i < usertags_size(user_tags); i++){
+    //   int user_sock = usertags_get_ith_key(user_tags, i);
+    //   sprintf(out_buff, "##kill\n");
+    //   send(user_sock, out_buff, strlen(out_buff), 0);
+    // }
 
     exit(EXIT_SUCCESS);
   }
@@ -60,7 +67,8 @@ int process_user_msg(char *msg_buff, char *client_addr_str, int csock){
     for(int i = 0; i < intlist_size(subbed_users); i++){
       int target_user = intlist_ith(subbed_users, i);
       sprintf(out_buff, "%s\n", msg_buff);
-      msg_size = send(target_user, out_buff, strlen(out_buff), 0);
+      if(target_user != csock)
+        msg_size = send(target_user, out_buff, strlen(out_buff), 0);
     }
   }else if(msg_buff[0] == '+'){ // Se é um pedido de acrescentar uma tag
     char tag_str[strlen(msg_buff) + 1];
@@ -131,7 +139,7 @@ void * client_thread(void *data){
     }
 
     if(total_size == 0){
-      // printf("[log] Connection with %s has been closed on the client side\n", client_addr_str);
+      printf("[log] Connection with %s has been closed on the client side\n", client_addr_str);
       break;
     }
 

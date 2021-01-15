@@ -92,23 +92,18 @@ int get_all_tags_in_msg(char *msg, struct intlist ** tag_ids){
 int get_all_users_sub(struct intlist ** tag_ids, struct intlist ** subbed_users){
   int count = 0;
 
-  // printf("Listing all users:\n");
   for(int i = 0; i < usertags_size(user_tags); i++){
     struct intlist ** user_tag = usertags_get_ith(user_tags, i);
     int user_id = usertags_get_ith_key(user_tags, i);
 
-    // printf(" > User #%d:", user_id);
-    // for(int j = 0; j < intlist_size(*user_tag); j++){
-    //   printf(" %d", intlist_ith(*user_tag, j));
-    // }
-    // printf("\n");
-
     for(int x = 0; x < intlist_size(*user_tag); x++){
       for(int y = 0; y < intlist_size(*tag_ids); y++){
         if(intlist_ith(*user_tag, x) == intlist_ith(*tag_ids, y)){
-          intlist_add(subbed_users, user_id);
-          count++;
-          break;
+          if(intlist_contains(*subbed_users, user_id) == 0){
+            intlist_add(subbed_users, user_id);
+            count++;
+            break;
+          }
         }
       }
     }
