@@ -120,10 +120,10 @@ vertex_list tsp(graph_matrix edges){
   double best_distance = std::numeric_limits<double>::max();
 
   // Loop through every possible starting point
-	for (size_t s = 0; s < adj_list.size(); s++) {
+  for (size_t s = 0; s < adj_list.size(); s++) {
     // Calculates the euler tour starting from the
     // current starting point
-		vertex_list path = create_euler_tour(s, adj_list);
+    vertex_list path = create_euler_tour(s, adj_list);
 
     // Calculates the tour distance
     double distance = 0;
@@ -132,11 +132,11 @@ vertex_list tsp(graph_matrix edges){
     }
 
     // If this is the best distance, save it
-		if (distance < best_distance) {
-			best_start = s;
-			best_distance = distance;
-		}
-	}
+    if (distance < best_distance) {
+      best_start = s;
+      best_distance = distance;
+    }
+  }
 
   // Returns the tour with minimum distance
   return create_euler_tour(best_start, adj_list);
