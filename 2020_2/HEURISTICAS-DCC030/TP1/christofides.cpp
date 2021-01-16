@@ -17,34 +17,46 @@ vertex_list create_euler_tour(int start, graph_adj_list adj_list){
 
   std::stack<int> stack;
   int current_v = start;
-  path.push_back(start);
+
+  // While we still have vertices on the open list
   while(!stack.empty() || adj_list[current_v].size() > 0){
+    // If the current vertice has no more unvisited neighbors
     if(adj_list[current_v].empty()){
+      // We add it to the final path
       path.push_back(current_v);
+
+      // Get the next vertice from the stack
       current_v = stack.top();
       stack.pop();
-    }
-    else{
+    } else{
+      // If there are still neighbors to be visited...
       stack.push(current_v);
+
+      // The next vertice will be retrieved from the current
+      // vertice neighbor list
       int next_v = adj_list[current_v].back();
       adj_list[current_v].pop_back();
 
+      // We remove the current vertice from the next vertice
+      // adjecency list so it won't come back to the current
+      // vertice
       for(size_t i = 0; i < adj_list[next_v].size(); i++){
         if(adj_list[next_v][i] == current_v){
-          adj_list[next_v].erase(adj_list[next_v].begin()+i);
+          adj_list[next_v].erase(adj_list[next_v].begin() + i);
         }
       }
 
+      // Next iteration we update the vertice
       current_v = next_v;
     }
   }
   
   path.push_back(current_v);
 
+  // Removed duplicated vertices from the tour
   std::vector<bool> visited(path.size(), false);
   vertex_list tour;
 
-  // Removed duplicated vertices from the tour
   for(int v : path){
     if(!visited[v]){
       visited[v] = true;

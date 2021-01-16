@@ -5,7 +5,8 @@
 #include <utility>
 #include <string>
 #include <cmath>
-#include <chrono> 
+#include <chrono>
+#include <algorithm>
 
 #include "graph.h"
 #include "prim.h"
@@ -109,14 +110,23 @@ int main(int argc, char *argv[]){
     }
   }
 
+  // Call the TSP solver and keep track of the time it took to run
   auto start = std::chrono::high_resolution_clock::now(); 
   std::vector<int> path = tsp(edges);
   auto stop = std::chrono::high_resolution_clock::now(); 
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start); 
 
+  // Calculate the distance based on the given path
   double distance = 0;
-  for(size_t i = 0; i < path.size() - 1; i++){
-    distance += edges[path[i]][path[i + 1]];
+  for(size_t i = 1; i < path.size(); i++){
+    auto city_a = city_positions[path[i - 1]];
+    auto city_b = city_positions[path[i]];
+
+    if(dist_type == "EUC_2D"){
+      distance += EUC_2D(city_a, city_b);
+    }else if(dist_type == "ATT"){
+      distance += ATT(city_a, city_b);
+    }
   }
 
   std::cout << distance << "\t" << (duration.count() / 1000000.0) << std::endl;
