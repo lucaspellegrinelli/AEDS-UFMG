@@ -48,6 +48,7 @@ edge_list find_min_weight_perfect_matching(vertex_list odd_degrees, graph_matrix
     for(size_t i = 1; i < matching.size(); i++){
       int j = i - 1;
 
+      // Stores the distances for each of the permutations
       std::vector<std::pair<double, double>> distances{
         {0, 0}, {0, 0}, {0, 0}, {0, 0}
       };

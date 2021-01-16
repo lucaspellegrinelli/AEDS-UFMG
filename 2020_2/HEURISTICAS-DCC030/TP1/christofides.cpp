@@ -9,7 +9,6 @@
 #include "graph.h"
 #include "prim.h"
 #include "mwpm.h"
-#include "opt.h"
 
 vertex_list create_euler_tour(int start, graph_adj_list adj_list){
   // Start the tour with the start vertice
@@ -75,6 +74,7 @@ vertex_list tsp(graph_matrix edges){
     }
   }
 
+  // Creates the "perfect" matching for the odd degree vertices
   edge_list matching = find_min_weight_perfect_matching(odd_degrees, edges);
 
   // Add the new edges to the adjecency list
@@ -106,14 +106,5 @@ vertex_list tsp(graph_matrix edges){
 	}
 
   // Returns the tour with minimum distance
-  vertex_list tour = create_euler_tour(best_start, adj_list);
-
-  double distance = 0;
-  for(size_t i = 0; i < tour.size() - 1; i++){
-    distance += edges[tour[i]][tour[i + 1]];
-  }
-
-  // tour = apply_three_opt_optimization(tour, edges);
-
-  return tour;
+  return create_euler_tour(best_start, adj_list);
 }
