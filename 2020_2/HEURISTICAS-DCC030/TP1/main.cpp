@@ -7,6 +7,7 @@
 #include <cmath>
 #include <chrono>
 #include <algorithm>
+#include <set>
 
 #include "graph.h"
 #include "prim.h"
@@ -32,6 +33,36 @@ double ATT(std::pair<double, double> city_a, std::pair<double, double> city_b){
   }
 }
 
+double evaluate_solution(vertex_list path, std::vector<std::pair<double, double>> city_positions, std::string dist_type){
+  // Checking if there are duplicates in the path
+  std::set<int> unique_path(path.begin(), path.end());
+  bool is_there_duplicates = (unique_path.size() != path.size());
+
+  // Checking if the size of the answer is equal to
+  // the number of cities
+  bool is_size_ok = (city_positions.size() == unique_path.size()) &&
+                    (city_positions.size() == path.size());
+
+  // If there's any problem with the solution, return -1
+  if(is_there_duplicates || !is_size_ok){
+    return -1;
+  }
+  
+  double distance = 0;
+  for(size_t i = 1; i < path.size(); i++){
+    auto city_a = city_positions[path[i - 1]];
+    auto city_b = city_positions[path[i]];
+
+    if(dist_type == "EUC_2D"){
+      distance += EUC_2D(city_a, city_b);
+    }else if(dist_type == "ATT"){
+      distance += ATT(city_a, city_b);
+    }
+  }
+
+  return distance;
+}
+
 int main(int argc, char *argv[]){
   if(argc < 2){
     std::cout << "You need to indicate a dataset to be used" << std::endl;
@@ -46,6 +77,9 @@ int main(int argc, char *argv[]){
 
   // Stored which distance type we will use
   std::string dist_type = "EUC_2D";
+
+  // Number of cities to be read
+  size_t n_cities = 0;
 
   // Reads all the (x,y) city positions
   if(tsp_dataset.is_open()){
@@ -69,6 +103,18 @@ int main(int argc, char *argv[]){
         if(dist_type == ":"){
           line_stream >> dist_type;
         }
+      }else if(line.rfind("DIMENSION", 0) == 0){
+        // If we start the line with this, we can get the n_cities
+        std::string temp;
+
+        std::istringstream line_stream(line);
+        line_stream >> temp;
+
+        while(temp[temp.size() - 1] != ':'){
+          line_stream >> temp;
+        }
+
+        line_stream >> n_cities;
       }else if(city_started){
         // Create a data stream to get the info about the city
         // represented in the current line and store it in the
@@ -82,6 +128,13 @@ int main(int argc, char *argv[]){
     }
   }else{
     std::cout << "Couldn't open specified dataset" << std::endl;
+    exit(EXIT_SUCCESS);
+  }
+
+  // If we read a different amount of cities than the specified
+  // amount, we die
+  if(city_positions.size() != n_cities){
+    std::cout << "Number of cities read different than the number specified in the TSP file" << std::endl;
     exit(EXIT_SUCCESS);
   }
 
@@ -112,22 +165,11 @@ int main(int argc, char *argv[]){
 
   // Call the TSP solver and keep track of the time it took to run
   auto start = std::chrono::high_resolution_clock::now(); 
-  std::vector<int> path = tsp(edges);
+  vertex_list path = tsp(edges);
   auto stop = std::chrono::high_resolution_clock::now(); 
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start); 
 
   // Calculate the distance based on the given path
-  double distance = 0;
-  for(size_t i = 1; i < path.size(); i++){
-    auto city_a = city_positions[path[i - 1]];
-    auto city_b = city_positions[path[i]];
-
-    if(dist_type == "EUC_2D"){
-      distance += EUC_2D(city_a, city_b);
-    }else if(dist_type == "ATT"){
-      distance += ATT(city_a, city_b);
-    }
-  }
-
+  double distance = evaluate_solution(path, city_positions, dist_type);
   std::cout << distance << "\t" << (duration.count() / 1000000.0) << std::endl;
 }
