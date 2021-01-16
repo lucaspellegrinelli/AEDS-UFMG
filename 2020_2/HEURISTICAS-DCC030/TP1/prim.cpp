@@ -1,11 +1,12 @@
 #include "prim.h"
-#include "graph.h"
 
 #include <iostream>
 #include <functional>
 #include <limits>
 #include <vector>
 #include <utility>
+
+#include "graph.h"
 
 edge_list min_spanning_tree(graph_matrix edges){
   // Vector representing which component each node is in

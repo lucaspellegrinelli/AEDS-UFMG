@@ -9,7 +9,7 @@
 
 #include "graph.h"
 #include "prim.h"
-#include "tsp.h"
+#include "christofides.h"
 
 double EUC_2D(std::pair<double, double> city_a, std::pair<double, double> city_b){
   double x_distance = std::abs(city_a.first - city_b.first);
@@ -112,12 +112,12 @@ int main(int argc, char *argv[]){
   auto start = std::chrono::high_resolution_clock::now(); 
   std::vector<int> path = tsp(edges);
   auto stop = std::chrono::high_resolution_clock::now(); 
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start); 
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start); 
 
   double distance = 0;
   for(size_t i = 0; i < path.size() - 1; i++){
     distance += edges[path[i]][path[i + 1]];
   }
 
-  std::cout << distance << "\t" << (duration.count() / 1000.0) << std::endl;
+  std::cout << distance << "\t" << (duration.count() / 1000000.0) << std::endl;
 }

@@ -1,45 +1,15 @@
-#include "tsp.h"
-#include "graph.h"
-#include "prim.h"
+#include "christofides.h"
 
-#include <limits>
 #include <stack>
+#include <limits>
 #include <vector>
 #include <utility>
+#include <iostream>
 
-edge_list find_perfect_matching(vertex_list odd_degrees, graph_matrix edges){
-  edge_list matching;
-  
-  // While we still have odd_degree vertices
-  while(odd_degrees.size() > 0){
-    // Select the first odd degree vertice
-    int vert_a = odd_degrees[0];
-
-    int best_match = -1;
-    int best_match_i = -1;
-    double best_dist = std::numeric_limits<double>::max();
-
-    // Find the closest odd degree vertice to the first odd
-    //degree vertice
-    for(size_t i = 1; i < odd_degrees.size(); i++){
-      int vert_b = odd_degrees[i];
-      if(edges[vert_a][vert_b] < best_dist){
-        best_match = vert_b;
-        best_match_i = i;
-        best_dist = edges[vert_a][vert_b];
-      }
-    }
-
-    // Add the connection between the first odd degree vertice
-    // and the closest odd degree vertice to it and remove
-    // both from the list
-    matching.push_back({vert_a, best_match});
-    odd_degrees.erase(odd_degrees.begin() + best_match_i);
-    odd_degrees.erase(odd_degrees.begin());
-  }
-
-  return matching;
-}
+#include "graph.h"
+#include "prim.h"
+#include "mwpm.h"
+#include "opt.h"
 
 vertex_list create_euler_tour(int start, graph_adj_list adj_list){
   // Start the tour with the start vertice
@@ -105,9 +75,7 @@ vertex_list tsp(graph_matrix edges){
     }
   }
 
-  // Gets a minimum perfect matching for these odd degree
-  // vertices
-  edge_list matching = find_perfect_matching(odd_degrees, edges);
+  edge_list matching = find_min_weight_perfect_matching(odd_degrees, edges);
 
   // Add the new edges to the adjecency list
   for(auto m : matching){
@@ -115,15 +83,14 @@ vertex_list tsp(graph_matrix edges){
     adj_list[m.second].push_back(m.first);
   }
 
-  
   int best_start = 0;
   double best_distance = std::numeric_limits<double>::max();
 
   // Loop through every possible starting point
-  for (size_t s = 0; s < adj_list.size(); s++) {
+	for (size_t s = 0; s < adj_list.size(); s++) {
     // Calculates the euler tour starting from the
     // current starting point
-    vertex_list path = create_euler_tour(s, adj_list);
+		vertex_list path = create_euler_tour(s, adj_list);
 
     // Calculates the tour distance
     double distance = 0;
@@ -132,12 +99,21 @@ vertex_list tsp(graph_matrix edges){
     }
 
     // If this is the best distance, save it
-    if (distance < best_distance) {
-      best_start = s;
-      best_distance = distance;
-    }
-  }
+		if (distance < best_distance) {
+			best_start = s;
+			best_distance = distance;
+		}
+	}
 
   // Returns the tour with minimum distance
-  return create_euler_tour(best_start, adj_list);
+  vertex_list tour = create_euler_tour(best_start, adj_list);
+
+  double distance = 0;
+  for(size_t i = 0; i < tour.size() - 1; i++){
+    distance += edges[tour[i]][tour[i + 1]];
+  }
+
+  // tour = apply_three_opt_optimization(tour, edges);
+
+  return tour;
 }

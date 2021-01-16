@@ -1,5 +1,5 @@
-#ifndef KRUSKAL_H
-#define KRUSKAL_H
+#ifndef PRIM_H
+#define PRIM_H
 
 #include "graph.h"
 
