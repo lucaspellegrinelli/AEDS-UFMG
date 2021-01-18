@@ -4,64 +4,13 @@
 #include <vector>
 #include <utility>
 #include <string>
-#include <cmath>
 #include <chrono>
 #include <algorithm>
-#include <set>
 
 #include "graph.h"
 #include "prim.h"
 #include "christofides.h"
-
-double EUC_2D(std::pair<double, double> city_a, std::pair<double, double> city_b){
-  double x_distance = std::abs(city_a.first - city_b.first);
-  double y_distance = std::abs(city_a.second - city_b.second);
-  double distance = std::sqrt(std::pow(x_distance, 2) + std::pow(y_distance, 2));
-  return std::round(distance);
-}
-
-double ATT(std::pair<double, double> city_a, std::pair<double, double> city_b){
-  double x_distance = std::abs(city_a.first - city_b.first);
-  double y_distance = std::abs(city_a.second - city_b.second);
-  double distance = std::sqrt((std::pow(x_distance, 2) + std::pow(y_distance, 2)) / 10.0);
-  int distance_i = std::round(distance);
-
-  if(distance_i < distance){
-    return distance_i + 1;
-  }else{
-    return distance_i;
-  }
-}
-
-double evaluate_solution(vertex_list path, std::vector<std::pair<double, double>> city_positions, std::string dist_type){
-  // Checking if there are duplicates in the path
-  std::set<int> unique_path(path.begin(), path.end());
-  bool is_there_duplicates = (unique_path.size() != path.size());
-
-  // Checking if the size of the answer is equal to
-  // the number of cities
-  bool is_size_ok = (city_positions.size() == unique_path.size()) &&
-                    (city_positions.size() == path.size());
-
-  // If there's any problem with the solution, return -1
-  if(is_there_duplicates || !is_size_ok){
-    return -1;
-  }
-  
-  double distance = 0;
-  for(size_t i = 1; i < path.size(); i++){
-    auto city_a = city_positions[path[i - 1]];
-    auto city_b = city_positions[path[i]];
-
-    if(dist_type == "EUC_2D"){
-      distance += EUC_2D(city_a, city_b);
-    }else if(dist_type == "ATT"){
-      distance += ATT(city_a, city_b);
-    }
-  }
-
-  return distance;
-}
+#include "common.h"
 
 int main(int argc, char *argv[]){
   if(argc < 2){
@@ -73,7 +22,7 @@ int main(int argc, char *argv[]){
   std::ifstream tsp_dataset(argv[1]);
 
   // Vector to store each city (x, y) position
-  std::vector<std::pair<double, double>> city_positions;
+  vertice_pos city_positions;
 
   // Stored which distance type we will use
   std::string dist_type = "EUC_2D";
@@ -138,38 +87,21 @@ int main(int argc, char *argv[]){
     exit(EXIT_SUCCESS);
   }
 
-  /// Create the adj matrix
-  graph_matrix edges(city_positions.size(), std::vector<double>(city_positions.size(), 0));
-
-  // Looping through each city combination and computing its distance
-  for(size_t ai = 0; ai < city_positions.size(); ai++){
-    auto city_a = city_positions[ai];
-    for(size_t bi = ai + 1; bi < city_positions.size(); bi++){
-      auto city_b = city_positions[bi];
-
-      double distance = 0;
-
-      if(dist_type == "EUC_2D"){
-        distance = EUC_2D(city_a, city_b);
-      }else if(dist_type == "ATT"){
-        distance = ATT(city_a, city_b);
-      }else{
-        distance = EUC_2D(city_a, city_b);
-      }
-
-      // Add an edge both ways
-      edges[ai][bi] = distance;
-      edges[bi][ai] = distance;
-    }
+  if(dist_type != "EUC_2D" && dist_type != "ATT"){
+    std::cout << "Distance function not defined" << std::endl;
+    exit(EXIT_SUCCESS);
   }
+
+  // Create problem instance
+  TSPInstance tsp_instance(city_positions, dist_type, n_cities);
 
   // Call the TSP solver and keep track of the time it took to run
   auto start = std::chrono::high_resolution_clock::now(); 
-  vertex_list path = tsp(edges);
+  vertex_list path = tsp(tsp_instance);
   auto stop = std::chrono::high_resolution_clock::now(); 
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start); 
 
   // Calculate the distance based on the given path
-  double distance = evaluate_solution(path, city_positions, dist_type);
+  double distance = evaluate_solution(path, tsp_instance);
   std::cout << distance << "\t" << (duration.count() / 1000000.0) << std::endl;
 }

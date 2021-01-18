@@ -9,4 +9,6 @@
 #define edge_list std::vector<std::pair<int, int>>
 #define vertex_list std::vector<int>
 
+#define vertice_pos std::vector<std::pair<double, double>>
+
 #endif

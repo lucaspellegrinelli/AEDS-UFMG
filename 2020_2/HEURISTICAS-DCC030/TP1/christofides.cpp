@@ -5,10 +5,12 @@
 #include <vector>
 #include <utility>
 #include <iostream>
+#include <string>
 
 #include "graph.h"
 #include "prim.h"
 #include "mwpm.h"
+#include "common.h"
 
 vertex_list create_euler_tour(int start, graph_adj_list adj_list){
   // Start the tour with the start vertice
@@ -67,7 +69,29 @@ vertex_list create_euler_tour(int start, graph_adj_list adj_list){
   return tour;
 }
 
-vertex_list tsp(graph_matrix edges){
+vertex_list tsp(TSPInstance tsp_instance){
+  // Create the adj matrix
+  graph_matrix edges(tsp_instance.n_cities, std::vector<double>(tsp_instance.n_cities, 0));
+
+  // Looping through each city combination and computing its distance
+  for(size_t ai = 0; ai < tsp_instance.n_cities; ai++){
+    auto city_a = tsp_instance.city_positions[ai];
+    for(size_t bi = ai + 1; bi < tsp_instance.n_cities; bi++){
+      auto city_b = tsp_instance.city_positions[bi];
+
+      double distance = 0;
+      if(tsp_instance.dist_type == "EUC_2D"){
+        distance = EUC_2D(city_a, city_b);
+      }else if(tsp_instance.dist_type == "ATT"){
+        distance = ATT(city_a, city_b);
+      }
+
+      // Add an edge both ways
+      edges[ai][bi] = distance;
+      edges[bi][ai] = distance;
+    }
+  }
+
   // Calculating the minimum spanning tree from the graph
   edge_list mst = min_spanning_tree(edges);
 
@@ -99,23 +123,20 @@ vertex_list tsp(graph_matrix edges){
   double best_distance = std::numeric_limits<double>::max();
 
   // Loop through every possible starting point
-	for (size_t s = 0; s < adj_list.size(); s++) {
+  for (size_t s = 0; s < adj_list.size(); s++) {
     // Calculates the euler tour starting from the
     // current starting point
-		vertex_list path = create_euler_tour(s, adj_list);
+    vertex_list path = create_euler_tour(s, adj_list);
 
     // Calculates the tour distance
-    double distance = 0;
-    for(size_t i = 0; i < path.size() - 1; i++){
-      distance += edges[path[i]][path[i + 1]];
-    }
+    double distance = evaluate_solution(path, tsp_instance);
 
-    // If this is the best distance, save it
-		if (distance < best_distance) {
-			best_start = s;
-			best_distance = distance;
-		}
-	}
+    // If there's not an error and the distance is less than best
+    if(distance > 0 && distance < best_distance){
+      best_distance = distance;
+      best_start = s;
+    }
+  }
 
   // Returns the tour with minimum distance
   return create_euler_tour(best_start, adj_list);
