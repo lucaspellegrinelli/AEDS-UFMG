@@ -27,9 +27,6 @@ pthread_cond_t esquentar_cond = PTHREAD_COND_INITIALIZER;
 // Mutex para controlar o acesso ao forno
 pthread_mutex_t forno_mut = PTHREAD_MUTEX_INITIALIZER;
 
-// Mutex para controlar o acesso a fila
-pthread_mutex_t fila_mut = PTHREAD_MUTEX_INITIALIZER;
-
 // Número de threads a serem criadas para os personagens (exceto Raj)
 const int thread_count = 8;
 
@@ -166,8 +163,6 @@ int proximo_da_fila(){
 // Coloca um novo personagem na fila, levando em consideração se seu parceirxs
 // já está ou não na fila, atualizando a booleana correspondente.
 void inserir_na_fila(int personagem){
-  pthread_mutex_lock(&fila_mut); // Trava o mutex da fila
-
   // Encontra o parceirx do personagem caso exista
   int perceirx_id = -1;
   for(size_t i = 0; i < fila.size(); i++){
@@ -182,14 +177,13 @@ void inserir_na_fila(int personagem){
   }else{
     fila.push_back({ personagem, false });
   }
-
-  printf("%s quer usar o forno\n", nomes[personagem].c_str());
-  pthread_mutex_unlock(&fila_mut); // Destrava o mutex da fila
 }
 
 // Método relacionado a ação de esperar para esquentar a comida
-void esquentar_comida(int personagem){
-  pthread_mutex_lock(&forno_mut); // Travar o mutex do forno
+void esperar_vez(int personagem){
+  printf("%s quer usar o forno\n", nomes[personagem].c_str());
+
+  pthread_mutex_lock(&forno_mut); // Trava o mutex do forno
 
   // Caso não seja a vez do personagem atual, 
   while(personagem != proximo_da_fila()){
@@ -259,7 +253,7 @@ void *thread_personagem(void *quem){
     inserir_na_fila(quem_t->personagem_id);
 
     // Esquentar a comida
-    esquentar_comida(quem_t->personagem_id);
+    esperar_vez(quem_t->personagem_id);
     
     // Assim que acabar de esquentar a comida, é enviado um 'broadcast' para
     // os outros personagens checarem se é a vez deles de esquentar a comida deles
@@ -308,7 +302,6 @@ int main(int argc, char *argv[]) {
   pthread_join(raj_thread, NULL);
 
   // Limpa a memória dos mutexes e condições
-  pthread_mutex_destroy(&fila_mut);
   pthread_mutex_destroy(&forno_mut);
   pthread_cond_destroy(&esquentar_cond);
 
