@@ -1,0 +1,1 @@
+cat .\examples\frib.p | java -cp "build;lib/java-cup-11b.jar" compiler.parser

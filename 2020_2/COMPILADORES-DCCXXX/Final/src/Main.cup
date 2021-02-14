@@ -1,0 +1,118 @@
+package compiler;
+
+import java_cup.runtime.*;
+
+parser code {:
+	public static void main(String args[]) throws Exception {
+		new parser(new Yylex(System.in)).parse();
+	}
+:}
+
+terminal  SEMICOLON, COLON, COMMA, OPEN_PARENTHESIS, CLOSE_PARENTHESIS, NEQ, LTE, GTE, EQ, LT, GT, NOT,
+          PLUS, MINUS, OR, ATTRIBUTION, ASTERISC, SLASH, DIV, MOD, AND, FUNCTION, PROGRAM_KEYWORD,
+          INTEGER_KEYWORD, REAL_KEYWORD, BOOLEAN_KEYWORD, CHAR_KEYWORD, BEGIN_KEYWORD, END_KEYWORD,
+          IF_KEYWORD, THEN_KEYWORD, ELSE_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, UNTIL_KEYWORD, READ_KEYWORD,
+          WRITE_KEYWORD, GOTO_KEYWORD, FALSE_KEYWORD, TRUE_KEYWORD, INTEGER_CONSTANT,
+          REAL_CONSTANT, CHAR_CONSTANT, IDENTIFIER;
+
+non terminal  RELOP, ADDOP, MULOP, program, decl_list, decl, ident_list, type, compound_stmt,
+              stmt_list, stmt, label, unlabelled_stmt, assign_stmt, if_stmt, cond, loop_stmt,
+              stmt_prefix, stmt_suffix, read_stmt, write_stmt, goto_stmt, expr_list, expr,
+              simple_expr, term, factor_a, factor, function_ref, function_ref_par, variable,
+              simple_variable_or_proc, constant, boolean_constant;
+
+precedence left ELSE_KEYWORD;
+
+start with program;
+
+RELOP ::= EQ | LT | LTE | GT | GTE | NEQ | NOT;
+ADDOP ::= PLUS | MINUS | OR;
+MULOP ::= ASTERISC | SLASH | DIV | MOD | AND;
+
+program ::=                 PROGRAM_KEYWORD IDENTIFIER:id SEMICOLON decl_list:dl compound_stmt:cs;
+decl_list ::=               decl_list:dl SEMICOLON decl:d |
+                            decl:d;
+
+decl ::=                    ident_list:il COLON type;
+
+ident_list ::=              ident_list:il COMMA IDENTIFIER:id |
+                            IDENTIFIER:id;
+
+type ::=                    INTEGER_KEYWORD |
+                            REAL_KEYWORD |
+                            BOOLEAN_KEYWORD |
+                            CHAR_KEYWORD;
+
+compound_stmt ::=           BEGIN_KEYWORD stmt_list:sl END_KEYWORD;
+
+stmt_list ::=               stmt_list:sl SEMICOLON stmt:st |
+                            stmt:st;
+
+stmt ::=                    label:la COLON unlabelled_stmt:ula |
+                            unlabelled_stmt:ula;
+
+unlabelled_stmt ::=         assign_stmt:as |
+                            if_stmt:is |
+                            loop_stmt:ls |
+                            read_stmt:rs |
+                            write_stmt:ws |
+                            goto_stmt:gs |
+                            compound_stmt:cs;
+
+assign_stmt ::=             IDENTIFIER:id ATTRIBUTION expr:ex;
+
+if_stmt ::=                 IF_KEYWORD cond:co THEN_KEYWORD stmt:st |
+                            IF_KEYWORD cond:co THEN_KEYWORD stmt:st ELSE_KEYWORD stmt:st2;
+
+cond ::=                    expr:ex;
+
+loop_stmt ::=               stmt_prefix:sp DO_KEYWORD stmt_list:sl stmt_suffix:ss;
+
+stmt_prefix ::=             WHILE_KEYWORD cond:co;
+
+stmt_suffix ::=             UNTIL_KEYWORD cond:co |
+                            END_KEYWORD;
+
+read_stmt ::=               READ_KEYWORD OPEN_PARENTHESIS ident_list:il CLOSE_PARENTHESIS;
+
+write_stmt ::=              WRITE_KEYWORD OPEN_PARENTHESIS expr_list:el CLOSE_PARENTHESIS;
+
+goto_stmt ::=               GOTO_KEYWORD IDENTIFIER:id;
+
+expr_list ::=               expr:ex |
+                            expr_list:el COMMA expr:ex;
+
+expr ::=                    simple_expr:se |
+                            simple_expr:se RELOP simple_expr:se2;
+
+simple_expr ::=             term:te |
+                            simple_expr:se ADDOP term:te;
+
+term ::=                    factor_a:fa |
+                            term:te MULOP factor_a:fa;
+
+factor_a ::=                MINUS factor:f |
+                            factor:f;
+
+factor ::=                  IDENTIFIER:id |
+                            constant:co |
+                            OPEN_PARENTHESIS expr:ex CLOSE_PARENTHESIS |
+                            function_ref:fr |
+                            NOT factor:f;
+
+function_ref ::=            function_ref_par:frp;
+
+function_ref_par ::=        variable:var OPEN_PARENTHESIS expr_list:el CLOSE_PARENTHESIS;
+
+variable ::=                simple_variable_or_proc:svp |
+                            function_ref_par:frp;
+
+simple_variable_or_proc ::= IDENTIFIER:id;
+
+constant ::=                INTEGER_CONSTANT:ic |
+                            REAL_CONSTANT:rc |
+                            CHAR_CONSTANT:cc |
+                            boolean_constant:bc;
+
+boolean_constant ::=        FALSE_KEYWORD |
+                            TRUE_KEYWORD;
